@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://addons/vr_manager/vr_origin.gd" type="Script" id=1]
+[ext_resource path="res://addons/sar1_vr_manager/vr_origin.gd" type="Script" id=1]
 
 [node name="ARVROrigin" type="ARVROrigin"]
 script = ExtResource( 1 )

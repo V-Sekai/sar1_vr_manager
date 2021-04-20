@@ -1,6 +1,6 @@
 [gd_resource type="SpatialMaterial" load_steps=2 format=2]
 
-[ext_resource path="res://addons/vr_manager/images/teleport_target.png" type="Texture" id=1]
+[ext_resource path="res://addons/sar1_vr_manager/images/teleport_target.png" type="Texture" id=1]
 
 [resource]
 flags_transparent = true

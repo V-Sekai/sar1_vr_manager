@@ -3,7 +3,7 @@ tool
 
 var trackers: Array = []
 
-var controller_actions_scene_path: String = "res://addons/vr_manager/openvr/controller_actions.tscn"
+var controller_actions_scene_path: String = "res://addons/sar1_vr_manager/openvr/controller_actions.tscn"
 var controller_actions_scene: PackedScene = null
 
 var action_json_editor_directory: String = "res://assets/actions/openvr/actions"

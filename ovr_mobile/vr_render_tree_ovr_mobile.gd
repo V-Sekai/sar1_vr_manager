@@ -1,4 +1,4 @@
-extends "res://addons/vr_manager/vr_render_tree.gd"
+extends "res://addons/sar1_vr_manager/vr_render_tree.gd"
 
 var ovr_component_tree: NativeScript = null
 var ovr_render_model: NativeScript = null

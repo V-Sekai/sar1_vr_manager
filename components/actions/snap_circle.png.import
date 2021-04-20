@@ -9,7 +9,7 @@ metadata={
 
 [deps]
 
-source_file="res://addons/vr_manager/components/actions/snap_circle.png"
+source_file="res://addons/sar1_vr_manager/components/actions/snap_circle.png"
 dest_files=[ "res://.import/snap_circle.png-94849f2c05c8c98e632b4498879dfc43.stex" ]
 
 [params]

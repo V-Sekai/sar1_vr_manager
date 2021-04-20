@@ -1,6 +1,6 @@
 extends ARVRController
 
-const vr_constants_const = preload("res://addons/vr_manager/vr_constants.gd")
+const vr_constants_const = preload("res://addons/sar1_vr_manager/vr_constants.gd")
 
 const vr_manager_const = preload("vr_manager.gd")
 const vr_render_tree_const = preload("vr_render_tree.gd")

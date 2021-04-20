@@ -33,7 +33,7 @@ func find_parent_controller() -> Node:
 
 
 func _ready() -> void:
-	vr_tracker_script = load("res://addons/vr_manager/vr_controller_tracker.gd")
+	vr_tracker_script = load("res://addons/sar1_vr_manager/vr_controller_tracker.gd")
 
 	tracker = find_parent_controller()
 	if tracker:

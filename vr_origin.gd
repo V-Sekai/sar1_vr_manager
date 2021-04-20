@@ -1,6 +1,6 @@
 extends ARVROrigin
 
-const vr_controller_tracker_const = preload("res://addons/vr_manager/vr_controller_tracker.gd")
+const vr_controller_tracker_const = preload("res://addons/sar1_vr_manager/vr_controller_tracker.gd")
 
 var active_controllers: Dictionary = {}
 var unknown_controller_count: int = 0

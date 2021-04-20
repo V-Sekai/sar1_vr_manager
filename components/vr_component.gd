@@ -1,6 +1,6 @@
 extends Spatial
 
-const vr_controller_tracker_const = preload("res://addons/vr_manager/vr_controller_tracker.gd")
+const vr_controller_tracker_const = preload("res://addons/sar1_vr_manager/vr_controller_tracker.gd")
 
 signal trackers_changed
 
