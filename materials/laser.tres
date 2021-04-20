@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://addons/vr_manager/materials/laser.shader" type="Shader" id=2]
+
+[resource]
+render_priority = 126
+shader = ExtResource( 2 )
+shader_param/target = Vector3( 0, 0, -1 )
+shader_param/width = 0.01
+shader_param/max_stretch = 10.0
+shader_param/uv_multiplier = 4.0
+shader_param/speed = 0.0
+shader_param/mix_color = Color( 1, 1, 1, 0.0980392 )

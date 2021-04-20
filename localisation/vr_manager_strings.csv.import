@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+
+[deps]
+
+files=[ "res://addons/vr_manager/localisation/vr_manager_strings.en.translation" ]
+
+source_file="res://addons/vr_manager/localisation/vr_manager_strings.csv"
+dest_files=[ "res://addons/vr_manager/localisation/vr_manager_strings.en.translation" ]
+
+[params]
+
+compress=true
+delimiter=0
