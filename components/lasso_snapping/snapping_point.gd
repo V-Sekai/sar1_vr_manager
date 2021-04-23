@@ -85,6 +85,8 @@ func calc_flick_velocity() -> Vector3:
 		var horizontal_vector = Vector3(flick_pos.x, 0, flick_pos.z) - Vector3(global_transform.origin.x, 0, global_transform.origin.z);
 		var additional_air_time = 0;
 		var vertical_velocity = 0.0
+		if gravity <= 0: #if the world makes no sense
+			return Vector3(horizontal_vector.x, vertical_diff, horizontal_vector.z).normalized() * flick_power;
 		if vertical_diff > 0:
 			additional_air_time = pow(horizontal_vector.length()/(horizontal_vector.length() + vertical_diff), 4) * flick_power;
 			var base_v_velocity = sqrt(2 * gravity * vertical_diff)
