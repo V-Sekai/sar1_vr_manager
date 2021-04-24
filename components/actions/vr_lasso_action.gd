@@ -4,21 +4,23 @@ export (Color) var unsnapped_color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.1)
 export (Color) var snapped_color = Color(254.0/255.0, 95.0/255.0, 85.0/255.0, 1.0)
 export (Color) var snap_circle_color = Color(1.0, 1.0, 1.0, 1.0)
 export (float) var snap_circle_min_alpha = 0.0
-export(NodePath) var straight_laser;
-export(NodePath) var snapped_laser;
-export(NodePath) var primary_circle;
-export(NodePath) var secondary_circle;
-export var min_snap = 0.5;
-export var snap_increase = 2;
+export(NodePath) var straight_laser
+export(NodePath) var snapped_laser
+export(NodePath) var primary_circle
+export(NodePath) var secondary_circle
+export var min_snap = 0.5
+export var snap_increase = 2
 # This node will be a child of a controller, add any input or display functionality here.
 var current_snap: Spatial = null
-var straight_mesh: MeshInstance = null;
-var snapped_mesh: MeshInstance = null;
-var primary_mesh: MeshInstance = null;
-var secondary_mesh: MeshInstance = null;
-var redirection_lock: bool = false;
-var redirection_ready: bool = true;
-var vr_origin_spatial: Spatial = null;
+var straight_mesh: MeshInstance = null
+var snapped_mesh: MeshInstance = null
+var primary_mesh: MeshInstance = null
+var secondary_mesh: MeshInstance = null
+var redirection_lock: bool = false
+var redirection_ready: bool = true
+var interact_ready: bool = false
+var flick_origin_spatial: Spatial = null
+var initialized_laser_transform:bool = false
 
 var print_mod = 0
 
@@ -36,7 +38,6 @@ func _on_action_released(p_action: String) -> void:
 			pass
 
 func _process(_delta: float) -> void:
-	# var start_time = OS.get_ticks_usec()
 	var lasso_analog_value: Vector2 = get_analog("/menu/lasso_analog")
 	var lasso: bool = is_pressed("/menu/lasso")
 	redirection_lock = redirection_lock && (lasso_analog_value.length_squared() > 0)
@@ -53,7 +54,7 @@ func _process(_delta: float) -> void:
 		var snap_point = null
 		var redirecting: bool = redirection_ready && lasso_redirect_value.length_squared() > 0
 		#you have to reset your joystick to the center to be able to redirect the lasso again
-		redirection_ready = lasso_redirect_value.length_squared() <= 0;
+		redirection_ready = lasso_redirect_value.length_squared() <= 0
 		if(redirecting && current_snap != null):
 			redirection_lock = true
 			var shortest_dist = INF
@@ -63,8 +64,8 @@ func _process(_delta: float) -> void:
 					continue
 				#var redirect_basis: Basis = snapping_singleton.calc_redirection_basis(self.global_transform.origin, current_snap.global_transform.origin)
 				#var new_dist = snapping_singleton.calc_redirection_dist(point.global_transform.origin, self.global_transform.origin, current_snap.global_transform.origin, redirect_basis, lasso_redirect_value)
-				var redirect_basis: Basis = snapping_singleton.calc_redirection_basis(vr_origin_spatial.global_transform.xform(ARVRServer.get_hmd_transform().origin), current_snap.global_transform.origin)
-				var new_dist = snapping_singleton.calc_redirection_dist(point.global_transform.origin, vr_origin_spatial.global_transform.xform(ARVRServer.get_hmd_transform().origin), current_snap.global_transform.origin, redirect_basis, lasso_redirect_value)
+				var redirect_basis: Basis = snapping_singleton.calc_redirection_basis(flick_origin_spatial.global_transform.xform(ARVRServer.get_hmd_transform().origin), current_snap.global_transform.origin)
+				var new_dist = snapping_singleton.calc_redirection_dist(point.global_transform.origin, flick_origin_spatial.global_transform.xform(ARVRServer.get_hmd_transform().origin), current_snap.global_transform.origin, redirect_basis, lasso_redirect_value)
 				if(new_dist < shortest_dist):
 					shortest_dist = new_dist
 					snap_point = point
@@ -72,7 +73,8 @@ func _process(_delta: float) -> void:
 					secondary_power = 0.0
 
 		else:
-			var highest_power: float = min_snap;
+			interact_ready = interact_ready || !lasso
+			var highest_power: float = min_snap
 			for point in points:
 				if (point == null || !point.snapping_enabled || !point.visible):
 					continue
@@ -99,25 +101,28 @@ func _process(_delta: float) -> void:
 					secondary_power = new_power
 
 		if(current_snap != snap_point):
+			interact_ready = !lasso
 			new_snap = true
 			if(current_snap != null):
 				current_snap.stop_snap_hover()
+				current_snap.stop_snap_interact()
 			current_snap = snap_point
 			if(current_snap != null):
 				#HERE IS THE SNAP
 				#do haptics here
-				current_snap.call_snap_hover();
+				current_snap.call_snap_hover()
 	else:
 		if(current_snap != null):
 			current_snap.stop_snap_hover()
 		current_snap = null
 		redirection_ready = false
+		interact_ready = false
 	
 	if(current_snap != null):
-		if(lasso):
-			current_snap.call_snap_interact(self);
+		if(lasso && interact_ready):
+			current_snap.call_snap_interact(self)
 		else:
-			current_snap.stop_snap_interact();
+			current_snap.stop_snap_interact()
 		
 	if(straight_mesh != null && snapped_mesh != null):
 		if(straight_mesh.material_override != null && snapped_mesh.material_override != null):
@@ -139,13 +144,13 @@ func _process(_delta: float) -> void:
 				if(primary_power > 0):
 					if(primary_mesh.material_override != null):
 						primary_mesh.material_override.set_shader_param('mix_color', primary_color)
-					primary_mesh.global_transform.origin = primary_snap;
+					primary_mesh.global_transform.origin = primary_snap
 			if(secondary_mesh != null):
 				secondary_mesh.visible = secondary_power > 0
 				if(secondary_power > 0):
 					if(secondary_mesh.material_override != null):
 						secondary_mesh.material_override.set_shader_param('mix_color', secondary_color)
-					secondary_mesh.global_transform.origin = secondary_snap;
+					secondary_mesh.global_transform.origin = secondary_snap
 
 			if(lasso):
 				snapped_mesh.material_override.set_shader_param('speed', -10.0)
@@ -154,27 +159,30 @@ func _process(_delta: float) -> void:
 
 			if(lasso_analog_value.x <= 0):
 				if(snapped_mesh.visible):
-					snapped_mesh.material_override.set_shader_param('mix_color', unsnapped_color);
-				straight_mesh.visible = false;
-				snapped_mesh.visible = false;
+					snapped_mesh.material_override.set_shader_param('mix_color', unsnapped_color)
+				straight_mesh.visible = false
+				snapped_mesh.visible = false
 			else:
-				straight_mesh.visible = true;
-				snapped_mesh.visible = true;
+				if(!initialized_laser_transform):#don't know if setting global transform is expensive because it might have to walk the heirarchy so lets do it once
+					set_global_transform(tracker.laser_origin.global_transform)
+					initialized_laser_transform = true
+				straight_mesh.visible = true
+				snapped_mesh.visible = true
 				if(current_snap != null):
 					if(new_snap):
-						snapped_mesh.material_override.set_shader_param('mix_color', snapped_color);
-					var target_local = global_transform.xform_inv(current_snap.global_transform.origin);
-					straight_mesh.material_override.set_shader_param('target', Vector3(0.0, 0.0, -target_local.length()));
-					snapped_mesh.material_override.set_shader_param('target', target_local);
+						snapped_mesh.material_override.set_shader_param('mix_color', snapped_color)
+					var target_local = global_transform.xform_inv(current_snap.global_transform.origin)
+					straight_mesh.material_override.set_shader_param('target', Vector3(0.0, 0.0, -target_local.length()))
+					snapped_mesh.material_override.set_shader_param('target', target_local)
 				else:
 					if(new_snap):
-						snapped_mesh.material_override.set_shader_param('mix_color', unsnapped_color);
+						snapped_mesh.material_override.set_shader_param('mix_color', unsnapped_color)
 					var into_infinity = Vector3(0.0, 0.0, -10)
-					straight_mesh.material_override.set_shader_param('target', Vector3(0.0, 0.0, 0.0));
-					snapped_mesh.material_override.set_shader_param('target', into_infinity);
+					straight_mesh.material_override.set_shader_param('target', Vector3(0.0, 0.0, 0.0))
+					snapped_mesh.material_override.set_shader_param('target', into_infinity)
 		else:
-			straight_mesh.visible = false;
-			snapped_mesh.visible = false;
+			straight_mesh.visible = false
+			snapped_mesh.visible = false
 
 	# print_mod += 1
 	# if(print_mod % 30 == 0 && lasso_analog_value.x > 0):
@@ -183,23 +191,32 @@ func _process(_delta: float) -> void:
 
 
 func _ready() -> void:
-	straight_mesh = get_node(straight_laser) as MeshInstance;
-	snapped_mesh = get_node(snapped_laser) as MeshInstance;
-	primary_mesh = get_node(primary_circle) as MeshInstance;
-	secondary_mesh = get_node(secondary_circle) as MeshInstance;
+	#Align with the laser_origin we were given
+	if(flick_origin_spatial):
+		force_update_transform()
+		tracker.laser_origin.force_update_transform()
+		LogManager.printl("target global transform:" + str(flick_origin_spatial.global_transform.basis.z))
+		LogManager.printl("current global transform:" + str(global_transform.basis.z))
+		LogManager.printl("tracker transforms: " + str(tracker.laser_origin.global_transform.basis.z))
+		LogManager.printl("tracker transforms 2: " + str(tracker.model_origin.global_transform.basis.z))
+
+	straight_mesh = get_node(straight_laser) as MeshInstance
+	snapped_mesh = get_node(snapped_laser) as MeshInstance
+	primary_mesh = get_node(primary_circle) as MeshInstance
+	secondary_mesh = get_node(secondary_circle) as MeshInstance
 	if(straight_mesh != null && straight_mesh.material_override != null):
-		straight_mesh.material_override.set_shader_param('mix_color', straight_color);
+		straight_mesh.material_override.set_shader_param('mix_color', straight_color)
 		straight_mesh.material_override = straight_mesh.material_override.duplicate(true)
 	if(snapped_mesh != null && snapped_mesh.material_override != null):
 		snapped_mesh.material_override = snapped_mesh.material_override.duplicate(true)
 
 
 	if(primary_mesh != null && primary_mesh.material_override != null):
-		primary_mesh.material_override.set_shader_param('mix_color', snap_circle_color);
+		primary_mesh.material_override.set_shader_param('mix_color', snap_circle_color)
 		primary_mesh.material_override = primary_mesh.material_override.duplicate(true)
-		primary_mesh.visible = false;
+		primary_mesh.visible = false
 	if(secondary_mesh != null && secondary_mesh.material_override != null):
-		secondary_mesh.material_override.set_shader_param('mix_color', snap_circle_color);
+		secondary_mesh.material_override.set_shader_param('mix_color', snap_circle_color)
 		secondary_mesh.material_override = secondary_mesh.material_override.duplicate(true)
-		secondary_mesh.visible = false;
+		secondary_mesh.visible = false
 	return

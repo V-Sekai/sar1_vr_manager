@@ -17,7 +17,7 @@ func tracker_added(p_tracker: vr_controller_tracker_const) -> void:
 	if tracker_hand == ARVRPositionalTracker.TRACKER_LEFT_HAND or\
 	tracker_hand == ARVRPositionalTracker.TRACKER_RIGHT_HAND:
 		var vr_lasso_action: Spatial = vr_lasso_action_const.instance()
-		vr_lasso_action.vr_origin_spatial = self
+		vr_lasso_action.flick_origin_spatial = self
 		p_tracker.add_component_action(vr_lasso_action)
 		match tracker_hand:
 			ARVRPositionalTracker.TRACKER_LEFT_HAND:
