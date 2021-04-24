@@ -35,14 +35,14 @@ func update_virtual_hand_pose() -> void:
 			else:
 				new_hand_pose = HAND_POSE_POINT
 		else:
-			if !grip_touched:
-				if trigger_touched or trigger_pressed:
+			if trigger_touched or trigger_pressed:
+				if trigger_pressed:
 					new_hand_pose = HAND_POSE_OK_SIGN
 				else:
-					new_hand_pose = HAND_POSE_VICTORY
+					new_hand_pose = HAND_POSE_NEUTRAL
 			else:
-				new_hand_pose = HAND_POSE_NEUTRAL
-	else:
+				new_hand_pose = HAND_POSE_VICTORY
+	else:		
 		if grip_pressed:
 			if trigger_touched or trigger_pressed:
 				new_hand_pose = HAND_POSE_THUMBS_UP
