@@ -1,11 +1,10 @@
 extends "res://addons/vsk_entities/extensions/model_rigid_body.gd"
 
 export var snapping_power: float = 1
-export var snapping_enabled: bool = true setget enable_snapping
-export var size: float = 0.3
-# export var flick_parent: NodePath = NodePath("..")
-export var flick_parent_to_hand_on_snap_interact: bool = true
-export var flick_power: float = 1.0
+export var snapping_enabled: bool = true setget set_snapping_enabled, get_snapping_enabled
+export var size: float = 0.3 setget set_size, get_size
+export var flick_parent_to_hand_on_snap_interact: bool = true 
+export var flick_power: float = 1.0 setget set_power, get_power
 export var lock_snap_on_trigger: bool = true
 signal on_snap_hover
 signal on_snap_hover_stop
@@ -13,42 +12,47 @@ signal on_snap_interact
 signal on_snap_interact_stop
 
 var snap_interacting = false setget , is_snap_interaction_active
+
 var flick_target: Spatial = null
+
+var lasso_point: LassoPoint = LassoPoint.new()
+
+func set_power(p_power:float) -> void:
+	lasso_point.set_snapping_power(p_power)
+	
+func get_power() -> float:
+	return lasso_point.get_snapping_power()
+
+func set_size(p_size:float) -> void:
+	lasso_point.set_size(p_size)
+	
+func get_size() -> float:
+	return lasso_point.get_size()
+	
+func set_snapping_enabled(p_enabled:bool) -> void:
+	lasso_point.enable_snapping(p_enabled)
+	
+func get_snapping_enabled() -> bool:
+	return lasso_point.get_snapping_enabled()
+	
+
 
 # var physics_script = preload("res://addons/vsk_entities/extensions/prop_simulation_logic.gd")
 
 func _ready() -> void:
 	#register self with all lassos
 	register_snapping_point()
-	# register_physics_body()
 
-# func register_physics_body():
-# 	var flick_parent_node = get_node(flick_parent)
-# 	if(flick_parent_node != null):
-# 		flick_parent_node = get_parent_spatial()
-		
-# 	if(flick_parent_node != null):
-# 		for child in flick_parent_node.get_children():
-# 			if(child is physics_script):
-# 				physics_body = child.get_physics_node()
-# func _exit_tree() -> void:
-# 	#unregister self with all lassos
-# 	snapping_enabled = false
-# 	register_snapping_point()
-
-
-func enable_snapping(snapping: bool) -> void:
-	snapping_enabled = snapping
-	register_snapping_point()
+func _exit_tree():
+	unregister_snapping_point()
 
 
 func register_snapping_point() -> void:
 	var snapping_singleton = get_node("/root/SnappingSingleton")
-	if snapping_enabled:
-		snapping_singleton.register_snapping_point(self)
-	else:
-		snapping_singleton.unregister_snapping_point(self)
-
+	lasso_point.register_point(snapping_singleton.snapping_points, self)
+	
+func unregister_snapping_point() -> void:
+	lasso_point.unregister_point()
 
 func call_snap_hover() -> void:
 	emit_signal("on_snap_hover")

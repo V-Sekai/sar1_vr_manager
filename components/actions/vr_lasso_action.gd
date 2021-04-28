@@ -1,5 +1,5 @@
 extends "vr_action.gd"
-export (Color) var straight_color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.0)
+export (Color) var straight_color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.05)
 export (Color) var unsnapped_color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.1)
 export (Color) var snapped_color = Color(254.0/255.0, 95.0/255.0, 85.0/255.0, 1.0)
 export (Color) var snap_circle_color = Color(1.0, 1.0, 1.0, 1.0)
@@ -20,9 +20,13 @@ var redirection_lock: bool = false
 var redirection_ready: bool = true
 var interact_ready: bool = false
 var flick_origin_spatial: Spatial = null
-var initialized_laser_transform:bool = false
+# var initialized_laser_transform:bool = false
 
 var print_mod = 0
+export var rumble_duration: int = 100 #milisseconds
+export var rumble_strength: float = 1.0
+
+var rumble_start_time: int = 0
 
 func _on_action_pressed(p_action: String) -> void:
 	._on_action_pressed(p_action)
@@ -38,6 +42,7 @@ func _on_action_released(p_action: String) -> void:
 			pass
 
 func _process(_delta: float) -> void:
+	# var start_time = OS.get_ticks_usec()
 	var lasso_analog_value: Vector2 = get_analog("/menu/lasso_analog")
 	var lasso: bool = is_pressed("/menu/lasso")
 	redirection_lock = redirection_lock && (lasso_analog_value.length_squared() > 0)
@@ -47,58 +52,42 @@ func _process(_delta: float) -> void:
 	var primary_power: float = 0.0
 	var secondary_power: float = 0.0
 	if(lasso_analog_value.x > 0):
-		var lasso_redirect_value: Vector2 = get_analog("/locomotion/turning")
+		var lasso_redirect_value: Vector2 = get_analog("/menu/lasso_redirect")
 		# LogManager.printl(str(lasso_redirect_value))
 		var snapping_singleton = get_node("/root/SnappingSingleton")
-		var points: Array = snapping_singleton.snapping_points
+#		var points: Array = snapping_singleton.snapping_points
 		var snap_point = null
-		var redirecting: bool = redirection_ready && lasso_redirect_value.length_squared() > 0
+		var redirecting: bool = redirection_ready && lasso_redirect_value.length_squared() > 0.0
 		#you have to reset your joystick to the center to be able to redirect the lasso again
-		redirection_ready = lasso_redirect_value.length_squared() <= 0
+		redirection_ready = lasso_redirect_value.length_squared() <= 0.0
 		if(redirecting && current_snap != null):
 			redirection_lock = true
-			var shortest_dist = INF
-			#we calculate the shortest distance to hit a point's voronoi cell (if it were projected on the unit sphere) while traveling along the redirection vector
-			for point in points:
-				if(point == current_snap):
-					continue
-				#var redirect_basis: Basis = snapping_singleton.calc_redirection_basis(self.global_transform.origin, current_snap.global_transform.origin)
-				#var new_dist = snapping_singleton.calc_redirection_dist(point.global_transform.origin, self.global_transform.origin, current_snap.global_transform.origin, redirect_basis, lasso_redirect_value)
-				var redirect_basis: Basis = snapping_singleton.calc_redirection_basis(flick_origin_spatial.global_transform.xform(ARVRServer.get_hmd_transform().origin), current_snap.global_transform.origin)
-				var new_dist = snapping_singleton.calc_redirection_dist(point.global_transform.origin, flick_origin_spatial.global_transform.xform(ARVRServer.get_hmd_transform().origin), current_snap.global_transform.origin, redirect_basis, lasso_redirect_value)
-				if(new_dist < shortest_dist):
-					shortest_dist = new_dist
-					snap_point = point
-					primary_power = 1.0
-					secondary_power = 0.0
-
+			var viewpoint: Transform = ARVRServer.get_hmd_transform()
+			viewpoint.origin = flick_origin_spatial.global_transform.xform(viewpoint.origin)
+			snap_point = snapping_singleton.snapping_points.calc_top_redirecting_power(current_snap, viewpoint, lasso_redirect_value)
+			if(!snap_point):
+				snap_point = current_snap
 		else:
 			interact_ready = interact_ready || !lasso
-			var highest_power: float = min_snap
-			for point in points:
-				if (point == null || !point.snapping_enabled || !point.visible):
-					continue
-				var new_power = snapping_singleton.calc_snapping_power_sphere(point.global_transform.origin, point.size, point.snapping_power, self.global_transform)
-				if(point == current_snap):
-					if (((lasso && point.lock_snap_on_trigger) || redirection_lock)):
-						highest_power = new_power
-						snap_point = point
-						primary_snap = point.global_transform.origin
-						primary_power = highest_power
-						secondary_power = 0.0
-						break
-					else:
-						new_power += pow(lasso_analog_value.x, 2) * snap_increase * new_power
-				if(new_power > highest_power):
-					highest_power = new_power
-					snap_point = point
-					secondary_snap = primary_snap
-					secondary_power = primary_power
-					primary_snap = point.global_transform.origin
-					primary_power = highest_power
-				elif(new_power > secondary_power):
-					secondary_snap = point.global_transform.origin
-					secondary_power = new_power
+			if(current_snap && current_snap.is_inside_tree() && redirection_lock):
+				snap_point = current_snap
+				primary_power = 1
+				secondary_power = 0
+				primary_snap = snap_point.get_global_transform().origin
+			else:
+				var snap_arr:Array = snapping_singleton.snapping_points.calc_top_two_snapping_power(tracker.laser_origin.global_transform, current_snap, snap_increase, lasso_analog_value.x, lasso)
+				if(snap_arr.size() > 0 && snap_arr[0] && snap_arr[0].get_origin() && snap_arr[0].get_snap_score() > min_snap):
+					snap_point = snap_arr[0].get_origin()
+					primary_power = snap_arr[0].get_snap_score()
+					primary_snap = snap_point.get_global_transform().origin
+				else:
+					snap_point = current_snap;
+					if(snap_point):
+						primary_power = 1.0
+						primary_snap = snap_point.get_global_transform().origin
+				if(snap_arr.size() > 1 && snap_arr[1] && snap_arr[1].get_origin() && snap_arr[1].get_snap_score() > min_snap):
+					secondary_power = snap_arr[1].get_snap_score();
+					secondary_snap = snap_arr[1].get_origin().get_global_transform().origin
 
 		if(current_snap != snap_point):
 			interact_ready = !lasso
@@ -110,6 +99,7 @@ func _process(_delta: float) -> void:
 			if(current_snap != null):
 				#HERE IS THE SNAP
 				#do haptics here
+				rumble_start_time = OS.get_ticks_msec()
 				current_snap.call_snap_hover()
 	else:
 		if(current_snap != null):
@@ -117,6 +107,12 @@ func _process(_delta: float) -> void:
 		current_snap = null
 		redirection_ready = false
 		interact_ready = false
+	
+	#SO COOL HOW RUMBLE DOESNT WORK
+	if (OS.get_ticks_msec() - rumble_start_time < rumble_duration):
+		tracker.rumble = rumble_strength;
+	else:
+		tracker.rumble = 0.0
 	
 	if(current_snap != null):
 		if(lasso && interact_ready):
@@ -163,16 +159,14 @@ func _process(_delta: float) -> void:
 				straight_mesh.visible = false
 				snapped_mesh.visible = false
 			else:
-				if(!initialized_laser_transform):#don't know if setting global transform is expensive because it might have to walk the heirarchy so lets do it once
-					set_global_transform(tracker.laser_origin.global_transform)
-					initialized_laser_transform = true
 				straight_mesh.visible = true
 				snapped_mesh.visible = true
 				if(current_snap != null):
 					if(new_snap):
 						snapped_mesh.material_override.set_shader_param('mix_color', snapped_color)
-					var target_local = global_transform.xform_inv(current_snap.global_transform.origin)
-					straight_mesh.material_override.set_shader_param('target', Vector3(0.0, 0.0, -target_local.length()))
+					var target_local = straight_mesh.global_transform.xform_inv(current_snap.global_transform.origin)
+					var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001) #when there's very little snapping, this will equal .length() when there is a lot it'll be longer
+					straight_mesh.material_override.set_shader_param('target', Vector3(0.0, 0.0, -straight_length))
 					snapped_mesh.material_override.set_shader_param('target', target_local)
 				else:
 					if(new_snap):
@@ -192,16 +186,20 @@ func _process(_delta: float) -> void:
 
 func _ready() -> void:
 	#Align with the laser_origin we were given
-	if(flick_origin_spatial):
-		force_update_transform()
-		tracker.laser_origin.force_update_transform()
-		LogManager.printl("target global transform:" + str(flick_origin_spatial.global_transform.basis.z))
-		LogManager.printl("current global transform:" + str(global_transform.basis.z))
-		LogManager.printl("tracker transforms: " + str(tracker.laser_origin.global_transform.basis.z))
-		LogManager.printl("tracker transforms 2: " + str(tracker.model_origin.global_transform.basis.z))
+	assert(tracker.laser_origin)
 
 	straight_mesh = get_node(straight_laser) as MeshInstance
 	snapped_mesh = get_node(snapped_laser) as MeshInstance
+
+	straight_mesh.get_parent().remove_child(straight_mesh)
+	snapped_mesh.get_parent().remove_child(snapped_mesh)
+
+	tracker.laser_origin.add_child(straight_mesh)
+	tracker.laser_origin.add_child(snapped_mesh)
+
+	straight_mesh.transform = Transform()
+	snapped_mesh.transform = Transform()
+
 	primary_mesh = get_node(primary_circle) as MeshInstance
 	secondary_mesh = get_node(secondary_circle) as MeshInstance
 	if(straight_mesh != null && straight_mesh.material_override != null):
@@ -220,3 +218,7 @@ func _ready() -> void:
 		secondary_mesh.material_override = secondary_mesh.material_override.duplicate(true)
 		secondary_mesh.visible = false
 	return
+
+func _exit_tree() -> void:
+	tracker.laser_origin.remove_child(straight_mesh)
+	tracker.laser_origin.remove_child(snapped_mesh)

@@ -117,22 +117,24 @@ func tracker_added(p_tracker: vr_controller_tracker_const) -> void:
 		p_tracker.add_component_action(vr_hand_pose_action)
 		match tracker_hand:
 			ARVRPositionalTracker.TRACKER_LEFT_HAND:
-				assert(! left_hand_pose_action)
+				assert(!is_instance_valid(left_hand_pose_action))
 				left_hand_pose_action = vr_hand_pose_action
 				assert(left_hand_pose_action.connect("hand_pose_changed", self, "left_hand_pose_updated") == OK)
 			ARVRPositionalTracker.TRACKER_RIGHT_HAND:
-				assert(! right_hand_pose_action)
+				assert(!is_instance_valid(right_hand_pose_action))
 				right_hand_pose_action = vr_hand_pose_action
 				assert(right_hand_pose_action.connect("hand_pose_changed", self, "right_hand_pose_updated") == OK)
 				
 func tracker_removed(p_tracker: vr_controller_tracker_const) -> void:
+	.tracker_removed(p_tracker)
+	
 	match p_tracker.get_hand():
 		ARVRPositionalTracker.TRACKER_LEFT_HAND:
-			p_tracker.remove_module_tracker(left_hand_pose_action)
+			p_tracker.remove_component_action(left_hand_pose_action)
 			left_hand_pose_action = null
 			left_hand_pose_updated(vr_hand_pose_action_const.HAND_POSE_DEFAULT)
 		ARVRPositionalTracker.TRACKER_RIGHT_HAND:
-			p_tracker.remove_module_tracker(right_hand_pose_action)
+			p_tracker.remove_component_action(right_hand_pose_action)
 			right_hand_pose_action = null
 			right_hand_pose_updated(vr_hand_pose_action_const.HAND_POSE_DEFAULT)
 

@@ -72,6 +72,11 @@ func _ready() -> void:
 	laser_node.hide()
 	laser_hit_node.hide()
 
+func _exit_tree() -> void:
+	#take the laser with it
+	laser_node.get_parent().remove_child(laser_node)
+	laser_hit_node.get_parent().remove_child(laser_hit_node)
+
 
 func cast_validation_ray(p_length: float) -> Dictionary:
 	var dss: PhysicsDirectSpaceState = PhysicsServer.space_get_direct_state(get_world().get_space())

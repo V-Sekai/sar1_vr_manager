@@ -30,19 +30,21 @@ func tracker_added(p_tracker: vr_controller_tracker_const) -> void:
 		
 		match tracker_hand:
 			ARVRPositionalTracker.TRACKER_LEFT_HAND:
-				assert(! left_render_tree_action)
+				assert(!is_instance_valid(left_render_tree_action))
 				left_render_tree_action = vr_render_tree_action
 			ARVRPositionalTracker.TRACKER_RIGHT_HAND:
-				assert(! right_render_tree_action)
+				assert(!is_instance_valid(right_render_tree_action))
 				right_render_tree_action = vr_render_tree_action
 
 func tracker_removed(p_tracker: vr_controller_tracker_const) -> void:
+	.tracker_removed(p_tracker)
+	
 	match p_tracker.get_hand():
 		ARVRPositionalTracker.TRACKER_LEFT_HAND:
-			p_tracker.remove_module_tracker(left_render_tree_action)
+			p_tracker.remove_component_action(left_render_tree_action)
 			left_render_tree_action = null
 		ARVRPositionalTracker.TRACKER_RIGHT_HAND:
-			p_tracker.remove_module_tracker(right_render_tree_action)
+			p_tracker.remove_component_action(right_render_tree_action)
 			right_render_tree_action = null
 
 func _enter_tree():

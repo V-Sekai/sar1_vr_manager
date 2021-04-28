@@ -46,12 +46,12 @@ func movement_action_released(_action: String) -> void:
 
 
 func _refresh_controllers() -> void:
-	if movement_controller:
+	if movement_controller and is_instance_valid(movement_controller):
 		if movement_controller.is_connected("action_pressed", self, "movement_action_pressed"):
 			movement_controller.disconnect("action_pressed", self, "movement_action_pressed")
 		if movement_controller.is_connected("action_released", self, "movement_action_released"):
 			movement_controller.disconnect("action_released", self, "movement_action_released")
-	if turning_controller:
+	if turning_controller and is_instance_valid(turning_controller):
 		if turning_controller.is_connected("action_pressed", self, "turning_action_pressed"):
 			turning_controller.disconnect("action_pressed", self, "turning_action_pressed")
 		if turning_controller.is_connected("action_released", self, "turning_action_released"):
@@ -65,12 +65,12 @@ func _refresh_controllers() -> void:
 	movement_controller = _get_movement_controller()
 	turning_controller = _get_turning_controller()
 	
-	if movement_controller:
+	if movement_controller and is_instance_valid(movement_controller):
 		if movement_controller.connect("action_pressed", self, "movement_action_pressed") != OK:
 			printerr("Could not connect 'action_pressed'!")
 		if movement_controller.connect("action_released", self, "movement_action_released") != OK:
 			printerr("Could not connect 'action_released'!")
-	if turning_controller:
+	if turning_controller and is_instance_valid(turning_controller):
 		if turning_controller.connect("action_pressed", self, "turning_action_pressed") != OK:
 			printerr("Could not connect 'action_pressed'!")
 		if turning_controller.connect("action_released", self, "turning_action_released") != OK:
@@ -80,7 +80,7 @@ func _refresh_controllers() -> void:
 func get_controller_movement_vector() -> Vector2:
 	var movement_vector: Vector2 = Vector2()
 	
-	if hand_controllers.size() >= 2 and left_hand_controller and right_hand_controller:
+	if hand_controllers.size() >= 2 and left_hand_controller and right_hand_controller and is_instance_valid(left_hand_controller) and is_instance_valid(right_hand_controller):
 		movement_controller = left_hand_controller
 		movement_vector = movement_controller.get_analog("/locomotion/movement")
 		if ! VRManager.vr_user_preferences.strafe_movement:
@@ -103,7 +103,7 @@ func get_controller_movement_vector() -> Vector2:
 func get_controller_turning_vector() -> Vector2:
 	var turning_vector: Vector2 = Vector2()
 
-	if hand_controllers.size() >= 2 and left_hand_controller and right_hand_controller:
+	if hand_controllers.size() >= 2 and is_instance_valid(left_hand_controller) and is_instance_valid(right_hand_controller):
 		turning_controller = right_hand_controller
 
 		turning_vector = Vector2(turning_controller.get_analog("/locomotion/turning").x, 0.0)
@@ -197,3 +197,4 @@ func _ready():
 		printerr("Could not connect 'trackers_changed'!")
 		
 	_refresh_controllers()
+	

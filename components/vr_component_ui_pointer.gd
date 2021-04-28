@@ -40,19 +40,21 @@ func tracker_added(p_tracker: vr_controller_tracker_const) -> void:
 		p_tracker.add_component_action(vr_ui_pointer_action)
 		match tracker_hand:
 			ARVRPositionalTracker.TRACKER_LEFT_HAND:
-				assert(! left_ui_pointer_action)
+				assert(!is_instance_valid(left_ui_pointer_action))
 				left_ui_pointer_action = vr_ui_pointer_action
 			ARVRPositionalTracker.TRACKER_RIGHT_HAND:
-				assert(! right_ui_pointer_action)
+				assert(!is_instance_valid(right_ui_pointer_action))
 				right_ui_pointer_action = vr_ui_pointer_action
 
 func tracker_removed(p_tracker: vr_controller_tracker_const) -> void:
+	.tracker_removed(p_tracker)
+	
 	match p_tracker.get_hand():
 		ARVRPositionalTracker.TRACKER_LEFT_HAND:
-			p_tracker.remove_module_tracker(left_ui_pointer_action)
+			p_tracker.remove_component_action(left_ui_pointer_action)
 			left_ui_pointer_action = null
 		ARVRPositionalTracker.TRACKER_RIGHT_HAND:
-			p_tracker.remove_module_tracker(right_ui_pointer_action)
+			p_tracker.remove_component_action(right_ui_pointer_action)
 			right_ui_pointer_action = null
 
 func post_add_setup() -> void:
