@@ -14,18 +14,31 @@ export (float) var maxiumum_ray_length: float = 10.0
 var laser_node: Spatial = null
 var laser_hit_node: MeshInstance = null
 
-signal requested_as_ui_selector(p_hand)
+# Simulate doubleclicks so we can use file browsers in VR
+const DOUBLECLICK_TIME = 1000 # 1 second
+var last_click_time: int = -DOUBLECLICK_TIME
+var is_doubleclick: bool = false
 
+signal requested_as_ui_selector(p_hand)
 
 func _on_action_pressed(p_action: String) -> void:
 	._on_action_pressed(p_action)
 	match p_action:
 		"/menu/menu_interaction":
+			var current_msec: int = OS.get_ticks_msec()
+			if !is_doubleclick:
+				if current_msec < last_click_time + DOUBLECLICK_TIME:
+					is_doubleclick = true
+			else:
+				is_doubleclick = false
+			
 			emit_signal("requested_as_ui_selector", tracker.get_hand())
 			if valid_ray_result and is_active_selector:
 				if valid_ray_result["collider"].has_method("on_pointer_pressed"):
-					valid_ray_result["collider"].on_pointer_pressed(valid_ray_result["position"])
-
+					valid_ray_result["collider"].on_pointer_pressed(valid_ray_result["position"], is_doubleclick)
+			
+			last_click_time = OS.get_ticks_msec()
+			
 
 func _on_action_released(p_action: String) -> void:
 	._on_action_released(p_action)
