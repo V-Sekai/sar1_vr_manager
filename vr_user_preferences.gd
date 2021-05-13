@@ -157,13 +157,10 @@ func get_settings_values() -> void:
 	movement_type = get_settings_value("movement_type", TYPE_INT, movement_type)
 	
 func assign_set_settings_value_funcref(p_instance: Object, p_function: String) -> void:
-	set_settings_value_callback.set_instance(p_instance)
-	set_settings_value_callback.set_function(p_function)
+	set_settings_value_callback = funcref(p_instance, p_function)
 	
 func assign_get_settings_value_funcref(p_instance: Object, p_function: String) -> void:
-	get_settings_value_callback.set_instance(p_instance)
-	get_settings_value_callback.set_function(p_function)
+	get_settings_value_callback = funcref(p_instance, p_function)
 	
 func assign_save_settings_funcref(p_instance: Object, p_function: String) -> void:
-	save_settings_callback.set_instance(p_instance)
-	save_settings_callback.set_function(p_function)
+	save_settings_callback = funcref(p_instance, p_function)
