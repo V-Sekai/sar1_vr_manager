@@ -4,6 +4,9 @@ const math_funcs_const = preload("res://addons/math_util/math_funcs.gd")
 
 var objects_within_range: Array = []
 
+var assign_pickup_funcref:FuncRef = FuncRef.new()
+var can_pickup_funcref:FuncRef = FuncRef.new()
+
 var last_position: Vector3 = Vector3(0.0, 0.0, 0.0)
 var velocity: Vector3 = Vector3(0.0, 0.0, 0.0)
 
@@ -36,7 +39,8 @@ func get_hand_object() -> Spatial:
 	return null
 
 
-func _on_PickupArea_body_entered(p_body: Node) -> void:
+		
+func _on_interaction_body_entered(p_body: Node):
 	if p_body.has_method("pick_up"):
 		var index: int = objects_within_range.find(p_body)
 		if index == -1:
@@ -45,7 +49,7 @@ func _on_PickupArea_body_entered(p_body: Node) -> void:
 			printerr("Duplicate object {body_name}".format({"body_name": p_body.name}))
 
 
-func _on_PickupArea_body_exited(p_body: Node) -> void:
+func _on_interaction_body_exited(p_body: Node):
 	var index: int = objects_within_range.find(p_body)
 	if index != -1:
 		objects_within_range.remove(index)

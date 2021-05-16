@@ -15,7 +15,7 @@ var right_hand_controller: ARVRController = null
 
 const vr_component_locomotion_const = preload("components/vr_component_locomotion.gd")
 const vr_component_ui_pointer_const = preload("components/vr_component_ui_pointer.gd")
-const vr_component_pickup_const = preload("components/vr_component_pickup.gd")
+const vr_component_interaction_const = preload("components/vr_component_interaction.gd")
 const vr_component_teleport_const = preload("components/vr_component_teleport.gd")
 const vr_component_render_tree_const = preload("components/vr_component_render_tree.gd")
 const vr_component_advanced_movement_const = preload("components/vr_component_advanced_movement.gd")
@@ -28,12 +28,15 @@ signal tracker_added(p_spatial)
 signal tracker_removed(p_spatial)
 
 func clear_controllers() -> void:
-	active_controllers = {}
-	unknown_controller_count = 0
-
-	hand_controllers = []
-	left_hand_controller = null
-	right_hand_controller = null
+	for tracker_id in active_controllers.keys():
+		remove_tracker(tracker_id)
+		
+	assert(active_controllers == {})
+	assert(unknown_controller_count == 0)
+	
+	assert(hand_controllers == [])
+	assert(left_hand_controller == null)
+	assert(right_hand_controller == null)
 
 func add_tracker(p_tracker_id: int) -> void:
 	var tracker: ARVRPositionalTracker = VRManager.xr_trackers[p_tracker_id]

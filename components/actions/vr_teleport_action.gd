@@ -34,9 +34,9 @@ onready var capsule = get_node("Target/Player_figure/Capsule")
 # Callbacks #
 #############
 var can_teleport_funcref:FuncRef = FuncRef.new()
+
 func set_can_teleport_funcref(p_instance: Object, p_function : String) -> void:
-	can_teleport_funcref.set_instance(p_instance)
-	can_teleport_funcref.set_function(p_function)
+	can_teleport_funcref = funcref(p_instance, p_function)
 	
 signal teleported(p_transform)
 

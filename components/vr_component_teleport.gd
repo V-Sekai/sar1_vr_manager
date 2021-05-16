@@ -23,7 +23,7 @@ func tracker_added(p_tracker: vr_controller_tracker_const) -> void:
 	tracker_hand == ARVRPositionalTracker.TRACKER_RIGHT_HAND:
 		var action: Spatial = vr_teleport_action_const.instance()
 		
-		# Assign calls backs
+		### Assign callsbacks ###
 		action.set_can_teleport_funcref(self, "_can_teleport")
 		if action.connect("teleported", self, "_teleported") != OK:
 			printerr("Could not connect teleported signal!")
@@ -35,12 +35,10 @@ func tracker_removed(p_tracker: vr_controller_tracker_const) -> void:
 	.tracker_removed(p_tracker)
 	
 func assign_teleport_callback_funcref(p_instance: Object, p_function: String) -> void:
-	teleport_callback_funcref.set_instance(p_instance)
-	teleport_callback_funcref.set_function(p_function)
+	teleport_callback_funcref = funcref(p_instance, p_function)
 	
 func assign_can_teleport_funcref(p_instance: Object, p_function: String) -> void:
-	can_teleport_funcref.set_instance(p_instance)
-	can_teleport_funcref.set_function(p_function)
+	can_teleport_funcref = funcref(p_instance, p_function)
 
 func _enter_tree():
 	set_name("TeleportComponent")

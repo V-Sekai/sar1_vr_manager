@@ -122,7 +122,7 @@ func cast_validation_ray(p_length: float) -> Dictionary:
 
 
 func update_ray() -> void:
-	if is_active_selector:
+	if is_active_selector and VRManager.xr_active:
 		valid_ray_result = cast_validation_ray(maxiumum_ray_length)
 		if ! valid_ray_result.empty() and is_active_selector:
 			if valid_ray_result["collider"].has_method("on_pointer_moved"):
