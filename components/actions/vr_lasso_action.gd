@@ -41,7 +41,11 @@ func _on_action_released(p_action: String) -> void:
 		"/menu/lasso":
 			pass
 
-func _process(_delta: float) -> void:
+func _update_lasso(_delta: float) -> void:
+	# Saracen: don't run this function if not in XR mode
+	if !VRManager.xr_active:
+		return
+	
 	# var start_time = OS.get_ticks_usec()
 	var lasso_analog_value: Vector2 = get_analog("/menu/lasso_analog")
 	var lasso: bool = is_pressed("/menu/lasso")
@@ -182,9 +186,29 @@ func _process(_delta: float) -> void:
 	# if(print_mod % 30 == 0 && lasso_analog_value.x > 0):
 	# 	LogManager.printl("lasso frame microseconds: " + str(OS.get_ticks_usec() - start_time))
 	return
+	
+func _process(p_delta: float) -> void:
+	_update_lasso(p_delta)
 
+# Saracen
+func _update_visibility() -> void:
+	if VRManager.xr_active:
+		straight_mesh.show()
+		snapped_mesh.show()
+		set_process(true)
+	else:
+		straight_mesh.hide()
+		snapped_mesh.hide()
+		set_process(false)
+		
+# Saracen
+func _xr_mode_changed() -> void:
+	_update_visibility()
 
 func _ready() -> void:
+	# Saracen: disable visibility when not in XR mode
+	assert(VRManager.connect("xr_mode_changed", self, "_xr_mode_changed") == OK)
+	
 	#Align with the laser_origin we were given
 	assert(tracker.laser_origin)
 
@@ -217,6 +241,10 @@ func _ready() -> void:
 		secondary_mesh.material_override.set_shader_param('mix_color', snap_circle_color)
 		secondary_mesh.material_override = secondary_mesh.material_override.duplicate(true)
 		secondary_mesh.visible = false
+	
+	# Saracen: hide meshes if not in XR mode
+	_update_visibility()
+	
 	return
 
 func _exit_tree() -> void:
