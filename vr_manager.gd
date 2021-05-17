@@ -82,6 +82,9 @@ signal tracker_removed(tracker_name, type, id)
 # Called for changes to height and armspan
 signal proportions_changed()
 
+signal request_vr_calibration()
+signal confirm_vr_calibration()
+
 var laser_material: Material = null
 var laser_hit_material: Material = null
 
@@ -351,13 +354,12 @@ func get_project_settings() -> void:
 	process_priority = ProjectSettings.get_setting("vr/config/process_priority")
 	
 func _input(p_event: InputEvent) -> void:
-	if p_event is InputEventAction:
-		if p_event.is_action_pressed("toggle_vr"):
-			toggle_vr()
-		elif p_event.is_action_pressed("request_vr_calibration"):
-			pass
-		elif p_event.is_action_pressed("confirm_vr_calibration"):
-			pass
+	if p_event.is_action_pressed("toggle_vr"):
+		toggle_vr()
+	elif p_event.is_action_pressed("request_vr_calibration"):
+		emit_signal("request_vr_calibration")
+	elif p_event.is_action_pressed("confirm_vr_calibration"):
+		emit_signal("confirm_vr_calibration")
 
 func _process(_delta) -> void:
 	force_update()
