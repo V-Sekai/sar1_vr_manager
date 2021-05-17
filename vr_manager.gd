@@ -79,6 +79,9 @@ signal world_origin_scale_changed(p_scale)
 signal tracker_added(tracker_name, type, id)
 signal tracker_removed(tracker_name, type, id)
 
+# Called for changes to height and armspan
+signal proportions_changed()
+
 var laser_material: Material = null
 var laser_hit_material: Material = null
 
