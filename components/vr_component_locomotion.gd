@@ -1,9 +1,9 @@
-extends "vr_component.gd"
+extends "res://addons/sar1_vr_manager/components/vr_component.gd" # vr_component.gd
 
-var movement_controller : ARVRController = null
-var turning_controller : ARVRController = null
+var movement_controller : XRController3D = null
+var turning_controller : XRController3D = null
 
-func _get_movement_controller() -> ARVRController:
+func _get_movement_controller() -> XRController3D:
 	if hand_controllers.size() >= 2 and left_hand_controller:
 		return left_hand_controller
 	elif hand_controllers.size() == 1:
@@ -12,7 +12,7 @@ func _get_movement_controller() -> ARVRController:
 		return null
 
 
-func _get_turning_controller() -> ARVRController:
+func _get_turning_controller() -> XRController3D:
 	if hand_controllers.size() >= 2 and right_hand_controller:
 		return right_hand_controller
 	elif hand_controllers.size() == 1:
@@ -47,15 +47,15 @@ func movement_action_released(_action: String) -> void:
 
 func _refresh_controllers() -> void:
 	if movement_controller and is_instance_valid(movement_controller):
-		if movement_controller.is_connected("action_pressed", self, "movement_action_pressed"):
-			movement_controller.disconnect("action_pressed", self, "movement_action_pressed")
-		if movement_controller.is_connected("action_released", self, "movement_action_released"):
-			movement_controller.disconnect("action_released", self, "movement_action_released")
+		if movement_controller.is_connected("action_pressed", Callable(self, "movement_action_pressed")):
+			movement_controller.disconnect("action_pressed", Callable(self, "movement_action_pressed"))
+		if movement_controller.is_connected("action_released", Callable(self, "movement_action_released")):
+			movement_controller.disconnect("action_released", Callable(self, "movement_action_released"))
 	if turning_controller and is_instance_valid(turning_controller):
-		if turning_controller.is_connected("action_pressed", self, "turning_action_pressed"):
-			turning_controller.disconnect("action_pressed", self, "turning_action_pressed")
-		if turning_controller.is_connected("action_released", self, "turning_action_released"):
-			turning_controller.disconnect("action_released", self, "turning_action_released")
+		if turning_controller.is_connected("action_pressed", Callable(self, "turning_action_pressed")):
+			turning_controller.disconnect("action_pressed", Callable(self, "turning_action_pressed"))
+		if turning_controller.is_connected("action_released", Callable(self, "turning_action_released")):
+			turning_controller.disconnect("action_released", Callable(self, "turning_action_released"))
 	
 	if Input.is_action_pressed("snap_left"):
 		Input.action_release("snap_left")
@@ -66,14 +66,14 @@ func _refresh_controllers() -> void:
 	turning_controller = _get_turning_controller()
 	
 	if movement_controller and is_instance_valid(movement_controller):
-		if movement_controller.connect("action_pressed", self, "movement_action_pressed") != OK:
+		if movement_controller.connect("action_pressed", Callable(self, "movement_action_pressed")) != OK:
 			printerr("Could not connect 'action_pressed'!")
-		if movement_controller.connect("action_released", self, "movement_action_released") != OK:
+		if movement_controller.connect("action_released", Callable(self, "movement_action_released")) != OK:
 			printerr("Could not connect 'action_released'!")
 	if turning_controller and is_instance_valid(turning_controller):
-		if turning_controller.connect("action_pressed", self, "turning_action_pressed") != OK:
+		if turning_controller.connect("action_pressed", Callable(self, "turning_action_pressed")) != OK:
 			printerr("Could not connect 'action_pressed'!")
-		if turning_controller.connect("action_released", self, "turning_action_released") != OK:
+		if turning_controller.connect("action_released", Callable(self, "turning_action_released")) != OK:
 			printerr("Could not connect 'action_released'!")
 
 
@@ -97,7 +97,7 @@ func get_controller_movement_vector() -> Vector2:
 	if abs(movement_vector.y) < VRManager.vr_user_preferences.movement_deadzone:
 		movement_vector.y = 0.0
 		
-	return movement_vector.clamped(1.0)
+	return movement_vector.limit_length(1.0)
 
 
 func get_controller_turning_vector() -> Vector2:
@@ -187,13 +187,13 @@ func _process(_delta):
 			Input.action_press("look_left", 0.0)
 
 func post_add_setup() -> void:
-	.post_add_setup()
+	super.post_add_setup()
 	
 func _enter_tree():
 	set_name("LocomotionComponent")
 
 func _ready():
-	if connect("trackers_changed", self, "_refresh_controllers") != OK:
+	if connect("trackers_changed", Callable(self, "_refresh_controllers")) != OK:
 		printerr("Could not connect 'trackers_changed'!")
 		
 	_refresh_controllers()

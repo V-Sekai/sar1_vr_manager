@@ -1,9 +1,9 @@
-extends Spatial
+extends Node3D
 
 var vr_module: Node = null
 
 var vr_tracker_script = null
-var tracker: ARVRController = null
+var tracker: XRController3D = null
 
 
 func is_pressed(p_action: String) -> bool:
@@ -37,7 +37,7 @@ func _ready() -> void:
 
 	tracker = find_parent_controller()
 	if tracker:
-		if tracker.connect("action_pressed", self, "_on_action_pressed") != OK:
+		if tracker.connect("action_pressed", Callable(self, "_on_action_pressed")) != OK:
 			printerr("action_pressed not connected!")
-		if tracker.connect("action_released", self, "_on_action_released") != OK:
+		if tracker.connect("action_released", Callable(self, "_on_action_released")) != OK:
 			printerr("action_released not connected!")

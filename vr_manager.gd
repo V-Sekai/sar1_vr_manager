@@ -1,10 +1,10 @@
+@tool
 extends Node
-tool
 
-const string_util_const = preload("res://addons/gdutil/string_util.gd")
+const string_util_const = preload("res://addons/gd_util/string_util.gd")
 const vr_user_preferences_const = preload("vr_user_preferences.gd")
 
-var vr_user_preferences: Reference = vr_user_preferences_const.new()
+var vr_user_preferences: RefCounted = vr_user_preferences_const.new()
 var vr_components: Array = []
 
 var interface_names: Array = []
@@ -12,33 +12,33 @@ var interface_names: Array = []
 var flat_resolution: Vector2 = Vector2(1280, 720)
 
 # Names
-const body_awareness_names = PoolStringArray(
+const body_awareness_names = (
 	["TR_VR_MANAGER_BODY_AWARENESS_HANDS_ONLY",\
 	"TR_VR_MANAGER_BODY_AWARENESS_CONTROLLERS_ONLY",\
 	"TR_VR_MANAGER_BODY_AWARENESS_FULL_BODY"])
-const turning_mode_names = PoolStringArray(
+const turning_mode_names = (
 	["TR_VR_MANAGER_TURN_SMOOTH",\
 	"TR_VR_MANAGER_TURN_30_DEGREES",
 	"TR_VR_MANAGER_TURN_45_DEGREES",\
 	"TR_VR_MANAGER_TURN_90_DEGREES",\
 	"TR_VR_MANAGER_TURN_CUSTOM"]
 )
-const play_position_names = PoolStringArray(
+const play_position_names = (
 	["TR_VR_MANAGER_PLAY_POSITION_STANDING",\
 	"TR_VR_MANAGER_PLAY_POSITION_SEATED"])
-const movement_orientation_names = PoolStringArray(
+const movement_orientation_names = (
 	["TR_VR_MANAGER_HEAD_ORIENTED_MOVEMENT",\
 	"TR_VR_MANAGER_HAND_ORIENTED_MOVEMENT",\
 	"TR_VR_MANAGER_PLAYSPACE_ORIENTED_MOVEMENT"]
 )
-const vr_hmd_mirroring_names = PoolStringArray(
+const vr_hmd_mirroring_names = (
 	["TR_VR_MANAGER_UI_NO_MIRROR", "TR_VR_MANAGER_UI_MIRROR_VR"])
-const vr_control_type_names = PoolStringArray(
+const vr_control_type_names = (
 	["TR_VR_MANAGER_CONTROL_TYPE_CLASSIC", "TR_VR_MANAGER_CONTROL_TYPE_DUAL"])
-const preferred_hand_oriented_movement_hand_names = PoolStringArray(
+const preferred_hand_oriented_movement_hand_names = (
 	["TR_VR_MANAGER_PREFERRED_HAND_ORIENTED_MOVEMENT_LEFT",\
 	"TR_VR_MANAGER_PREFERRED_HAND_ORIENTED_MOVEMENT_RIGHT"])
-const movement_type_names = PoolStringArray(
+const movement_type_names = (
 	["TR_VR_MANAGER_MOVEMENT_TELEPORTATION",\
 	"TR_VR_MANAGER_MOVEMENT_LOCOMOTION"])
 
@@ -46,22 +46,22 @@ const movement_type_names = PoolStringArray(
 const vr_platform_const = preload("platforms/vr_platform.gd")
 const vr_platform_openvr_const = preload("platforms/vr_platform_openvr.gd")
 const vr_platform_ovr_mobile_const = preload("platforms/vr_platform_ovr_mobile.gd")
-const vr_platform_oculus_const = null
+var vr_platform_oculus_const: Variant = null
 
 const vr_constants_const = preload("vr_constants.gd")
 const vr_render_cache_const = preload("vr_render_cache.gd")
 const vr_render_tree_const = preload("vr_render_tree.gd")
 
-var vr_platform: vr_platform_const = null
+var vr_platform: RefCounted = null # vr_platform_const = null
 
-var vr_platform_openvr: vr_platform_const = null
-var vr_platform_oculus: vr_platform_const = null
-var vr_platform_ovr_mobile: vr_platform_const = null
+var vr_platform_openvr: RefCounted = null # : vr_platform_const = null
+var vr_platform_oculus: RefCounted = null # : vr_platform_const = null
+var vr_platform_ovr_mobile: RefCounted = null # : vr_platform_const = null
 
-var render_cache: vr_render_cache_const = vr_render_cache_const.new()
+var render_cache = vr_render_cache_const.new()
 
-var xr_interface: ARVRInterface = null
-var xr_origin: ARVROrigin = null
+var xr_interface: XRInterface = null
+var xr_origin: XROrigin3D = null
 var xr_active: bool = false
 
 var vr_fader: ColorRect = null
@@ -93,7 +93,7 @@ func _fade_color_changed(p_color: Color) -> void:
 
 
 func create_laser_material(p_transparent: bool) -> Material:
-	var new_laser_material = SpatialMaterial.new()
+	var new_laser_material = StandardMaterial3D.new()
 	new_laser_material.flags_transparent = p_transparent
 	new_laser_material.flags_unshaded = true
 	new_laser_material.albedo_color = vr_user_preferences.laser_color
@@ -112,27 +112,27 @@ func is_xr_active() -> bool:
 	return xr_active
 
 
-func get_origin() -> ARVROrigin:
+func get_origin() -> XROrigin3D:
 	return xr_origin
 
 func update_turning_radians() -> void:
 	match vr_user_preferences.turning_mode:
-		vr_user_preferences.turning_mode_enum.TURNING_MODE_SNAP_30:
+		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_30:
 			snap_turning_radians = deg2rad(30.0)
-		vr_user_preferences.turning_mode_enum.TURNING_MODE_SNAP_45:
+		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_45:
 			snap_turning_radians = deg2rad(45.0)
-		vr_user_preferences.turning_mode_enum.TURNING_MODE_SNAP_90:
+		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_90:
 			snap_turning_radians = deg2rad(90.0)
-		vr_user_preferences.turning_mode_enum.TURNING_MODE_SNAP_CUSTOM:
+		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_CUSTOM:
 			snap_turning_radians = deg2rad(vr_user_preferences.snap_turning_degrees_custom)
 
 func settings_changed() -> void:
 	update_turning_radians()
 
-func create_render_tree() -> Spatial:
+func create_render_tree() -> Node3D:
 	if xr_interface:
 		print("Creating render tree for platform %s" % vr_platform.get_platform_name())
-		var render_tree: Spatial = vr_platform.create_render_tree()
+		var render_tree: Node3D = vr_platform.create_render_tree()
 
 		if render_tree:
 			render_tree.set_name("RenderTree")
@@ -144,7 +144,7 @@ func create_render_tree() -> Spatial:
 
 func is_joypad_id_input_map_valid(p_id: int) -> bool:
 	for i in xr_tracker_count:
-		var tracker: ARVRPositionalTracker = ARVRServer.get_tracker(i)
+		var tracker: XRPositionalTracker = XRServer.get_tracker(i)
 
 		if tracker.get_joy_id() == p_id:
 			return false
@@ -154,21 +154,21 @@ func is_joypad_id_input_map_valid(p_id: int) -> bool:
 
 static func get_tracker_type_name(p_type: int) -> String:
 	match p_type:
-		ARVRServer.TRACKER_CONTROLLER:
+		XRServer.TRACKER_CONTROLLER:
 			return "controller"
-		ARVRServer.TRACKER_BASESTATION:
+		XRServer.TRACKER_BASESTATION:
 			return "base station"
-		ARVRServer.TRACKER_ANCHOR:
+		XRServer.TRACKER_ANCHOR:
 			return "anchor"
-		ARVRServer.TRACKER_ANY_KNOWN:
+		XRServer.TRACKER_ANY_KNOWN:
 			return "any known"
-		ARVRServer.TRACKER_UNKNOWN:
+		XRServer.TRACKER_UNKNOWN:
 			return "unknown"
 		_:
 			return "?"
 
 
-func get_render_cache() -> vr_render_cache_const:
+func get_render_cache():
 	return render_cache
 
 
@@ -194,7 +194,7 @@ func _on_tracker_added(p_tracker_name: String, p_type: int, p_id: int) -> void:
 	xr_tracker_count += 1
 
 	var tracker_id: int = xr_tracker_count - 1
-	var tracker: ARVRPositionalTracker = ARVRServer.get_tracker(tracker_id)
+	var tracker: XRPositionalTracker = XRServer.get_tracker(tracker_id)
 
 	xr_trackers[p_id] = tracker
 	
@@ -251,10 +251,10 @@ func create_vr_platforms() -> void:
 			vr_platform_ovr_mobile.pre_setup()
 
 
-func platform_add_controller(p_controller: ARVRController, p_origin: ARVROrigin) -> void:
+func platform_add_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	vr_platform.add_controller(p_controller, p_origin)
 
-func platform_remove_controller(p_controller: ARVRController, p_origin: ARVROrigin) -> void:
+func platform_remove_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	vr_platform.remove_controller(p_controller, p_origin)
 
 func is_quitting() -> void:
@@ -262,12 +262,12 @@ func is_quitting() -> void:
 	
 func setup_vr_interface() -> void:
 	# Temporary workaround to prevent OpenVR plugin crash!
-	var _render_model_temp = preload("res://addons/godot-openvr/OpenVRRenderModel.gdns")
+	var _render_model_temp = load("res://addons/godot-openvr/OpenVRRenderModel.gdns")
 
 	# Search through all the vr interface names in project configuration
 	# Break when one has been found
 	for interface_name in interface_names:
-		xr_interface = ARVRServer.find_interface(interface_name)
+		xr_interface = XRServer.find_interface(interface_name)
 		if xr_interface:
 			print("Attempting to initialise %s..." % interface_name)
 			if xr_interface.initialize():
@@ -329,7 +329,7 @@ func apply_project_settings() -> void:
 		# VR Interfaces #
 		#################
 		if ! ProjectSettings.has_setting("vr/config/interfaces"):
-			ProjectSettings.set_setting("vr/config/interfaces", PoolStringArray())
+			ProjectSettings.set_setting("vr/config/interfaces", PackedStringArray())
 	
 			var vr_interfaces_property_info: Dictionary = {
 				"name": "vr/config/interfaces",
@@ -370,11 +370,11 @@ func _ready() -> void:
 	
 	settings_changed()
 	
-	if vr_user_preferences.connect("settings_changed", self, "settings_changed") != OK:
+	if vr_user_preferences.connect("settings_changed", Callable(self, "settings_changed")) != OK:
 		printerr("Could not connect settings_changed!")
 	
 	vr_fader = ColorRect.new()
-	if FadeManager.connect("color_changed", self, "_fade_color_changed") != OK:
+	if FadeManager.connect("color_changed", Callable(self, "_fade_color_changed")) != OK:
 		printerr("Could not connect 'color_changed'!")
 
 	# Caches the laser material for laser use
@@ -387,28 +387,28 @@ func _ready() -> void:
 		InputManager.assign_input_map_validation_callback(self, "is_joypad_id_input_map_valid")
 
 		if (
-			ARVRServer.connect(
-				"interface_added", self, "_on_interface_added", [], CONNECT_DEFERRED
+			XRServer.connect(
+				"interface_added", Callable(self, "_on_interface_added"), [], CONNECT_DEFERRED
 			)
 			!= OK
 		):
 			printerr("interface_added could not be connected")
 		if (
-			ARVRServer.connect(
-				"interface_removed", self, "_on_interface_removed", [], CONNECT_DEFERRED
+			XRServer.connect(
+				"interface_removed", Callable(self, "_on_interface_removed"), [], CONNECT_DEFERRED
 			)
 			!= OK
 		):
 			printerr("interface_removed could not be connected")
 
 		if (
-			ARVRServer.connect("tracker_added", self, "_on_tracker_added", [], CONNECT_DEFERRED)
+			XRServer.connect("tracker_added", Callable(self, "_on_tracker_added"), [], CONNECT_DEFERRED)
 			!= OK
 		):
 			printerr("tracker_added could not be connected")
 		if (
-			ARVRServer.connect(
-				"tracker_removed", self, "_on_tracker_removed", [], CONNECT_DEFERRED
+			XRServer.connect(
+				"tracker_removed", Callable(self, "_on_tracker_removed"), [], CONNECT_DEFERRED
 			)
 			!= OK
 		):

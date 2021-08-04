@@ -1,43 +1,42 @@
-extends ARVRController
+extends XRController3D
 
 const vr_constants_const = preload("res://addons/sar1_vr_manager/vr_constants.gd")
 
-const vr_manager_const = preload("vr_manager.gd")
 const vr_render_tree_const = preload("vr_render_tree.gd")
 
 var component_action: Array = []
 
-var laser_origin: Spatial
-var model_origin: Spatial
+var laser_origin: Node3D
+var model_origin: Node3D
 
 var world_scale: float = 1.0
 
-var get_is_action_pressed_funcref: FuncRef = null
-var get_analog_funcref: FuncRef = null
+var get_is_action_pressed_funcref: Callable = Callable()
+var get_analog_funcref: Callable = Callable()
 
 signal action_pressed(p_action)
 signal action_released(p_action)
 
 func is_pressed(p_action: String) -> bool:
-	if get_is_action_pressed_funcref and get_is_action_pressed_funcref.is_valid():
-		return get_is_action_pressed_funcref.call_func(p_action)
+	if get_is_action_pressed_funcref.is_valid():
+		return get_is_action_pressed_funcref.call(p_action)
 
 	return false
 
 
 func get_analog(p_action: String) -> Vector2:
-	if get_analog_funcref and get_analog_funcref.is_valid():
-		return get_analog_funcref.call_func(p_action)
+	if get_analog_funcref.is_valid():
+		return get_analog_funcref.call(p_action)
 
 	return Vector2()
 
 
 # Get the enum value from the vr_constants file based on the internal hand ID of the tracker
 func get_hand_id_for_tracker() -> int:
-	match get_hand():
-		ARVRPositionalTracker.TRACKER_LEFT_HAND:
+	match get_tracker_hand():
+		XRPositionalTracker.TrackerHand.TRACKER_HAND_LEFT:
 			return vr_constants_const.LEFT_HAND
-		ARVRPositionalTracker.TRACKER_RIGHT_HAND:
+		XRPositionalTracker.TrackerHand.TRACKER_HAND_RIGHT:
 			return vr_constants_const.RIGHT_HAND
 		_:
 			return vr_constants_const.UNKNOWN_HAND

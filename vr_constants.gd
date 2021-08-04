@@ -5,4 +5,7 @@ const EYE_EAR_GAP = 0.08
 # Based on personally taken measurements (tweaked until felt right)
 const ARMSPAN_WRIST_SPAN_CONVERSION = 0.9
 
-enum { UNKNOWN_HAND = 0, LEFT_HAND, RIGHT_HAND }
+const UNKNOWN_HAND = 0
+const LEFT_HAND=1
+const RIGHT_HAND=2
+

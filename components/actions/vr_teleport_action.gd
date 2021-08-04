@@ -1,42 +1,51 @@
-extends "vr_action.gd"
+extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_action.gd
 
-export var enabled = true setget set_enabled, get_enabled
+@export var enabled = true :
+	set = set_enabled,
+	get = get_enabled
+
 
 const AXIS_MAXIMUM = 0.5
 
-export (Color) var can_teleport_color = Color(0.0, 1.0, 0.0, 1.0)
-export (Color) var cant_teleport_color = Color(1.0, 0.0, 0.0, 1.0)
-export (Color) var no_collision_color = Color(45.0 / 255.0, 80.0 / 255.0, 220.0 / 255.0, 1.0)
-export var player_height = 1.8 setget set_player_height, get_player_height
-export var player_radius = 0.4 setget set_player_radius, get_player_radius
-export var strength = 2.5
-export (int) var collision_mask = 1
-export (float) var margin = 0.001
+@export  var can_teleport_color : Color = Color(0.0, 1.0, 0.0, 1.0)
+@export  var cant_teleport_color : Color = Color(1.0, 0.0, 0.0, 1.0)
+@export  var no_collision_color : Color = Color(45.0 / 255.0, 80.0 / 255.0, 220.0 / 255.0, 1.0)
+@export var player_height = 1.8 :
+	set = set_player_height,
+	get = get_player_height
 
-export (NodePath) var camera = null
+@export var player_radius = 0.4 :
+	set = set_player_radius,
+	get = get_player_radius
 
-onready var ws = ARVRServer.world_scale
+@export var strength = 2.5
+@export  var collision_mask : int = 1
+@export  var margin : float = 0.001
+
+@export  var camera : NodePath = null
+
+@onready var ws = XRServer.world_scale
 var origin_node = null
 var camera_node = null
 var is_on_floor = true
 var is_teleporting = false
 var teleport_rotation = 0.0
 var floor_normal = Vector3(0.0, 1.0, 0.0)
-var last_target_transform = Transform()
-var collision_shape = null
+var last_target_transform = Transform3D()
+var collision_shape: Shape3D = null
 var step_size = 0.5
 
-var locomotion: Spatial = null
+var locomotion: Node3D = null
 
-onready var capsule = get_node("Target/Player_figure/Capsule")
+@onready var capsule = get_node("Target/Player_figure/Capsule")
 
 #############
 # Callbacks #
 #############
-var can_teleport_funcref:FuncRef = FuncRef.new()
+var can_teleport_funcref
 
 func set_can_teleport_funcref(p_instance: Object, p_function : String) -> void:
-	can_teleport_funcref = funcref(p_instance, p_function)
+	can_teleport_funcref = Callable(p_instance, p_function)
 	
 signal teleported(p_transform)
 
@@ -64,7 +73,7 @@ func set_player_height(p_height):
 
 	if capsule:
 		capsule.mesh.mid_height = player_height - (2.0 * player_radius)
-		capsule.translation = Vector3(0.0, player_height / 2.0, 0.0)
+		capsule.position = Vector3(0.0, player_height / 2.0, 0.0)
 
 
 func get_player_radius():
@@ -96,9 +105,9 @@ func _ready():
 	if camera:
 		camera_node = get_node(camera)
 	else:
-		camera_node = origin_node.get_node('ARVRCamera')
+		camera_node = origin_node.get_node('XRCamera')
 
-	collision_shape = CapsuleShape.new()
+	collision_shape = CapsuleShape3D.new()
 
 	set_player_height(player_height)
 	set_player_radius(player_radius)
@@ -117,10 +126,10 @@ func _process(_delta):
 
 	var can_teleport: bool = false
 	if can_teleport_funcref.is_valid():
-		can_teleport = can_teleport_funcref.call_func()
+		can_teleport = can_teleport_funcref.call()
 	
 
-	var new_ws = ARVRServer.world_scale
+	var new_ws = XRServer.world_scale
 	if ws != new_ws:
 		ws = new_ws
 		$Teleport.mesh.size = Vector2(0.05 * ws, 1.0)
@@ -153,15 +162,15 @@ func _process(_delta):
 			$Target.visible = true
 			teleport_rotation = 0.0
 
-		var space = get_world().space
-		var state = PhysicsServer.space_get_direct_state(space)
-		var query = PhysicsShapeQueryParameters.new()
+		var space = get_world_3d().space
+		var state = PhysicsServer3D.space_get_direct_state(space)
+		var query = PhysicsShapeQueryParameters3D.new()
 
 		query.collision_mask = collision_mask
 		query.margin = margin
 		query.shape_rid = collision_shape.get_rid()
 
-		var shape_transform = Transform(
+		var shape_transform = Transform3D(
 			Basis(Vector3(1.0, 0.0, 0.0), PI * 0.5), Vector3(0.0, player_height / 2.0, 0.0)
 		)
 
@@ -179,13 +188,13 @@ func _process(_delta):
 			var t = global_target.z / strength
 			var t2 = t * t
 
-			global_target = teleport_global_transform.xform(global_target)
+			global_target = teleport_global_transform*(global_target)
 
 			global_target += down * t2
 
-			query.transform = Transform(Basis(), global_target) * shape_transform
+			query.transform = Transform3D(Basis(), global_target) * shape_transform
 			var cast_result = state.collide_shape(query, 10)
-			if cast_result.empty():
+			if cast_result.is_empty():
 				cast_length = new_cast_length
 				target_global_origin = global_target
 			elif fine_tune <= 16.0:
@@ -198,7 +207,7 @@ func _process(_delta):
 					var up = Vector3(0.0, 1.0, 0.0)
 					var end_pos = target_global_origin - (up * 0.1)
 					var intersects = state.intersect_ray(target_global_origin, end_pos)
-					if intersects.empty():
+					if intersects.is_empty():
 						is_on_floor = false
 					else:
 						floor_normal = intersects["normal"]
@@ -257,7 +266,7 @@ func _process(_delta):
 			new_transform.basis.z = new_transform.basis.x.cross(new_transform.basis.y).normalized()
 
 			var cam_transform = camera_node.transform
-			var user_feet_transform = Transform()
+			var user_feet_transform = Transform3D()
 			user_feet_transform.origin = cam_transform.origin
 			user_feet_transform.origin.y = 0  # the feet are on the ground, but have the same X,Z as the camera
 

@@ -1,42 +1,42 @@
-extends "vr_action.gd"
-export (Color) var straight_color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.05)
-export (Color) var unsnapped_color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.1)
-export (Color) var snapped_color = Color(254.0/255.0, 95.0/255.0, 85.0/255.0, 1.0)
-export (Color) var snap_circle_color = Color(1.0, 1.0, 1.0, 1.0)
-export (float) var snap_circle_min_alpha = 0.0
-export(NodePath) var straight_laser
-export(NodePath) var snapped_laser
-export(NodePath) var primary_circle
-export(NodePath) var secondary_circle
-export var min_snap = 0.5
-export var snap_increase = 2
+extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_action.gd
+@export  var straight_color : Color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.05)
+@export  var unsnapped_color : Color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.1)
+@export  var snapped_color : Color = Color(254.0/255.0, 95.0/255.0, 85.0/255.0, 1.0)
+@export  var snap_circle_color : Color = Color(1.0, 1.0, 1.0, 1.0)
+@export  var snap_circle_min_alpha : float = 0.0
+@export var straight_laser: NodePath 
+@export var snapped_laser: NodePath 
+@export var primary_circle: NodePath 
+@export var secondary_circle: NodePath 
+@export var min_snap = 0.5
+@export var snap_increase = 2
 # This node will be a child of a controller, add any input or display functionality here.
-var current_snap: Spatial = null
-var straight_mesh: MeshInstance = null
-var snapped_mesh: MeshInstance = null
-var primary_mesh: MeshInstance = null
-var secondary_mesh: MeshInstance = null
+var current_snap: Node3D = null
+var straight_mesh: MeshInstance3D = null
+var snapped_mesh: MeshInstance3D = null
+var primary_mesh: MeshInstance3D = null
+var secondary_mesh: MeshInstance3D = null
 var redirection_lock: bool = false
 var redirection_ready: bool = true
 var interact_ready: bool = false
-var flick_origin_spatial: Spatial = null
+var flick_origin_spatial: Node3D = null
 # var initialized_laser_transform:bool = false
 
 var print_mod = 0
-export var rumble_duration: int = 100 #milisseconds
-export var rumble_strength: float = 1.0
+@export var rumble_duration: int = 100 #milisseconds
+@export var rumble_strength: float = 1.0
 
 var rumble_start_time: int = 0
 
 func _on_action_pressed(p_action: String) -> void:
-	._on_action_pressed(p_action)
+	super._on_action_pressed(p_action)
 	match p_action:
 		"/menu/lasso":
 			pass
 
 
 func _on_action_released(p_action: String) -> void:
-	._on_action_released(p_action)
+	super._on_action_released(p_action)
 	match p_action:
 		"/menu/lasso":
 			pass
@@ -46,7 +46,7 @@ func _update_lasso(_delta: float) -> void:
 	if !VRManager.xr_active:
 		return
 	
-	# var start_time = OS.get_ticks_usec()
+	# var start_time = Time.get_ticks_usec()
 	var lasso_analog_value: Vector2 = get_analog("/menu/lasso_analog")
 	var lasso: bool = is_pressed("/menu/lasso")
 	redirection_lock = redirection_lock && (lasso_analog_value.length_squared() > 0)
@@ -66,8 +66,8 @@ func _update_lasso(_delta: float) -> void:
 		redirection_ready = lasso_redirect_value.length_squared() <= 0.0
 		if(redirecting && current_snap != null):
 			redirection_lock = true
-			var viewpoint: Transform = ARVRServer.get_hmd_transform()
-			viewpoint.origin = flick_origin_spatial.global_transform.xform(viewpoint.origin)
+			var viewpoint: Transform3D = XRServer.get_hmd_transform()
+			viewpoint.origin = flick_origin_spatial.global_transform*(viewpoint.origin)
 			snap_point = snapping_singleton.snapping_points.calc_top_redirecting_power(current_snap, viewpoint, lasso_redirect_value)
 			if(!snap_point):
 				snap_point = current_snap
@@ -103,7 +103,7 @@ func _update_lasso(_delta: float) -> void:
 			if(current_snap != null):
 				#HERE IS THE SNAP
 				#do haptics here
-				rumble_start_time = OS.get_ticks_msec()
+				rumble_start_time = Time.get_ticks_msec()
 				current_snap.call_snap_hover()
 	else:
 		if(current_snap != null):
@@ -113,7 +113,7 @@ func _update_lasso(_delta: float) -> void:
 		interact_ready = false
 	
 	#SO COOL HOW RUMBLE DOESNT WORK
-	if (OS.get_ticks_msec() - rumble_start_time < rumble_duration):
+	if (Time.get_ticks_msec() - rumble_start_time < rumble_duration):
 		tracker.rumble = rumble_strength;
 	else:
 		tracker.rumble = 0.0
@@ -168,7 +168,7 @@ func _update_lasso(_delta: float) -> void:
 				if(current_snap != null):
 					if(new_snap):
 						snapped_mesh.material_override.set_shader_param('mix_color', snapped_color)
-					var target_local = straight_mesh.global_transform.xform_inv(current_snap.global_transform.origin)
+					var target_local = (((current_snap.global_transform.origin) * (straight_mesh.global_transform)))
 					var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001) #when there's very little snapping, this will equal .length() when there is a lot it'll be longer
 					straight_mesh.material_override.set_shader_param('target', Vector3(0.0, 0.0, -straight_length))
 					snapped_mesh.material_override.set_shader_param('target', target_local)
@@ -184,7 +184,7 @@ func _update_lasso(_delta: float) -> void:
 
 	# print_mod += 1
 	# if(print_mod % 30 == 0 && lasso_analog_value.x > 0):
-	# 	LogManager.printl("lasso frame microseconds: " + str(OS.get_ticks_usec() - start_time))
+	# 	LogManager.printl("lasso frame microseconds: " + str(Time.get_ticks_usec() - start_time))
 	return
 	
 func _process(p_delta: float) -> void:
@@ -207,13 +207,13 @@ func _xr_mode_changed() -> void:
 
 func _ready() -> void:
 	# Saracen: disable visibility when not in XR mode
-	assert(VRManager.connect("xr_mode_changed", self, "_xr_mode_changed") == OK)
+	assert(VRManager.connect("xr_mode_changed", self._xr_mode_changed) == OK)
 	
 	#Align with the laser_origin we were given
 	assert(tracker.laser_origin)
 
-	straight_mesh = get_node(straight_laser) as MeshInstance
-	snapped_mesh = get_node(snapped_laser) as MeshInstance
+	straight_mesh = get_node(straight_laser) as MeshInstance3D
+	snapped_mesh = get_node(snapped_laser) as MeshInstance3D
 
 	straight_mesh.get_parent().remove_child(straight_mesh)
 	snapped_mesh.get_parent().remove_child(snapped_mesh)
@@ -221,11 +221,11 @@ func _ready() -> void:
 	tracker.laser_origin.add_child(straight_mesh)
 	tracker.laser_origin.add_child(snapped_mesh)
 
-	straight_mesh.transform = Transform()
-	snapped_mesh.transform = Transform()
+	straight_mesh.transform = Transform3D()
+	snapped_mesh.transform = Transform3D()
 
-	primary_mesh = get_node(primary_circle) as MeshInstance
-	secondary_mesh = get_node(secondary_circle) as MeshInstance
+	primary_mesh = get_node(primary_circle) as MeshInstance3D
+	secondary_mesh = get_node(secondary_circle) as MeshInstance3D
 	if(straight_mesh != null && straight_mesh.material_override != null):
 		straight_mesh.material_override.set_shader_param('mix_color', straight_color)
 		straight_mesh.material_override = straight_mesh.material_override.duplicate(true)

@@ -1,4 +1,4 @@
-extends ARVROrigin
+extends XROrigin3D
 
 const vr_controller_tracker_const = preload("res://addons/sar1_vr_manager/vr_controller_tracker.gd")
 
@@ -6,8 +6,8 @@ var active_controllers: Dictionary = {}
 var unknown_controller_count: int = 0
 
 var hand_controllers: Array = []
-var left_hand_controller: ARVRController = null
-var right_hand_controller: ARVRController = null
+var left_hand_controller: XRController3D = null
+var right_hand_controller: XRController3D = null
 
 #############
 # Component #
@@ -39,32 +39,32 @@ func clear_controllers() -> void:
 	assert(right_hand_controller == null)
 
 func add_tracker(p_tracker_id: int) -> void:
-	var tracker: ARVRPositionalTracker = VRManager.xr_trackers[p_tracker_id]
-	if tracker != null && tracker.get_type() == ARVRServer.TRACKER_CONTROLLER:
+	var tracker: XRPositionalTracker = VRManager.xr_trackers[p_tracker_id]
+	if tracker != null && tracker.get_type() == XRServer.TRACKER_CONTROLLER:
 		var tracker_hand: int = tracker.get_hand()
-		var controller: vr_controller_tracker_const = vr_controller_tracker_const.new()
+		var controller = vr_controller_tracker_const.new()
 
 		match tracker_hand:
-			ARVRPositionalTracker.TRACKER_LEFT_HAND:
+			XRPositionalTracker.TRACKER_HAND_LEFT:
 				controller.set_name("LeftController")
-				controller.set_controller_id(ARVRPositionalTracker.TRACKER_LEFT_HAND)
+				controller.set_controller_id(XRPositionalTracker.TRACKER_HAND_LEFT)
 
 				# Attempt to add left controller
 				if left_hand_controller == null:
 					left_hand_controller = controller
 					hand_controllers.push_back(controller)
-			ARVRPositionalTracker.TRACKER_RIGHT_HAND:
+			XRPositionalTracker.TRACKER_HAND_RIGHT:
 				controller.set_name("RightController")
-				controller.set_controller_id(ARVRPositionalTracker.TRACKER_RIGHT_HAND)
+				controller.set_controller_id(XRPositionalTracker.TRACKER_HAND_RIGHT)
 
 				# Attempt to add right controller
 				if right_hand_controller == null:
 					right_hand_controller = controller
 					hand_controllers.push_back(controller)
-			ARVRPositionalTracker.TRACKER_HAND_UNKNOWN:
+			XRPositionalTracker.TRACKER_HAND_UNKNOWN:
 				controller.set_name("UnknownHandController")
 				controller.set_controller_id(
-					(ARVRPositionalTracker.TRACKER_RIGHT_HAND + 1) + unknown_controller_count
+					(XRPositionalTracker.TRACKER_HAND_RIGHT + 1) + unknown_controller_count
 				)
 				unknown_controller_count += 1
 			_:
@@ -86,7 +86,7 @@ func add_tracker(p_tracker_id: int) -> void:
 
 func remove_tracker(p_tracker_id: int) -> void:
 	if active_controllers.has(p_tracker_id):
-		var controller: vr_controller_tracker_const = active_controllers[p_tracker_id]
+		var controller: XRController3D = active_controllers[p_tracker_id] # vr_controller_tracker_const
 		if active_controllers.erase(p_tracker_id):
 			# Attempt to clear it from any hands it is assigned to
 			if left_hand_controller == controller or right_hand_controller == controller:
@@ -97,8 +97,8 @@ func remove_tracker(p_tracker_id: int) -> void:
 				hand_controllers.remove(hand_controllers.find(controller))
 
 			if VRManager.xr_trackers.has(p_tracker_id):
-				var tracker: ARVRPositionalTracker = VRManager.xr_trackers[p_tracker_id]
-				if tracker.get_hand() == ARVRPositionalTracker.TRACKER_HAND_UNKNOWN:
+				var tracker: XRPositionalTracker = VRManager.xr_trackers[p_tracker_id]
+				if tracker.get_hand() == XRPositionalTracker.TRACKER_HAND_UNKNOWN:
 					unknown_controller_count -= 1
 
 				VRManager.platform_remove_controller(controller, self)
@@ -145,7 +145,7 @@ func _on_tracker_removed(p_tracker_name: String, p_type: int, p_id: int) -> void
 	remove_tracker(p_id)
 
 func create_and_add_component(p_component_script: Script) -> void:
-	var vr_component: Spatial = p_component_script.new()
+	var vr_component: Node3D = p_component_script.new()
 	components.push_back(vr_component)
 	add_child(vr_component)
 
@@ -185,12 +185,12 @@ func _exit_tree() -> void:
 	destroy_components()
 	clear_controllers()
 	
-	if VRManager.is_connected("tracker_added", self, "_on_tracker_added"):
-		VRManager.disconnect("tracker_added", self, "_on_tracker_added")
+	if VRManager.is_connected("tracker_added", self._on_tracker_added):
+		VRManager.disconnect("tracker_added", self._on_tracker_added)
 	else:
 		printerr("tracker_added could not be disconnected")
-	if VRManager.is_connected("tracker_removed", self, "_on_tracker_removed"):
-		VRManager.disconnect("tracker_removed", self, "_on_tracker_removed")
+	if VRManager.is_connected("tracker_removed", self._on_tracker_removed):
+		VRManager.disconnect("tracker_removed", self._on_tracker_removed)
 	else:
 		printerr("tracker_removed could not be disconnected")
 		
@@ -205,7 +205,7 @@ func _enter_tree() -> void:
 		
 	setup_components()
 
-	if VRManager.connect("tracker_added", self, "_on_tracker_added") != OK:
+	if VRManager.connect("tracker_added", self._on_tracker_added) != OK:
 		printerr("tracker_added could not be connected")
-	if VRManager.connect("tracker_removed", self, "_on_tracker_removed") != OK:
+	if VRManager.connect("tracker_removed", self._on_tracker_removed) != OK:
 		printerr("tracker_removed could not be connected")

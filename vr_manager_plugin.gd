@@ -1,10 +1,10 @@
-tool
+@tool
 extends EditorPlugin
 
 var editor_interface = null
 
 
-func _init() -> void:
+func _init():
 	print("Initialising Sar1VRManager plugin")
 
 func _notification(p_notification: int):
@@ -13,7 +13,7 @@ func _notification(p_notification: int):
 			print("Destroying Sar1VRManager plugin")
 
 
-func get_name() -> String:
+func _get_plugin_name() -> String:
 	return "Sar1VRManager"
 
 

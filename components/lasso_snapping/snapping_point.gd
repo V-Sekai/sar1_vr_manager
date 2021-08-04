@@ -1,21 +1,32 @@
 extends "res://addons/vsk_entities/extensions/model_rigid_body.gd"
 
-export var snapping_power: float = 1
-export var snapping_enabled: bool = true setget set_snapping_enabled, get_snapping_enabled
-export var size: float = 0.3 setget set_size, get_size
-export var flick_parent_to_hand_on_snap_interact: bool = true 
-export var flick_power: float = 1.0 setget set_power, get_power
-export var lock_snap_on_trigger: bool = true
+@export var snapping_power: float = 1
+@export var snapping_enabled: bool = true :
+	set = set_snapping_enabled,
+	get = get_snapping_enabled
+
+@export var size: float = 0.3 :
+	set = set_size,
+	get = get_size
+
+@export var flick_parent_to_hand_on_snap_interact: bool = true 
+@export var flick_power: float = 1.0 :
+	set = set_power,
+	get = get_power
+
+@export var lock_snap_on_trigger: bool = true
 signal on_snap_hover
 signal on_snap_hover_stop
 signal on_snap_interact
 signal on_snap_interact_stop
 
-var snap_interacting = false setget , is_snap_interaction_active
+var snap_interacting = false :
+	get = is_snap_interaction_active
 
-var flick_target: Spatial = null
 
-var lasso_point: LassoPoint = LassoPoint.new()
+var flick_target: Node3D = null
+
+var lasso_point: Object = null # : LassoPoint = LassoPoint.new()
 
 func set_power(p_power:float) -> void:
 	lasso_point.set_snapping_power(p_power)
@@ -39,6 +50,11 @@ func get_snapping_enabled() -> bool:
 
 # var physics_script = preload("res://addons/vsk_entities/extensions/prop_simulation_logic.gd")
 
+func _init():
+	# FIXME: We do not want to hard depend on lasso
+	if type_exists("LassoPoint"):
+		lasso_point = ClassDB.instantiate("LassoPoint")
+
 func _ready() -> void:
 	#register self with all lassos
 	register_snapping_point()
@@ -57,7 +73,7 @@ func unregister_snapping_point() -> void:
 func call_snap_hover() -> void:
 	emit_signal("on_snap_hover")
 
-func call_snap_interact(p_flick_target: Spatial) -> void:
+func call_snap_interact(p_flick_target: Node3D) -> void:
 	if(flick_parent_to_hand_on_snap_interact):
 		flick_target = p_flick_target
 	if(!snap_interacting):
@@ -106,7 +122,7 @@ func calc_flick_velocity() -> Vector3:
 		return Vector3(horizontal_vector.x, vertical_velocity, horizontal_vector.z);
 	return Vector3()
 
-func _integrate_forces(state: PhysicsDirectBodyState):
+func _integrate_forces(state: PhysicsDirectBodyState3D):
 	#._integrate_forces(state)
 	if (flick_parent_to_hand_on_snap_interact && snap_interacting):
 		if(flick_target != null && flick_target.global_transform.origin.distance_to(global_transform.origin) > size + 0.001):

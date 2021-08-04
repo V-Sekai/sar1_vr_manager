@@ -5,10 +5,10 @@ type="Translation"
 
 [deps]
 
-files=[ "res://addons/sar1_vr_manager/localisation/vr_manager_strings.en.translation" ]
+files=["res://addons/sar1_vr_manager/localisation/vr_manager_strings.en.translation"]
 
 source_file="res://addons/sar1_vr_manager/localisation/vr_manager_strings.csv"
-dest_files=[ "res://addons/sar1_vr_manager/localisation/vr_manager_strings.en.translation" ]
+dest_files=["res://addons/sar1_vr_manager/localisation/vr_manager_strings.en.translation"]
 
 [params]
 

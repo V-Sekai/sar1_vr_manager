@@ -1,5 +1,5 @@
-extends "vr_platform.gd"
-tool
+@tool
+extends "res://addons/sar1_vr_manager/platforms/vr_platform.gd" # vr_platform.gd
 
 var trackers: Array = []
 
@@ -10,12 +10,10 @@ var action_json_editor_directory: String = "res://assets/actions/openvr/actions"
 var action_json_filename: String = "actions.json"
 var default_action_set: String = "/actions/godot"
 
-var action_sets: PoolStringArray = PoolStringArray([])
+var action_sets: PackedStringArray = PackedStringArray([])
 
-var openvr_pose_nativescript: NativeScript = preload("res://addons/godot-openvr/OpenVRPose.gdns")
-var openvr_controller_nativescript: NativeScript = preload("res://addons/godot-openvr/OpenVRController.gdns")
-var openvr_config_nativescript: NativeScript = preload("res://addons/godot-openvr/OpenVRConfig.gdns")
-var openvr_config: Reference = null
+#var openvr_controller_nativescript: NativeScript = preload("res://addons/godot-openvr/OpenVRController.gdns")
+var openvr_config: RefCounted = null
 
 const vr_render_openvr_tree_const = preload("../openvr/vr_render_tree_openvr.gd")
 
@@ -24,11 +22,11 @@ func get_platform_name() -> String:
 	return "OpenVR"
 
 
-func create_render_tree() -> Spatial:
+func create_render_tree() -> Node3D:
 	return vr_render_openvr_tree_const.new()
 	
-static func create_pose(p_pose:Spatial, p_name: String, p_action: String, p_hand: int, p_origin: ARVROrigin) -> Spatial:
-	p_pose.set_name("Right%s" % p_name if p_hand == ARVRPositionalTracker.TRACKER_RIGHT_HAND else "Left%s" % p_name)
+static func create_pose(p_pose:Node3D, p_name: String, p_action: String, p_hand: int, p_origin: XROrigin3D) -> Node3D:
+	p_pose.set_name("Right%s" % p_name if p_hand == XRPositionalTracker.TRACKER_HAND_RIGHT else "Left%s" % p_name)
 	p_pose.set_action(p_action)
 	p_pose.set_on_hand(p_hand)
 	
@@ -36,14 +34,15 @@ static func create_pose(p_pose:Spatial, p_name: String, p_action: String, p_hand
 	
 	return p_pose
 
-func create_poses_for_controller(p_controller: ARVRController, p_origin: ARVROrigin) -> void:
+func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	if p_origin:
+		var openvr_pose_nativescript: NativeScript = load("res://addons/godot-openvr/OpenVRPose.gdns")
 		if openvr_pose_nativescript and openvr_pose_nativescript.can_instance():
 			var hand: int = p_controller.get_hand()
 			
 			#var model:Spatial = create_pose("Model", "/actions/menu/in/model", hand, p_origin)
-			var model_origin:Spatial = create_pose(openvr_pose_nativescript.new(), "ModelOrigin", "/actions/menu/in/model_origin", hand, p_origin)
-			var laser_origin:Spatial = create_pose(openvr_pose_nativescript.new(), "LaserOrigin", "/actions/menu/in/laser_origin", hand, p_origin)
+			var model_origin:Node3D = create_pose(openvr_pose_nativescript.new(), "ModelOrigin", "/actions/menu/in/model_origin", hand, p_origin)
+			var laser_origin:Node3D = create_pose(openvr_pose_nativescript.new(), "LaserOrigin", "/actions/menu/in/laser_origin", hand, p_origin)
 			
 			p_controller.model_origin = model_origin
 			p_controller.laser_origin = laser_origin
@@ -52,21 +51,21 @@ func create_poses_for_controller(p_controller: ARVRController, p_origin: ARVROri
 	else:
 		printerr("VRPlatformOpenVR: Origin does not exist!")
 		
-func destroy_poses_for_controller(p_controller: ARVRController) -> void:
+func destroy_poses_for_controller(p_controller: XRController3D) -> void:
 	if p_controller.laser_origin:
 		p_controller.laser_origin.queue_free()
 		
 	if p_controller.model_origin:
 		p_controller.model_origin.queue_free()
 		
-func add_controller(p_controller: ARVRController, p_origin: ARVROrigin):
-	.add_controller(p_controller, p_origin)
+func add_controller(p_controller: XRController3D, p_origin: XROrigin3D):
+	super.add_controller(p_controller, p_origin)
 	
 	var hand: int = p_controller.get_hand()
-	if hand != ARVRPositionalTracker.TRACKER_HAND_UNKNOWN:
+	if hand != XRPositionalTracker.TRACKER_HAND_UNKNOWN:
 		create_poses_for_controller(p_controller, p_origin)
 		if controller_actions_scene:
-			var controller_actions: Node = controller_actions_scene.instance()
+			var controller_actions: Node = controller_actions_scene.instantiate()
 			if controller_actions:
 				controller_actions.set_hand(hand)
 				p_controller.add_child(controller_actions)
@@ -76,32 +75,32 @@ func add_controller(p_controller: ARVRController, p_origin: ARVROrigin):
 				):
 					if (
 						controller_actions.connect(
-							"on_action_pressed", p_controller, "_on_action_pressed"
-						)
+							"on_action_pressed", Callable(p_controller, "_on_action_pressed"
+						))
 						!= OK
 					):
 						printerr("Could not connect signal 'on_action_pressed' !")
 					if (
 						controller_actions.connect(
-							"on_action_released", p_controller, "_on_action_released"
-						)
+							"on_action_released", Callable(p_controller, "_on_action_released"
+						))
 						!= OK
 					):
 						printerr("Could not connect signal 'on_action_released' !")
 
-					p_controller.get_is_action_pressed_funcref = funcref(
+					p_controller.get_is_action_pressed_funcref = Callable(
 						controller_actions, "is_action_pressed"
 					)
-					p_controller.get_analog_funcref = funcref(controller_actions, "get_analog")
+					p_controller.get_analog_funcref = Callable(controller_actions, "get_analog")
 
-func remove_controller(p_controller: ARVRController, p_origin: ARVROrigin):
-	.remove_controller(p_controller, p_origin)
+func remove_controller(p_controller: XRController3D, p_origin: XROrigin3D):
+	super.remove_controller(p_controller, p_origin)
 	
 	destroy_poses_for_controller(p_controller)
 
 func pre_setup() -> void:
 	print("OpenVR pre-setup...")
-	.pre_setup()
+	super.pre_setup()
 
 	###
 	if ! ProjectSettings.has_setting("vr/config/openvr/controller_actions_scene"):
@@ -136,6 +135,7 @@ func pre_setup() -> void:
 
 	if ! Engine.is_editor_hint():
 		# Load our config before we initialise
+		var openvr_config_nativescript: NativeScript = load("res://addons/godot-openvr/OpenVRConfig.gdns")
 		if openvr_config_nativescript and openvr_config_nativescript.can_instance():
 			openvr_config = openvr_config_nativescript.new()
 			if openvr_config:
@@ -160,7 +160,7 @@ func pre_setup() -> void:
 
 func setup() -> void:
 	print("Setting up OpenVR platform...")
-	.setup()
+	super.setup()
 
 	for action_set in action_sets:
 		openvr_config.toggle_action_set_active(action_set, true)

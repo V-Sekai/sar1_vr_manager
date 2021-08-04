@@ -1,44 +1,46 @@
-extends "vr_component.gd"
+extends "res://addons/sar1_vr_manager/components/vr_component.gd" # vr_component.gd
 
-const vr_teleport_action_const = preload("actions/vr_teleport_action.tscn")
+# const vr_teleport_action_const = preload("actions/vr_teleport_action.tscn")
 
-var can_teleport_funcref:FuncRef = FuncRef.new()
-var teleport_callback_funcref:FuncRef = FuncRef.new()
+var vr_teleport_action_const = load("res://addons/sar1_vr_manager/components/actions/vr_teleport_action.tscn")
 
-func _teleported(p_transform: Transform) -> void:
+var can_teleport_funcref
+var teleport_callback_funcref
+
+func _teleported(p_transform: Transform3D) -> void:
 	if teleport_callback_funcref.is_valid():
-		teleport_callback_funcref.call_func(p_transform) 
+		teleport_callback_funcref.call(p_transform) 
 
 func _can_teleport() -> bool:
 	if can_teleport_funcref.is_valid():
-		return can_teleport_funcref.call_func() 
+		return can_teleport_funcref.call() 
 		
 	return false
 
-func tracker_added(p_tracker: vr_controller_tracker_const) -> void:
-	.tracker_added(p_tracker)
+func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_const
+	super.tracker_added(p_tracker)
 	
 	var tracker_hand: int = p_tracker.get_hand()
-	if tracker_hand == ARVRPositionalTracker.TRACKER_LEFT_HAND or\
-	tracker_hand == ARVRPositionalTracker.TRACKER_RIGHT_HAND:
-		var action: Spatial = vr_teleport_action_const.instance()
+	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or\
+	tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
+		var action: Node3D = vr_teleport_action_const.instantiate()
 		
 		### Assign callsbacks ###
 		action.set_can_teleport_funcref(self, "_can_teleport")
-		if action.connect("teleported", self, "_teleported") != OK:
+		if action.connect("teleported", Callable(self, "_teleported")) != OK:
 			printerr("Could not connect teleported signal!")
 		###
 		
 		p_tracker.add_component_action(action)
 
-func tracker_removed(p_tracker: vr_controller_tracker_const) -> void:
-	.tracker_removed(p_tracker)
+func tracker_removed(p_tracker: XRController3D) -> void: # vr_controller_tracker_const
+	super.tracker_removed(p_tracker)
 	
 func assign_teleport_callback_funcref(p_instance: Object, p_function: String) -> void:
-	teleport_callback_funcref = funcref(p_instance, p_function)
+	teleport_callback_funcref = Callable(p_instance, p_function)
 	
 func assign_can_teleport_funcref(p_instance: Object, p_function: String) -> void:
-	can_teleport_funcref = funcref(p_instance, p_function)
+	can_teleport_funcref = Callable(p_instance, p_function)
 
 func _enter_tree():
 	set_name("TeleportComponent")

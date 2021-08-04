@@ -1,7 +1,8 @@
 extends Node
 
-var snapping_points: LassoDB = LassoDB.new()
-
+# FIXME: Add when we get Lasso back
+# var snapping_points: LassoDB = LassoDB.new()
+#
 #static func calc_snapping_power_sphere(point : Vector3, size_radius: float, power : float, source : Transform) -> float:
 #	var point_local = source.xform_inv(point)
 #	var rejection = Vector3(point_local.x, point_local.y, 0) #assuming -z is forward

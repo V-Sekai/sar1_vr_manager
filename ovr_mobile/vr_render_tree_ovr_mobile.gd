@@ -3,11 +3,11 @@ extends "res://addons/sar1_vr_manager/vr_render_tree.gd"
 var ovr_component_tree: NativeScript = null
 var ovr_render_model: NativeScript = null
 
-var tree: Spatial = null
+var tree: Node3D = null
 
 
-func setup_openvr_dummy_attachment(p_name: String) -> Spatial:
-	var spatial: Spatial = create_attachment_point(p_name)
+func setup_openvr_dummy_attachment(p_name: String) -> Node3D:
+	var spatial: Node3D = create_attachment_point(p_name)
 	spatial.translate(Vector3(0.0, -0.01, 0.05))
 	spatial.rotate_x(deg2rad(-45))
 
@@ -30,14 +30,14 @@ func load_render_tree(p_name: String) -> bool:
 			result = tree.load_tree("generic_controller")
 	else:
 		if ovr_render_model:
-			tree = Spatial.new()
+			tree = Node3D.new()
 
-			var mesh_instance: MeshInstance = MeshInstance.new()
+			var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 			mesh_instance.set_name("mesh")
 			tree.add_child(mesh_instance)
 
 			var render_mesh: Mesh = null
-			var render_cache = null  #VRManager.get_render_cache()
+			var render_cache: Object = null  #VRManager.get_render_cache()
 
 			if render_cache:
 				render_mesh = render_cache.get_render_mesh(controller_name)
@@ -65,7 +65,7 @@ func load_render_tree(p_name: String) -> bool:
 	return result
 
 
-func get_attachment_point(p_name: String) -> Spatial:
+func get_attachment_point(p_name: String) -> Node3D:
 	if tree:
 		if tree.has_node(p_name):
 			var render_mesh_instance = tree.get_node(p_name)
@@ -80,7 +80,7 @@ func update_render_tree() -> void:
 		tree.update_tree()
 
 
-func _init() -> void:
+func _init():
 	##################
 	# Component Tree #
 	##################

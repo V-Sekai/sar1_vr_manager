@@ -1,4 +1,4 @@
-extends "vr_action.gd"
+extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_action.gd
 
 signal hand_pose_changed(p_pose)
 
@@ -9,18 +9,17 @@ var trigger_pressed: bool = false
 var grip_pressed: bool = false
 
 
-enum {
-	HAND_POSE_DEFAULT,
-	HAND_POSE_OPEN,
-	HAND_POSE_NEUTRAL,
-	HAND_POSE_POINT,
-	HAND_POSE_GUN,
-	HAND_POSE_THUMBS_UP,
-	HAND_POSE_FIST,
-	HAND_POSE_VICTORY,
-	HAND_POSE_OK_SIGN,
-	HAND_POSE_COUNT
-}
+const HAND_POSE_DEFAULT=0
+const HAND_POSE_OPEN=1
+const HAND_POSE_NEUTRAL=2
+const HAND_POSE_POINT=3
+const HAND_POSE_GUN=4
+const HAND_POSE_THUMBS_UP=5
+const HAND_POSE_FIST=6
+const HAND_POSE_VICTORY=7
+const HAND_POSE_OK_SIGN=8
+const HAND_POSE_COUNT=9
+
 
 var current_hand_pose: int = HAND_POSE_DEFAULT
 
@@ -61,7 +60,7 @@ func update_virtual_hand_pose() -> void:
 	
 
 func _on_action_pressed(p_action: String) -> void:
-	._on_action_pressed(p_action)
+	super._on_action_pressed(p_action)
 	match p_action:
 		"/hands/hand_pose_thumb_touched":
 			thumb_touched = true
@@ -80,7 +79,7 @@ func _on_action_pressed(p_action: String) -> void:
 			update_virtual_hand_pose()
 
 func _on_action_released(p_action: String) -> void:
-	._on_action_released(p_action)
+	super._on_action_released(p_action)
 	match p_action:
 		"/hands/hand_pose_thumb_touched":
 			thumb_touched = false

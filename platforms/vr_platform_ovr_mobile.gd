@@ -1,15 +1,15 @@
-extends "vr_platform.gd"
-tool
+@tool
+extends "res://addons/sar1_vr_manager/platforms/vr_platform.gd" # vr_platform.gd
 
 
 func get_platform_name() -> String:
 	return "OVRMobile"
 
 
-func create_render_tree() -> Spatial:
-	var render_tree: Spatial = Spatial.new()
+func create_render_tree() -> Node3D:
+	var render_tree: Node3D = Node3D.new()
 
-	var mesh_instance: MeshInstance = MeshInstance.new()
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	render_tree.add_child(mesh_instance)
 
 	var sphere_mesh: SphereMesh = SphereMesh.new()

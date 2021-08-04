@@ -1,4 +1,4 @@
-extends "vr_action.gd"
+extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_action.gd
 
 const LASER_THICKNESS = 0.001
 const LASER_HIT_SIZE = 0.01
@@ -9,10 +9,10 @@ const line_renderer_const = preload("res://addons/line_renderer/line_renderer.gd
 var is_active_selector: bool = false
 var valid_ray_result: Dictionary = {}
 
-export (float) var maxiumum_ray_length: float = 10.0
+@export  var maxiumum_ray_length: float # (float) = 10.0
 
-var laser_node: Spatial = null
-var laser_hit_node: MeshInstance = null
+var laser_node: Node3D = null
+var laser_hit_node: MeshInstance3D = null
 
 # Simulate doubleclicks so we can use file browsers in VR
 const DOUBLECLICK_TIME = 1000 # 1 second
@@ -22,10 +22,10 @@ var is_doubleclick: bool = false
 signal requested_as_ui_selector(p_hand)
 
 func _on_action_pressed(p_action: String) -> void:
-	._on_action_pressed(p_action)
+	super._on_action_pressed(p_action)
 	match p_action:
 		"/menu/menu_interaction":
-			var current_msec: int = OS.get_ticks_msec()
+			var current_msec: int = Time.get_ticks_msec()
 			if !is_doubleclick:
 				if current_msec < last_click_time + DOUBLECLICK_TIME:
 					is_doubleclick = true
@@ -33,18 +33,18 @@ func _on_action_pressed(p_action: String) -> void:
 				is_doubleclick = false
 			
 			emit_signal("requested_as_ui_selector", tracker.get_hand())
-			if valid_ray_result and is_active_selector:
+			if not valid_ray_result.is_empty() and is_active_selector:
 				if valid_ray_result["collider"].has_method("on_pointer_pressed"):
 					valid_ray_result["collider"].on_pointer_pressed(valid_ray_result["position"], is_doubleclick)
 			
-			last_click_time = OS.get_ticks_msec()
+			last_click_time = Time.get_ticks_msec()
 			
 
 func _on_action_released(p_action: String) -> void:
-	._on_action_released(p_action)
+	super._on_action_released(p_action)
 	match p_action:
 		"/menu/menu_interaction":
-			if valid_ray_result and is_active_selector:
+			if not valid_ray_result.is_empty() and is_active_selector:
 				if valid_ray_result["collider"].has_method("on_pointer_release"):
 					valid_ray_result["collider"].on_pointer_release(valid_ray_result["position"])
 
@@ -68,9 +68,10 @@ func create_nodes() -> void:
 	var laser_hit_mesh: SphereMesh = SphereMesh.new()
 	laser_hit_mesh.radius *= LASER_HIT_SIZE
 	laser_hit_mesh.height *= LASER_HIT_SIZE
-	laser_hit_mesh.material = VRManager.get_laser_material()
+	var tmpmaterial: Variant = VRManager.get_laser_material()
+	laser_hit_mesh.material = tmpmaterial # workaround gd bug
 
-	laser_hit_node = MeshInstance.new()
+	laser_hit_node = MeshInstance3D.new()
 	laser_hit_node.name = "LaserHit"
 	laser_hit_node.mesh = laser_hit_mesh
 
@@ -92,19 +93,19 @@ func _exit_tree() -> void:
 
 
 func cast_validation_ray(p_length: float) -> Dictionary:
-	var dss: PhysicsDirectSpaceState = PhysicsServer.space_get_direct_state(get_world().get_space())
+	var dss: PhysicsDirectSpaceState3D = PhysicsServer3D.space_get_direct_state(get_world_3d().get_space())
 	if ! dss:
 		return {}
 
 	var start: Vector3 = laser_node.global_transform.origin
 	var end: Vector3 = (
 		laser_node.global_transform.origin
-		+ laser_node.global_transform.basis.xform(Vector3(0.0, 0.0, -p_length))
+		+ laser_node.global_transform.basis*(Vector3(0.0, 0.0, -p_length))
 	)
 
 	var ray_result: Dictionary = dss.intersect_ray(start, end, [], UI_COLLISION_LAYER, false, true)
 
-	laser_hit_node.global_transform = Transform(global_transform.basis, end)
+	laser_hit_node.global_transform = Transform3D(global_transform.basis, end)
 
 	if ray_result:
 		if ray_result["collider"].has_method("validate_pointer"):
@@ -112,7 +113,7 @@ func cast_validation_ray(p_length: float) -> Dictionary:
 				laser_node.start = start
 				laser_node.end = ray_result["position"]
 
-				laser_hit_node.global_transform = Transform(
+				laser_hit_node.global_transform = Transform3D(
 					global_transform.basis, ray_result["position"]
 				)
 
@@ -124,7 +125,7 @@ func cast_validation_ray(p_length: float) -> Dictionary:
 func update_ray() -> void:
 	if is_active_selector and VRManager.xr_active:
 		valid_ray_result = cast_validation_ray(maxiumum_ray_length)
-		if ! valid_ray_result.empty() and is_active_selector:
+		if ! valid_ray_result.is_empty() and is_active_selector:
 			if valid_ray_result["collider"].has_method("on_pointer_moved"):
 				valid_ray_result["collider"].on_pointer_moved(
 					valid_ray_result["position"], valid_ray_result["normal"]
