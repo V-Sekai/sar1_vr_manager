@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=2]
 
-[ext_resource path="res://addons/sar1_vr_manager/materials/laser.shader" type="Shader" id=2]
+[ext_resource path="res://addons/sar1_vr_manager/materials/laser.gdshader" type="Shader" id=2]
 
 [resource]
 render_priority = 126
