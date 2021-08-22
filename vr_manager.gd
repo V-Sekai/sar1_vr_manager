@@ -284,7 +284,8 @@ func setup_vr_interface() -> void:
 				print("Could not initalise interface %s..." % interface_name)
 					
 	print("Could not initalise any VR interface...")
-	OS.vsync_enabled = true
+	# FIXME: Need vsync_enabled=true for non-VR
+	###### OS.vsync_enabled = true
 	xr_active = false
 		
 func initialise_vr_interface(p_force: bool = false) -> void:

@@ -37,7 +37,7 @@ static func create_pose(p_pose:Node3D, p_name: String, p_action: String, p_hand:
 func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	if p_origin:
 		var openvr_pose_nativescript: NativeScript = load("res://addons/godot-openvr/OpenVRPose.gdns")
-		if openvr_pose_nativescript and openvr_pose_nativescript.can_instance():
+		if openvr_pose_nativescript and openvr_pose_nativescript.can_instantiate():
 			var hand: int = p_controller.get_hand()
 			
 			#var model:Spatial = create_pose("Model", "/actions/menu/in/model", hand, p_origin)
@@ -136,7 +136,7 @@ func pre_setup() -> void:
 	if ! Engine.is_editor_hint():
 		# Load our config before we initialise
 		var openvr_config_nativescript: NativeScript = load("res://addons/godot-openvr/OpenVRConfig.gdns")
-		if openvr_config_nativescript and openvr_config_nativescript.can_instance():
+		if openvr_config_nativescript and openvr_config_nativescript.can_instantiate():
 			openvr_config = openvr_config_nativescript.new()
 			if openvr_config:
 				if ProjectSettings.globalize_path("res://") == "":
