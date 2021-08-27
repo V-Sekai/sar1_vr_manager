@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded, cull_disabled, skip_vertex_transform, depth_test_disable;
+render_mode unshaded, cull_disabled, skip_vertex_transform, depth_test_disabled;
 
 uniform vec3 target = vec3(0,0,-1);
 uniform float width = 0.1;

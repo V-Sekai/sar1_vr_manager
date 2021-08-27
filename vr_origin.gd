@@ -31,10 +31,10 @@ func clear_controllers() -> void:
 	for tracker_id in active_controllers.keys():
 		remove_tracker(tracker_id)
 		
-	assert(active_controllers == {})
+	assert(active_controllers.is_empty())
 	assert(unknown_controller_count == 0)
 	
-	assert(hand_controllers == [])
+	assert(hand_controllers.is_empty())
 	assert(left_hand_controller == null)
 	assert(right_hand_controller == null)
 

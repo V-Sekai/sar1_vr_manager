@@ -29,22 +29,31 @@ var flick_target: Node3D = null
 var lasso_point: Object = null # : LassoPoint = LassoPoint.new()
 
 func set_power(p_power:float) -> void:
-	lasso_point.set_snapping_power(p_power)
+	if lasso_point != null:
+		lasso_point.set_snapping_power(p_power)
 	
 func get_power() -> float:
-	return lasso_point.get_snapping_power()
+	if lasso_point != null:
+		return lasso_point.get_snapping_power()
+	return 0.0
 
 func set_size(p_size:float) -> void:
-	lasso_point.set_size(p_size)
+	if lasso_point != null:
+		lasso_point.set_size(p_size)
 	
 func get_size() -> float:
-	return lasso_point.get_size()
+	if lasso_point != null:
+		return lasso_point.get_size()
+	return 0.0
 	
 func set_snapping_enabled(p_enabled:bool) -> void:
-	lasso_point.enable_snapping(p_enabled)
+	if lasso_point != null:
+		lasso_point.enable_snapping(p_enabled)
 	
 func get_snapping_enabled() -> bool:
-	return lasso_point.get_snapping_enabled()
+	if lasso_point != null:
+		return lasso_point.get_snapping_enabled()
+	return false
 	
 
 
@@ -65,10 +74,12 @@ func _exit_tree():
 
 func register_snapping_point() -> void:
 	var snapping_singleton = get_node("/root/SnappingSingleton")
-	lasso_point.register_point(snapping_singleton.snapping_points, self)
+	if lasso_point != null:
+		lasso_point.register_point(snapping_singleton.snapping_points, self)
 	
 func unregister_snapping_point() -> void:
-	lasso_point.unregister_point()
+	if lasso_point != null:
+		lasso_point.unregister_point()
 
 func call_snap_hover() -> void:
 	emit_signal("on_snap_hover")
