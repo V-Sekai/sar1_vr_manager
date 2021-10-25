@@ -143,8 +143,9 @@ func create_render_tree() -> Node3D:
 
 
 func is_joypad_id_input_map_valid(p_id: int) -> bool:
-	for i in xr_tracker_count:
-		var tracker: XRPositionalTracker = XRServer.get_tracker(i)
+	var tracker_dict: Dictionary = XRServer.get_trackers(XRServer.TRACKER_ANY)
+	for key in tracker_dict:
+		var tracker: XRPositionalTracker = tracker_dict[key]
 
 		if tracker.get_joy_id() == p_id:
 			return false
@@ -180,43 +181,40 @@ func _on_interface_removed(p_interface_name: String) -> void:
 	print("Interface removed %s" % p_interface_name)
 
 
-func _on_tracker_added(p_tracker_name: String, p_type: int, p_id: int) -> void:
+func _on_tracker_added(p_tracker_name: String, p_type: int) -> void:
 	print(
-		"Tracker added {tracker_name} type {tracker_type_name} id {id}".format(
+		"Tracker added {tracker_name} type {tracker_type_name}".format(
 			{
 				"tracker_name": p_tracker_name,
-				"tracker_type_name": get_tracker_type_name(p_type),
-				"id": str(p_id)
+				"tracker_type_name": get_tracker_type_name(p_type)
 			}
 		)
 	)
 
 	xr_tracker_count += 1
 
-	var tracker_id: int = xr_tracker_count - 1
-	var tracker: XRPositionalTracker = XRServer.get_tracker(tracker_id)
+	var tracker: XRPositionalTracker = XRServer.get_tracker(p_tracker_name)
 
-	xr_trackers[p_id] = tracker
+	xr_trackers[p_tracker_name] = tracker
 	
-	emit_signal("tracker_added", p_tracker_name, p_type, p_id)
+	emit_signal("tracker_added", p_tracker_name, p_type)
 
 
-func _on_tracker_removed(p_tracker_name: String, p_type: int, p_id: int) -> void:
+func _on_tracker_removed(p_tracker_name: String, p_type: int) -> void:
 	print(
-		"Tracker removed {tracker_name} type {tracker_type_name} id {id}".format(
+		"Tracker removed {tracker_name} type {tracker_type_name}".format(
 			{
 				"tracker_name": p_tracker_name,
-				"tracker_type_name": get_tracker_type_name(p_type),
-				"id": str(p_id)
+				"tracker_type_name": get_tracker_type_name(p_type)
 			}
 		)
 	)
 
 	xr_tracker_count -= 1
 	
-	if xr_trackers.has(p_id):
-		if xr_trackers.erase(p_id):
-			emit_signal("tracker_removed", p_tracker_name, p_type, p_id)
+	if xr_trackers.has(p_tracker_name):
+		if xr_trackers.erase(p_tracker_name):
+			emit_signal("tracker_removed", p_tracker_name, p_type)
 
 
 func create_vr_platform_for_interface(p_interface_name: String) -> void:
