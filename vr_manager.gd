@@ -94,8 +94,11 @@ func _fade_color_changed(p_color: Color) -> void:
 
 func create_laser_material(p_transparent: bool) -> Material:
 	var new_laser_material = StandardMaterial3D.new()
-	new_laser_material.flags_transparent = p_transparent
-	new_laser_material.flags_unshaded = true
+	if p_transparent:
+		new_laser_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	else:
+		new_laser_material.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+	new_laser_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	new_laser_material.albedo_color = vr_user_preferences.laser_color
 
 	return new_laser_material
