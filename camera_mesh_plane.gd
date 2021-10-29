@@ -62,6 +62,6 @@ func set_distance(p_distance: float) -> void:
 
 func _ready() -> void:
 	var unshaded: StandardMaterial3D = StandardMaterial3D.new()
-	unshaded.flags_unshaded = true
+	unshaded.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	
 	update_plane(distance)

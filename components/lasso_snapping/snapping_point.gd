@@ -74,11 +74,11 @@ func _exit_tree():
 
 func register_snapping_point() -> void:
 	var snapping_singleton = get_node("/root/SnappingSingleton")
-	if lasso_point != null:
+	if type_exists("LassoPoint") and snapping_singleton and lasso_point != null:
 		lasso_point.register_point(snapping_singleton.snapping_points, self)
 	
 func unregister_snapping_point() -> void:
-	if lasso_point != null:
+	if type_exists("LassoPoint") and lasso_point != null:
 		lasso_point.unregister_point()
 
 func call_snap_hover() -> void:
