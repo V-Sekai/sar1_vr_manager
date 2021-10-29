@@ -26,7 +26,7 @@ var snap_interacting = false :
 
 var flick_target: Node3D = null
 
-var lasso_point: Object = null # : LassoPoint = LassoPoint.new()
+var lasso_point: RefCounted = null # LassoPoint = LassoPoint.new()
 
 func set_power(p_power:float) -> void:
 	if lasso_point != null:
@@ -73,12 +73,11 @@ func _exit_tree():
 
 
 func register_snapping_point() -> void:
-	var snapping_singleton = get_node("/root/SnappingSingleton")
-	if type_exists("LassoPoint") and snapping_singleton and lasso_point != null:
-		lasso_point.register_point(snapping_singleton.snapping_points, self)
+	if lasso_point != null:
+		lasso_point.register_point(SnappingSingleton.snapping_points, self)
 	
 func unregister_snapping_point() -> void:
-	if type_exists("LassoPoint") and lasso_point != null:
+	if lasso_point != null:
 		lasso_point.unregister_point()
 
 func call_snap_hover() -> void:
