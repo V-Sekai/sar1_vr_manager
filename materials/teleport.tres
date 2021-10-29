@@ -1,12 +1,13 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=2]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://hbud6t1sa7eq"]
 
-[ext_resource path="res://addons/sar1_vr_manager/images/teleport_arrow.png" type="Texture" id=1]
-[ext_resource path="res://addons/sar1_vr_manager/materials/teleport.gdshader" type="Shader" id=2]
+[ext_resource type="Texture2D" uid="uid://daup3qe0kfi6p" path="res://addons/sar1_vr_manager/images/teleport_arrow.png" id="1"]
+[ext_resource type="Shader" path="res://addons/sar1_vr_manager/materials/teleport.gdshader" id="2"]
 
 [resource]
-shader = ExtResource( 2 )
+render_priority = 0
+shader = ExtResource( "2" )
 shader_param/scale_t = 0.2
 shader_param/length = 20.0
 shader_param/ws = 1.0
-shader_param/mix_color = Color( 0.176471, 0.313726, 0.862745, 1 )
-shader_param/arrow_texture = ExtResource( 1 )
+shader_param/mix_color = Color(0.176471, 0.313726, 0.862745, 1)
+shader_param/arrow_texture = ExtResource( "1" )
