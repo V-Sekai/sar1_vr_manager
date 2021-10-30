@@ -5,7 +5,7 @@ extends MeshInstance3D
 	set = set_distance
 
 
-static func xform_plane(p_transform: Transform3D, p_plane: WorldBoundaryShape3D) -> WorldBoundaryShape3D:
+static func xform_plane(p_transform: Transform3D, p_plane: Plane) -> Plane:
 	var point: Vector3 = p_plane.normal * p_plane.d;
 	var point_dir: Vector3 = point + p_plane.normal;
 	point = p_transform*(point)
@@ -15,19 +15,19 @@ static func xform_plane(p_transform: Transform3D, p_plane: WorldBoundaryShape3D)
 	normal = normal.normalized()
 	var d: float = normal.dot(point)
 
-	return WorldBoundaryShape3D(normal, d);
+	return Plane(normal, d);
 
 static func get_endpoints_for_camera(p_camera: Camera3D) -> PackedVector2Array:
 	var planes: Array = p_camera.get_frustum()
 	
 	var camera_gt_inv: Transform3D = p_camera.global_transform.inverse()
 	
-	var near_plane: WorldBoundaryShape3D = xform_plane(camera_gt_inv, planes[0])
-	var far_plane: WorldBoundaryShape3D = xform_plane(camera_gt_inv, planes[1])
-	#var left_plane: WorldBoundaryShape3D = xform_plane(camera_gt_inv, planes[2])
-	var top_plane: WorldBoundaryShape3D = xform_plane(camera_gt_inv, planes[3])
-	var right_plane: WorldBoundaryShape3D = xform_plane(camera_gt_inv, planes[4])
-	#var bottom_plane: WorldBoundaryShape3D = xform_plane(camera_gt_inv, planes[5])
+	var near_plane: Plane = xform_plane(camera_gt_inv, planes[0])
+	var far_plane: Plane = xform_plane(camera_gt_inv, planes[1])
+	#var left_plane: Plane = xform_plane(camera_gt_inv, planes[2])
+	var top_plane: Plane = xform_plane(camera_gt_inv, planes[3])
+	var right_plane: Plane = xform_plane(camera_gt_inv, planes[4])
+	#var bottom_plane: Plane = xform_plane(camera_gt_inv, planes[5])
 
 	var near_endpoint: Vector3 = (near_plane.intersect_3(right_plane, top_plane))
 	var far_endpoint: Vector3 =  (far_plane.intersect_3(right_plane, top_plane))
@@ -52,7 +52,7 @@ func update_plane(p_lerp: float) -> void:
 			var lerp_position: float = lerp(z_near, z_far, p_lerp)
 			
 			set_transform(Transform3D(
-				Basis(Vector3(PI * 0.5, 0.0, 0.0)).scaled(Vector3(lerped_size.x, lerped_size.y, 1.0)),
+				Basis.from_euler(Vector3(PI * 0.5, 0.0, 0.0)).scaled(Vector3(lerped_size.x, lerped_size.y, 1.0)),
 				Vector3(0.0, 0.0, -lerp_position)
 			))
 		
@@ -62,6 +62,6 @@ func set_distance(p_distance: float) -> void:
 
 func _ready() -> void:
 	var unshaded: StandardMaterial3D = StandardMaterial3D.new()
-	unshaded.flags_unshaded = true
+	unshaded.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	
 	update_plane(distance)

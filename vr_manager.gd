@@ -66,7 +66,8 @@ var xr_active: bool = false
 
 var vr_fader: ColorRect = null
 
-var tracker_names: Array = []
+var xr_tracker_count: int = 0
+var xr_trackers: Dictionary = {}
 
 var snap_turning_radians: float = 0.0
 
@@ -93,8 +94,11 @@ func _fade_color_changed(p_color: Color) -> void:
 
 func create_laser_material(p_transparent: bool) -> Material:
 	var new_laser_material = StandardMaterial3D.new()
-	new_laser_material.flags_transparent = p_transparent
-	new_laser_material.flags_unshaded = true
+	if p_transparent:
+		new_laser_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	else:
+		new_laser_material.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+	new_laser_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	new_laser_material.albedo_color = vr_user_preferences.laser_color
 
 	return new_laser_material
@@ -142,10 +146,9 @@ func create_render_tree() -> Node3D:
 
 
 func is_joypad_id_input_map_valid(p_id: int) -> bool:
-	var controller_trackers: Dictionary = XRServer.get_trackers(XRServer.TRACKER_CONTROLLER)
-	
-	for key in controller_trackers.keys():
-		var tracker: XRPositionalTracker = XRServer.get_tracker(key)
+	var tracker_dict: Dictionary = XRServer.get_trackers(XRServer.TRACKER_ANY)
+	for key in tracker_dict:
+		var tracker: XRPositionalTracker = tracker_dict[key]
 
 		if tracker.get_joy_id() == p_id:
 			return false
@@ -191,11 +194,13 @@ func _on_tracker_added(p_tracker_name: String, p_type: int) -> void:
 		)
 	)
 
+	xr_tracker_count += 1
+
 	var tracker: XRPositionalTracker = XRServer.get_tracker(p_tracker_name)
-	if tracker:
-		assert(!tracker_names.has(p_tracker_name))
-		tracker_names.push_back(p_tracker_name)
-		emit_signal("tracker_added", p_tracker_name, p_type)
+
+	xr_trackers[p_tracker_name] = tracker
+	
+	emit_signal("tracker_added", p_tracker_name, p_type)
 
 
 func _on_tracker_removed(p_tracker_name: String, p_type: int) -> void:
@@ -203,15 +208,16 @@ func _on_tracker_removed(p_tracker_name: String, p_type: int) -> void:
 		"Tracker removed {tracker_name} type {tracker_type_name}".format(
 			{
 				"tracker_name": p_tracker_name,
-				"tracker_type_name": get_tracker_type_name(p_type),
+				"tracker_type_name": get_tracker_type_name(p_type)
 			}
 		)
 	)
+
+	xr_tracker_count -= 1
 	
-	assert(tracker_names.has(p_tracker_name))
-	tracker_names.erase(p_tracker_name)
-	
-	emit_signal("tracker_removed", p_tracker_name, p_type)
+	if xr_trackers.has(p_tracker_name):
+		if xr_trackers.erase(p_tracker_name):
+			emit_signal("tracker_removed", p_tracker_name, p_type)
 
 
 func create_vr_platform_for_interface(p_interface_name: String) -> void:
