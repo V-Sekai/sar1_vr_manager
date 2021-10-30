@@ -4,15 +4,16 @@ importer="texture"
 type="StreamTexture2D"
 uid="uid://daup3qe0kfi6p"
 path.s3tc="res://.godot/imported/teleport_arrow.png-875ba307d94137d97d1c38e0c246974c.s3tc.stex"
+path.etc2="res://.godot/imported/teleport_arrow.png-875ba307d94137d97d1c38e0c246974c.etc2.stex"
 metadata={
-"imported_formats": ["bptc", "s3tc"],
+"imported_formats": ["s3tc", "etc2"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://addons/sar1_vr_manager/images/teleport_arrow.png"
-dest_files=["res://.godot/imported/teleport_arrow.png-875ba307d94137d97d1c38e0c246974c.s3tc.stex"]
+dest_files=["res://.godot/imported/teleport_arrow.png-875ba307d94137d97d1c38e0c246974c.s3tc.stex", "res://.godot/imported/teleport_arrow.png-875ba307d94137d97d1c38e0c246974c.etc2.stex"]
 
 [params]
 
