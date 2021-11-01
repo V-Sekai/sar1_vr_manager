@@ -6,7 +6,7 @@ var trackers: Array = []
 var controller_actions_scene_path: String = "res://addons/sar1_vr_manager/openvr/controller_actions.tscn"
 var controller_actions_scene: PackedScene = null
 
-var action_json_editor_directory: String = "res://assets/actions/openvr/actions"
+var action_json_editor_directory: String = "res://vsk_default/actions/openvr/actions"
 var action_json_filename: String = "actions.json"
 var default_action_set: String = "/actions/godot"
 
