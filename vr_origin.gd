@@ -197,9 +197,10 @@ func _enter_tree() -> void:
 	VRManager.assign_xr_origin(self)
 	
 	create_components()
-
-	for key in VRManager.tracker_names:
-		add_tracker(key)
+	var properties = VRManager.get_property_list()
+	if properties.has("tracker_names"):
+		for key in VRManager.tracker_names:
+			add_tracker(key)
 		
 	setup_components()
 
