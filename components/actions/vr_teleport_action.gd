@@ -205,8 +205,11 @@ func _process(_delta):
 					is_on_floor = false
 				else:
 					var up = Vector3(0.0, 1.0, 0.0)
-					var end_pos = target_global_origin - (up * 0.1)
-					var intersects = state.intersect_ray(target_global_origin, end_pos)
+					var end_pos = target_global_origin - (up * 0.1)		
+					var parameters: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
+					parameters.from = target_global_origin
+					parameters.to = end_pos
+					var intersects = state.intersect_ray(parameters)
 					if intersects.is_empty():
 						is_on_floor = false
 					else:
