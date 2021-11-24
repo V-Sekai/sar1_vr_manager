@@ -84,7 +84,7 @@ func remove_component_action(p_component_action: Node) -> void:
 	
 	var index: int = component_action.find(p_component_action)
 	if index != -1:
-		component_action.remove(index)
+		component_action.remove_at(index)
 	else:
 		printerr("Attempted to remove invalid module tracker!")
 		

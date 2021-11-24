@@ -94,7 +94,7 @@ func remove_tracker(p_tracker_name: String) -> void:
 					left_hand_controller = null
 				if right_hand_controller == controller:
 					right_hand_controller = null
-				hand_controllers.remove(hand_controllers.find(controller))
+				hand_controllers.remove_at(hand_controllers.find(controller))
 
 			if XRServer.get_tracker(p_tracker_name):
 				var tracker: XRPositionalTracker = XRServer.get_tracker(p_tracker_name)

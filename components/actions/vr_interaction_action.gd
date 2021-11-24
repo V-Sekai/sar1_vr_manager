@@ -54,7 +54,7 @@ func _on_interaction_body_entered(p_body: Node):
 func _on_interaction_body_exited(p_body: Node):
 	var index: int = objects_within_range.find(p_body)
 	if index != -1:
-		objects_within_range.remove(index)
+		objects_within_range.remove_at(index)
 
 
 func get_nearest_valid_object() -> Node3D:

@@ -30,7 +30,7 @@ func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_c
 func tracker_removed(p_tracker: XRController3D) -> void: # vr_controller_tracker_const
 	var index: int = hand_controllers.find(p_tracker)
 	if index != -1:
-		hand_controllers.remove(index)
+		hand_controllers.remove_at(index)
 		
 	if left_hand_controller == p_tracker:
 		left_hand_controller = null
