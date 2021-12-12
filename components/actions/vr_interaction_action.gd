@@ -95,4 +95,4 @@ func _process(p_delta: float) -> void:
 
 func _ready() -> void:
 	super._ready()
-	_VSKNetworkManager = $"/root/NetworkManager"
+	_VSKNetworkManager = $"/root/VSKNetworkManager"
