@@ -302,10 +302,13 @@ func toggle_vr() -> void:
 	
 	if xr_interface:
 		xr_active = enabled
-		OS.vsync_enabled = !enabled
+		if enabled:
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+		else:			
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	else:
 		xr_active = false
-		OS.vsync_enabled = true
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 		
 	emit_signal("xr_mode_changed")
 
