@@ -9,7 +9,7 @@ const line_renderer_const = preload("res://addons/line_renderer/line_renderer.gd
 var is_active_selector: bool = false
 var valid_ray_result: Dictionary = {}
 
-@export  var maxiumum_ray_length: float # (float) = 10.0
+@export var maxiumum_ray_length: float = 10.0
 
 var laser_node: Node3D = null
 var laser_hit_node: MeshInstance3D = null

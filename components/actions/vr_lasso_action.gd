@@ -1,9 +1,9 @@
 extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_action.gd
-@export  var straight_color : Color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.05)
-@export  var unsnapped_color : Color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.1)
-@export  var snapped_color : Color = Color(254.0/255.0, 95.0/255.0, 85.0/255.0, 1.0)
-@export  var snap_circle_color : Color = Color(1.0, 1.0, 1.0, 1.0)
-@export  var snap_circle_min_alpha : float = 0.0
+@export var straight_color : Color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.05)
+@export var unsnapped_color : Color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.1)
+@export var snapped_color : Color = Color(254.0/255.0, 95.0/255.0, 85.0/255.0, 1.0)
+@export var snap_circle_color : Color = Color(1.0, 1.0, 1.0, 1.0)
+@export var snap_circle_min_alpha : float = 0.0
 @export var straight_laser: NodePath 
 @export var snapped_laser: NodePath 
 @export var primary_circle: NodePath 

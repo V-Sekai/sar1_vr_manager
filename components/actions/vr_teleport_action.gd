@@ -7,9 +7,9 @@ extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_acti
 
 const AXIS_MAXIMUM = 0.5
 
-@export  var can_teleport_color : Color = Color(0.0, 1.0, 0.0, 1.0)
-@export  var cant_teleport_color : Color = Color(1.0, 0.0, 0.0, 1.0)
-@export  var no_collision_color : Color = Color(45.0 / 255.0, 80.0 / 255.0, 220.0 / 255.0, 1.0)
+@export var can_teleport_color : Color = Color(0.0, 1.0, 0.0, 1.0)
+@export var cant_teleport_color : Color = Color(1.0, 0.0, 0.0, 1.0)
+@export var no_collision_color : Color = Color(45.0 / 255.0, 80.0 / 255.0, 220.0 / 255.0, 1.0)
 @export var player_height = 1.8 :
 	set = set_player_height,
 	get = get_player_height
@@ -19,10 +19,10 @@ const AXIS_MAXIMUM = 0.5
 	get = get_player_radius
 
 @export var strength = 2.5
-@export  var collision_mask : int = 1
-@export  var margin : float = 0.001
+@export var collision_mask : int = 1
+@export var margin : float = 0.001
 
-@export  var camera : NodePath = null
+@export var camera : NodePath = null
 
 @onready var ws = XRServer.world_scale
 var origin_node = null

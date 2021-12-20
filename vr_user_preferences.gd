@@ -20,42 +20,42 @@ class  vr_mode_override_enum :
 
 var vr_mode_override: int = vr_mode_override_enum.VR_MODE_USE_CONFIG
 
-@export  var vr_mode_enabled: bool # (bool) = true
+@export var vr_mode_enabled: bool = true
 
 class  vr_hmd_mirroring_enum :
 	const HMD_MIRROR_FLAT_UI=0
 	const HMD_MIRROR_VR=1
 
-@export  var vr_hmd_mirroring: int # (int) = vr_hmd_mirroring_enum.HMD_MIRROR_FLAT_UI
+@export var vr_hmd_mirroring: int = vr_hmd_mirroring_enum.HMD_MIRROR_FLAT_UI
 
 class  vr_control_type_enum :
 	const CONTROL_TYPE_CLASSIC=0
 	const CONTROL_TYPE_DUAL_HAND_CONTROLLERS=1
 
-@export  var vr_control_type: int # (int) = vr_control_type_enum.CONTROL_TYPE_DUAL_HAND_CONTROLLERS
+@export var vr_control_type: int = vr_control_type_enum.CONTROL_TYPE_DUAL_HAND_CONTROLLERS
 
 class  body_awareness_enum :
 	const BODY_AWARENESS_HANDS_ONLY=0
 	const BODY_AWARENESS_CONTROLLERS_ONLY=1
 	const BODY_AWARENESS_FULL_BODY=2
 
-@export  var body_awareness: int # (int) = body_awareness_enum.BODY_AWARENESS_HANDS_ONLY
+@export var body_awareness: int = body_awareness_enum.BODY_AWARENESS_HANDS_ONLY
 
-@export  var fov_comfort_mode: bool # (bool) = true
+@export var fov_comfort_mode: bool = true
 
-@export  var movement_on_rotation_controller: bool # (bool) = false
-@export  var click_to_move: bool # (bool) = false
+@export var movement_on_rotation_controller: bool = false
+@export var click_to_move: bool = false
 
-@export  var strafe_movement: bool # (bool) = true
-@export  var always_move_at_full_speed: bool # (bool) = true
+@export var strafe_movement: bool = true
+@export var always_move_at_full_speed: bool = true
 
-@export  var movement_deadzone: float # (float) = 0.2
+@export var movement_deadzone: float = 0.2
 
-@export  var rotation_sensitivity: float # (float) = 1.0
-@export  var rotation_deadzone: float # (float) = 0.2
+@export var rotation_sensitivity: float = 1.0
+@export var rotation_deadzone: float = 0.2
 
-@export  var max_positional_distance_start: float # (float) = 1.0
-@export  var max_positional_distance_end: float # (float) = 1.1
+@export var max_positional_distance_start: float = 1.0
+@export var max_positional_distance_end: float = 1.1
 
 class  turning_mode_enum :
 	const TURNING_MODE_SMOOTH=0
@@ -64,22 +64,22 @@ class  turning_mode_enum :
 	const TURNING_MODE_SNAP_90=3
 	const TURNING_MODE_SNAP_CUSTOM=4
 
-@export  var turning_mode: int # (int) = turning_mode_enum.TURNING_MODE_SNAP_45
-@export  var snap_turning_degrees_custom: int # (int) = 0
+@export var turning_mode: int = turning_mode_enum.TURNING_MODE_SNAP_45
+@export var snap_turning_degrees_custom: int = 0
 
 class  play_position_enum :
 	const PLAY_POSITION_STANDING=0
 	const PLAY_POSITION_SEATED=1
 
-@export  var play_position: int # (int) = play_position_enum.PLAY_POSITION_STANDING
+@export var play_position: int = play_position_enum.PLAY_POSITION_STANDING
 
 class  movement_orientation_enum :
 	const HEAD_ORIENTED_MOVEMENT=0
 	const HAND_ORIENTED_MOVEMENT=1
 	const PLAYSPACE_ORIENTED_MOVEMENT=2
 
-@export  var movement_orientation: int # (int) = movement_orientation_enum.HEAD_ORIENTED_MOVEMENT
-@export  var preferred_hand_oriented_movement_hand: int # (int) = hand_enum.LEFT_HAND
+@export var movement_orientation: int = movement_orientation_enum.HEAD_ORIENTED_MOVEMENT
+@export var preferred_hand_oriented_movement_hand: int = hand_enum.LEFT_HAND
 
 class  movement_type_enum :
 	const MOVEMENT_TYPE_TELEPORT=0
@@ -88,16 +88,16 @@ class  movement_type_enum :
 var movement_type: int = movement_type_enum.MOVEMENT_TYPE_TELEPORT
 
 # 1.0 arm vs 0.0 eye
-@export  var eye_to_arm_ratio : float = 1.0
+@export var eye_to_arm_ratio : float = 1.0
 
 # Measured in centimeters
-@export  var custom_player_height: float # (float) = 1.8
+@export var custom_player_height: float = 1.8
 
 # Full armspan/wingspan (to fingers).
 # Data indicates that the average armspan is that of overall height
-@export  var custom_player_armspan_to_height_ratio: float # (float) = 1.0
+@export var custom_player_armspan_to_height_ratio: float = 1.0
 
-@export  var laser_color : Color = Color(1.0, 0, 0, 0.5)
+@export var laser_color : Color = Color(1.0, 0, 0, 0.5)
 
 func set_settings_values_and_save() -> void:
 	set_settings_values()
