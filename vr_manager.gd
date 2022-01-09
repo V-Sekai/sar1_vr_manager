@@ -338,7 +338,7 @@ func apply_project_settings() -> void:
 	
 			var vr_interfaces_property_info: Dictionary = {
 				"name": "vr/config/interfaces",
-				"type": TYPE_STRING_ARRAY,
+				"type": TYPE_PACKED_STRING_ARRAY,
 				"hint": PROPERTY_HINT_NONE,
 				"hint_string": ""
 			}
