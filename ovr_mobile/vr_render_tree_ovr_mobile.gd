@@ -34,7 +34,7 @@ func load_render_tree(p_name: String) -> bool:
 
 			var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 			mesh_instance.set_name("mesh")
-			tree.add_child(mesh_instance)
+			tree.add_child(mesh_instance, true)
 
 			var render_mesh: Mesh = null
 			var render_cache: Object = null  #VRManager.get_render_cache()
@@ -53,14 +53,14 @@ func load_render_tree(p_name: String) -> bool:
 				mesh_instance.set_mesh(render_mesh)
 
 			# Create dummy attachments
-			tree.add_child(setup_openvr_dummy_attachment("base"))
-			tree.add_child(setup_openvr_dummy_attachment("handgrip"))
-			tree.add_child(setup_openvr_dummy_attachment("tip"))
+			tree.add_child(setup_openvr_dummy_attachment("base"), true)
+			tree.add_child(setup_openvr_dummy_attachment("handgrip"), true)
+			tree.add_child(setup_openvr_dummy_attachment("tip"), true)
 
 			result = true
 	if tree:
 		tree.set_name("RenderTree")
-		add_child(tree)
+		add_child(tree, true)
 
 	return result
 

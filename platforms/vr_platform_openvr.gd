@@ -30,7 +30,7 @@ static func create_pose(p_pose:Node3D, p_name: String, p_action: String, p_hand:
 	p_pose.set_action(p_action)
 	p_pose.set_on_hand(p_hand)
 	
-	p_origin.add_child(p_pose)
+	p_origin.add_child(p_pose, true)
 	
 	return p_pose
 
@@ -68,7 +68,7 @@ func add_controller(p_controller: XRController3D, p_origin: XROrigin3D):
 			var controller_actions: Node = controller_actions_scene.instantiate()
 			if controller_actions:
 				controller_actions.set_hand(hand)
-				p_controller.add_child(controller_actions)
+				p_controller.add_child(controller_actions, true)
 				if (
 					controller_actions.has_signal("on_action_pressed")
 					and controller_actions.has_signal("on_action_released")

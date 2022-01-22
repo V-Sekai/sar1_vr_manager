@@ -80,8 +80,8 @@ func _ready() -> void:
 	create_nodes()
 
 	assert(tracker.laser_origin)
-	tracker.laser_origin.add_child(laser_node)
-	tracker.laser_origin.add_child(laser_hit_node)
+	tracker.laser_origin.add_child(laser_node, true)
+	tracker.laser_origin.add_child(laser_hit_node, true)
 
 	laser_node.hide()
 	laser_hit_node.hide()

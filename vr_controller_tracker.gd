@@ -76,7 +76,7 @@ func add_component_action(p_component_action: Node) -> void:
 		
 	component_action.push_back(p_component_action)
 	
-	add_child(p_component_action)
+	add_child(p_component_action, true)
 
 
 func remove_component_action(p_component_action: Node) -> void:

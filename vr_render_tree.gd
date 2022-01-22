@@ -7,6 +7,6 @@ func create_attachment_point(p_name: String) -> Node3D:
 	# Create attachment attach
 	var attachment_attach = Node3D.new()
 	attachment_attach.set_name("attach")
-	attachment.add_child(attachment_attach)
+	attachment.add_child(attachment_attach, true)
 
 	return attachment

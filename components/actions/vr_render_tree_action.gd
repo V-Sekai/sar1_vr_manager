@@ -26,7 +26,7 @@ func _xr_mode_changed() -> void:
 
 func _ready() -> void:
 	assert(tracker.model_origin)
-	tracker.model_origin.add_child(render_tree)
+	tracker.model_origin.add_child(render_tree, true)
 	
 	if VRManager.xr_origin:
 		_update_scale(VRManager.xr_origin.get_world_scale())

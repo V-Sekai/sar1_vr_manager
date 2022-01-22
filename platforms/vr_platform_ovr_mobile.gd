@@ -10,7 +10,7 @@ func create_render_tree() -> Node3D:
 	var render_tree: Node3D = Node3D.new()
 
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
-	render_tree.add_child(mesh_instance)
+	render_tree.add_child(mesh_instance, true)
 
 	var sphere_mesh: SphereMesh = SphereMesh.new()
 	sphere_mesh.radius = 0.1

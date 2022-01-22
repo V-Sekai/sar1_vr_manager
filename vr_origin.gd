@@ -77,7 +77,7 @@ func add_tracker(p_tracker_name: String) -> void:
 
 		if ! active_controllers.has(p_tracker_name):
 			active_controllers[p_tracker_name] = controller
-			add_child(controller)
+			add_child(controller, true)
 			emit_signal("tracker_added", controller)
 		else:
 			controller.free()
@@ -145,7 +145,7 @@ func _on_tracker_removed(p_tracker_name: String, p_type: int) -> void:
 func create_and_add_component(p_component_script: Script) -> void:
 	var vr_component: Node3D = p_component_script.new()
 	components.push_back(vr_component)
-	add_child(vr_component)
+	add_child(vr_component, true)
 
 func create_components() -> void:
 	create_and_add_component(vr_component_ui_pointer_const)

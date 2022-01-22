@@ -218,8 +218,8 @@ func _ready() -> void:
 	straight_mesh.get_parent().remove_child(straight_mesh)
 	snapped_mesh.get_parent().remove_child(snapped_mesh)
 
-	tracker.laser_origin.add_child(straight_mesh)
-	tracker.laser_origin.add_child(snapped_mesh)
+	tracker.laser_origin.add_child(straight_mesh, true)
+	tracker.laser_origin.add_child(snapped_mesh, true)
 
 	straight_mesh.transform = Transform3D()
 	snapped_mesh.transform = Transform3D()

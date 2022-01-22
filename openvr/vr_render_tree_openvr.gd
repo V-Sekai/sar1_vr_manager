@@ -54,14 +54,14 @@ func load_render_tree(p_vrmanager_instance: Object, p_name: String) -> bool:
 				mesh_instance.set_mesh(render_mesh)
 
 			# Create dummy attachments
-			tree.add_child(setup_openvr_dummy_attachment("base"))
-			tree.add_child(setup_openvr_dummy_attachment("handgrip"))
-			tree.add_child(setup_openvr_dummy_attachment("tip"))
+			tree.add_child(setup_openvr_dummy_attachment("base"), true)
+			tree.add_child(setup_openvr_dummy_attachment("handgrip"), true)
+			tree.add_child(setup_openvr_dummy_attachment("tip"), true)
 
 			result = true
 	if tree:
 		tree.set_name("RenderTree")
-		add_child(tree)
+		add_child(tree, true)
 
 	return result
 
