@@ -44,9 +44,7 @@ const movement_type_names = (
 
 # Platforms
 const vr_platform_const = preload("platforms/vr_platform.gd")
-const vr_platform_openvr_const = preload("platforms/vr_platform_openvr.gd")
-const vr_platform_ovr_mobile_const = preload("platforms/vr_platform_ovr_mobile.gd")
-var vr_platform_oculus_const: Variant = null
+const vr_platform_openxr_const = preload("platforms/vr_platform_openxr.gd")
 
 const vr_constants_const = preload("vr_constants.gd")
 const vr_render_cache_const = preload("vr_render_cache.gd")
@@ -54,10 +52,8 @@ const vr_render_tree_const = preload("vr_render_tree.gd")
 
 var vr_platform: RefCounted = null # vr_platform_const = null
 
-var vr_platform_openvr: RefCounted = null # : vr_platform_const = null
-var vr_platform_oculus: RefCounted = null # : vr_platform_const = null
-var vr_platform_ovr_mobile: RefCounted = null # : vr_platform_const = null
-
+var vr_platform_openxr: RefCounted = null # : vr_platform_const = null
+	
 var render_cache = vr_render_cache_const.new()
 
 var xr_interface: XRInterface = null
@@ -222,12 +218,8 @@ func _on_tracker_removed(p_tracker_name: String, p_type: int) -> void:
 
 func create_vr_platform_for_interface(p_interface_name: String) -> void:
 	match p_interface_name:
-		"OpenVR":
-			vr_platform = vr_platform_openvr
-		"Oculus":
-			vr_platform = vr_platform_oculus
-		"OVRMobile":
-			vr_platform = vr_platform_ovr_mobile
+		"OpenXR":
+			vr_platform = vr_platform_openxr
 		_:
 			vr_platform = vr_platform_const.new()
 
@@ -236,21 +228,10 @@ func create_vr_platform_for_interface(p_interface_name: String) -> void:
 
 
 func create_vr_platforms() -> void:
-	if vr_platform_openvr_const:
-		vr_platform_openvr = vr_platform_openvr_const.new()
-		if vr_platform_openvr:
-			vr_platform_openvr.pre_setup()
-
-	if vr_platform_oculus_const:
-		vr_platform_oculus = vr_platform_oculus_const.new()
-		if vr_platform_oculus:
-			vr_platform_oculus.pre_setup()
-
-	if vr_platform_ovr_mobile_const:
-		vr_platform_ovr_mobile = vr_platform_ovr_mobile_const.new()
-		if vr_platform_ovr_mobile:
-			vr_platform_ovr_mobile.pre_setup()
-
+	if vr_platform_openxr_const:
+		vr_platform_openxr = vr_platform_openxr_const.new()
+		if vr_platform_openxr:
+			vr_platform_openxr.pre_setup()
 
 func platform_add_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	vr_platform.add_controller(p_controller, p_origin)
@@ -262,21 +243,20 @@ func is_quitting() -> void:
 	vr_user_preferences.set_settings_values()
 	
 func setup_vr_interface() -> void:
-	# Temporary workaround to prevent OpenVR plugin crash!
-	var _render_model_temp = load("res://addons/godot-openvr/OpenVRRenderModel.gdns")
-
 	# Search through all the vr interface names in project configuration
 	# Break when one has been found
 	for interface_name in interface_names:
 		xr_interface = XRServer.find_interface(interface_name)
 		if xr_interface:
 			print("Attempting to initialise %s..." % interface_name)
+			var is_interface_initalized: bool = xr_interface.is_initialized()
+			
 			if xr_interface.initialize():
 				print("%s Initalised!" % interface_name)
 				create_vr_platform_for_interface(interface_name)
 				
 				if vr_user_preferences.vr_mode_enabled:
-					OS.vsync_enabled = false
+					DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 					xr_active = true
 					return
 					
@@ -285,8 +265,7 @@ func setup_vr_interface() -> void:
 				print("Could not initalise interface %s..." % interface_name)
 					
 	print("Could not initalise any VR interface...")
-	# FIXME: Need vsync_enabled=true for non-VR
-	###### OS.vsync_enabled = true
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 	xr_active = false
 		
 func initialise_vr_interface(p_force: bool = false) -> void:
