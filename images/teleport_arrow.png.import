@@ -1,7 +1,7 @@
 [remap]
 
 importer="texture"
-type="StreamTexture2D"
+type="CompressedTexture2D"
 uid="uid://daup3qe0kfi6p"
 path.s3tc="res://.godot/imported/teleport_arrow.png-875ba307d94137d97d1c38e0c246974c.s3tc.stex"
 path.etc2="res://.godot/imported/teleport_arrow.png-875ba307d94137d97d1c38e0c246974c.etc2.stex"

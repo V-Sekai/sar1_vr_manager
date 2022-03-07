@@ -1,7 +1,7 @@
 [remap]
 
 importer="texture"
-type="StreamTexture2D"
+type="CompressedTexture2D"
 uid="uid://cjg0fyr6ipms8"
 path="res://.godot/imported/snap_circle.svg-66b84b7443fc3bc35ce354e3142aae10.stex"
 metadata={
