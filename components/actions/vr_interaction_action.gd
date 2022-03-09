@@ -41,7 +41,6 @@ func get_hand_object() -> Node3D:
 	return null
 
 
-		
 func _on_interaction_body_entered(p_body: Node):
 	if p_body.has_method("pick_up"):
 		var index: int = objects_within_range.find(p_body)
