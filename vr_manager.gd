@@ -72,8 +72,8 @@ signal new_origin_assigned(p_origin)
 signal xr_mode_changed()
 signal world_origin_scale_changed(p_scale)
 
-signal tracker_added(tracker_name, type, id)
-signal tracker_removed(tracker_name, type, id)
+signal tracker_added(tracker_name, type)
+signal tracker_removed(tracker_name, type)
 
 # Called for changes to height and armspan
 signal proportions_changed()
@@ -172,15 +172,15 @@ func get_render_cache():
 	return render_cache
 
 
-func _on_interface_added(p_interface_name: String) -> void:
+func _on_interface_added(p_interface_name: StringName) -> void:
 	print("Interface added %s" % p_interface_name)
 
 
-func _on_interface_removed(p_interface_name: String) -> void:
+func _on_interface_removed(p_interface_name: StringName) -> void:
 	print("Interface removed %s" % p_interface_name)
 
 
-func _on_tracker_added(p_tracker_name: String, p_type: int) -> void:
+func _on_tracker_added(p_tracker_name: StringName, p_type: int) -> void:
 	print(
 		"Tracker added {tracker_name} type {tracker_type_name}".format(
 			{
@@ -196,10 +196,10 @@ func _on_tracker_added(p_tracker_name: String, p_type: int) -> void:
 
 	xr_trackers[p_tracker_name] = tracker
 	
-	emit_signal("tracker_added", p_tracker_name, p_type)
+	tracker_added.emit(p_tracker_name, p_type)
 
 
-func _on_tracker_removed(p_tracker_name: String, p_type: int) -> void:
+func _on_tracker_removed(p_tracker_name: StringName, p_type: int) -> void:
 	print(
 		"Tracker removed {tracker_name} type {tracker_type_name}".format(
 			{
@@ -213,7 +213,7 @@ func _on_tracker_removed(p_tracker_name: String, p_type: int) -> void:
 	
 	if xr_trackers.has(p_tracker_name):
 		if xr_trackers.erase(p_tracker_name):
-			emit_signal("tracker_removed", p_tracker_name, p_type)
+			tracker_removed.emit(p_tracker_name, p_type)
 
 
 func create_vr_platform_for_interface(p_interface_name: String) -> void:
@@ -368,32 +368,34 @@ func _ready() -> void:
 	create_vr_platforms()
 
 	if ! Engine.is_editor_hint():
+		print("CONNECTING TO XRSERVER")
 		InputManager.assign_input_map_validation_callback(self, "is_joypad_id_input_map_valid")
+		for initial_iface in XRServer.get_interfaces(): # [{"id":1,"name":"some_name"}] for some reason
+			self._on_interface_added.call_deferred(StringName(initial_iface["name"]))
+		var initial_trackers = XRServer.get_trackers(XRServer.TRACKER_ANY)
+
+		for xrpt in initial_trackers.values():
+			var postracker: XRPositionalTracker = xrpt
+			self._on_tracker_added.call_deferred(postracker.name, postracker.type)
 
 		if (
-			XRServer.connect(
-				"interface_added", Callable(self, "_on_interface_added"), [], CONNECT_DEFERRED
-			)
+			XRServer.interface_added.connect(self._on_interface_added, CONNECT_DEFERRED)
 			!= OK
 		):
 			printerr("interface_added could not be connected")
 		if (
-			XRServer.connect(
-				"interface_removed", Callable(self, "_on_interface_removed"), [], CONNECT_DEFERRED
-			)
+			XRServer.interface_removed.connect(self._on_interface_removed, CONNECT_DEFERRED)
 			!= OK
 		):
 			printerr("interface_removed could not be connected")
 
 		if (
-			XRServer.connect("tracker_added", Callable(self, "_on_tracker_added"), [], CONNECT_DEFERRED)
+			XRServer.tracker_added.connect(self._on_tracker_added, CONNECT_DEFERRED)
 			!= OK
 		):
 			printerr("tracker_added could not be connected")
 		if (
-			XRServer.connect(
-				"tracker_removed", Callable(self, "_on_tracker_removed"), [], CONNECT_DEFERRED
-			)
+			XRServer.tracker_removed.connect(self._on_tracker_removed, CONNECT_DEFERRED)
 			!= OK
 		):
 			printerr("tracker_removed could not be connected")

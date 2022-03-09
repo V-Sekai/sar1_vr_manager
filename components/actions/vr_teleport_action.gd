@@ -22,7 +22,7 @@ const AXIS_MAXIMUM = 0.5
 @export var collision_mask : int = 1
 @export var margin : float = 0.001
 
-@export var camera : NodePath = null
+@export var camera : NodePath = NodePath()
 
 @onready var ws = XRServer.world_scale
 var origin_node = null
@@ -72,7 +72,7 @@ func set_player_height(p_height):
 		collision_shape.height = player_height - (2.0 * player_radius)
 
 	if capsule:
-		capsule.mesh.mid_height = player_height - (2.0 * player_radius)
+		capsule.mesh.height = player_height - (2.0 * player_radius)
 		capsule.position = Vector3(0.0, player_height / 2.0, 0.0)
 
 
@@ -88,7 +88,7 @@ func set_player_radius(p_radius):
 		collision_shape.radius = player_radius
 
 	if capsule:
-		capsule.mesh.mid_height = player_height - (2.0 * player_radius)
+		capsule.mesh.height = player_height - (2.0 * player_radius)
 		capsule.mesh.radius = player_radius
 
 

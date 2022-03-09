@@ -37,7 +37,10 @@ func _ready() -> void:
 
 	tracker = find_parent_controller()
 	if tracker:
+		print("vr_action.gd TRACKER " + str(tracker.get_path))
 		if tracker.connect("action_pressed", Callable(self, "_on_action_pressed")) != OK:
 			printerr("action_pressed not connected!")
 		if tracker.connect("action_released", Callable(self, "_on_action_released")) != OK:
 			printerr("action_released not connected!")
+	else:
+		print("vr_action.gd TRACKER IS NULL")

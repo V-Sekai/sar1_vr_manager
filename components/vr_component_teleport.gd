@@ -18,9 +18,10 @@ func _can_teleport() -> bool:
 	return false
 
 func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_const
+	print("Component teleport: tracker_added")
 	super.tracker_added(p_tracker)
 	
-	var tracker_hand: int = p_tracker.get_hand()
+	var tracker_hand: int = p_tracker.get_tracker_hand()
 	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or\
 	tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
 		var action: Node3D = vr_teleport_action_const.instantiate()

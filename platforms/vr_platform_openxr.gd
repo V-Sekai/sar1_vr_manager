@@ -26,7 +26,7 @@ func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigi
 	if p_origin:
 		var openvr_pose_nativescript: NativeScript = load("res://addons/godot-openvr/OpenVRPose.gdns")
 		if openvr_pose_nativescript and openvr_pose_nativescript.can_instantiate():
-			var hand: int = p_controller.get_hand()
+			var hand: int = p_controller.get_tracker_hand()
 			
 			#var model:Spatial = create_pose("Model", "/actions/menu/in/model", hand, p_origin)
 			var model_origin:Node3D = create_pose(openvr_pose_nativescript.new(), "ModelOrigin", "/actions/menu/in/model_origin", hand, p_origin)
@@ -49,13 +49,13 @@ func destroy_poses_for_controller(p_controller: XRController3D) -> void:
 func add_controller(p_controller: XRController3D, p_origin: XROrigin3D):
 	super.add_controller(p_controller, p_origin)
 	
-	var hand: int = p_controller.get_hand()
+	var hand: int = p_controller.get_tracker_hand()
 	if hand != XRPositionalTracker.TRACKER_HAND_UNKNOWN:
 		create_poses_for_controller(p_controller, p_origin)
 		if controller_actions_scene:
 			var controller_actions: Node = controller_actions_scene.instantiate()
 			if controller_actions:
-				controller_actions.set_hand(hand)
+				controller_actions.get_tracker_hand(hand)
 				p_controller.add_child(controller_actions, true)
 				if (
 					controller_actions.has_signal("on_action_pressed")

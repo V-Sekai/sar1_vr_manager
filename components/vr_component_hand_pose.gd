@@ -110,7 +110,7 @@ func right_hand_pose_updated(p_new_pose: int) -> void:
 func tracker_added(p_tracker: XRController3D) -> void: # XRController3D
 	super.tracker_added(p_tracker)
 	
-	var tracker_hand: int = p_tracker.get_hand()
+	var tracker_hand: int = p_tracker.get_tracker_hand()
 	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or\
 	tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
 		var vr_hand_pose_action: Node3D = vr_hand_pose_action_const.new()
@@ -128,7 +128,7 @@ func tracker_added(p_tracker: XRController3D) -> void: # XRController3D
 func tracker_removed(p_tracker: XRController3D) -> void: # XRController3D
 	super.tracker_removed(p_tracker)
 	
-	match p_tracker.get_hand():
+	match p_tracker.get_tracker_hand():
 		XRPositionalTracker.TRACKER_HAND_LEFT:
 			p_tracker.remove_component_action(left_hand_pose_action)
 			left_hand_pose_action = null

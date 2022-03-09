@@ -28,7 +28,7 @@ func _assign_right_pickup(p_body: PhysicsBody3D) -> bool:
 func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_const
 	super.tracker_added(p_tracker)
 	
-	var tracker_hand: int = p_tracker.get_hand()
+	var tracker_hand: int = p_tracker.get_tracker_hand()
 	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or\
 	tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT_HAND:
 		var action: Node3D = vr_pickup_action_const.instantiate()
