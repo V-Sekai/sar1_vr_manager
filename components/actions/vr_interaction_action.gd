@@ -35,12 +35,13 @@ func get_pickup_controller() -> Node:
 func get_hand_object() -> Node3D:
 	var pickup_controller: Node = get_pickup_controller()
 	if pickup_controller:
-		var id: int = get_hand_object_id_for_tracker_controller(pickup_controller, self)
+		var id: int = get_hand_object_id_for_tracker_controller(pickup_controller, tracker)
 		return pickup_controller.get_hand_entity_reference(id)
 
 	return null
 
 
+		
 func _on_interaction_body_entered(p_body: Node):
 	if p_body.has_method("pick_up"):
 		var index: int = objects_within_range.find(p_body)
@@ -85,8 +86,8 @@ func _on_action_released(p_action: String) -> void:
 
 
 func calculate_velocity(p_delta: float) -> void:
-	velocity = (transform.origin - last_position) / p_delta
-	last_position = transform.origin
+	velocity = (tracker.transform.origin - last_position) / p_delta
+	last_position = tracker.transform.origin
 
 
 func _process(p_delta: float) -> void:

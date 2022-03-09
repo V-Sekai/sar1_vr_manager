@@ -93,7 +93,7 @@ func set_player_radius(p_radius):
 
 
 func _ready():
-	origin_node = find_parent_controller().get_parent()
+	origin_node = find_parent_controller().get_node("..")
 
 	$Teleport.visible = false
 	$Target.visible = false

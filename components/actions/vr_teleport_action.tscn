@@ -13,11 +13,8 @@ size = Vector2(1, 1)
 radius = 0.3
 height = 1.8
 
-[node name="Function_Teleport" type="XRController3D"]
+[node name="Function_Teleport" type="Node3D"]
 script = ExtResource( "1" )
-can_teleport_color = Color(0.4484, 0.76, 0.4484, 1)
-cant_teleport_color = Color(0.83, 0.3071, 0.3071, 1)
-no_collision_color = Color(0.2088, 0.31104, 0.72, 1)
 
 [node name="Teleport" type="MeshInstance3D" parent="."]
 mesh = SubResource( "1" )

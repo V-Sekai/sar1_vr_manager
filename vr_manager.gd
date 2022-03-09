@@ -129,15 +129,16 @@ func settings_changed() -> void:
 	update_turning_radians()
 
 func create_render_tree() -> Node3D:
-	if not xr_interface:
-		print("Can't create render tree for platform %s" % vr_platform.get_platform_name())
-		return null
-	print("Creating render tree for platform %s" % vr_platform.get_platform_name())
-	var render_tree: Node3D = vr_platform.create_render_tree()
-	if render_tree:
-		render_tree.set_name("RenderTree")
+	if xr_interface:
+		print("Creating render tree for platform %s" % vr_platform.get_platform_name())
+		var render_tree: Node3D = vr_platform.create_render_tree()
 
-	return render_tree
+		if render_tree:
+			render_tree.set_name("RenderTree")
+
+		return render_tree
+	else:
+		return null
 
 
 func is_joypad_id_input_map_valid(p_id: int) -> bool:
@@ -293,6 +294,8 @@ func toggle_vr() -> void:
 func force_update() -> void:
 	if xr_active and xr_origin:
 		xr_origin.notification(NOTIFICATION_INTERNAL_PROCESS)
+		#xr_origin._cache_world_origin_transform()
+		#xr_origin._update_tracked_camera()
 	
 func set_origin_world_scale(p_scale: float) -> void:
 	if xr_origin:
@@ -306,6 +309,9 @@ func assign_xr_origin(p_xr_origin) -> void:
 	
 func apply_project_settings() -> void:
 	if Engine.is_editor_hint():
+		#################
+		# VR Interfaces #
+		#################
 		if ! ProjectSettings.has_setting("vr/config/interfaces"):
 			ProjectSettings.set_setting("vr/config/interfaces", PackedStringArray())
 	

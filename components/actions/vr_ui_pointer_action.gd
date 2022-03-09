@@ -31,8 +31,8 @@ func _on_action_pressed(p_action: String) -> void:
 					is_doubleclick = true
 			else:
 				is_doubleclick = false
-				
-			emit_signal("requested_as_ui_selector", get_tracker_hand())
+			
+			emit_signal("requested_as_ui_selector", tracker.get_hand())
 			if not valid_ray_result.is_empty() and is_active_selector:
 				if valid_ray_result["collider"].has_method("on_pointer_pressed"):
 					valid_ray_result["collider"].on_pointer_pressed(valid_ray_result["position"], is_doubleclick)
@@ -78,15 +78,18 @@ func create_nodes() -> void:
 
 func _ready() -> void:
 	create_nodes()
+
+	assert(tracker.laser_origin)
+	tracker.laser_origin.add_child(laser_node, true)
+	tracker.laser_origin.add_child(laser_hit_node, true)
+
 	laser_node.hide()
 	laser_hit_node.hide()
 
 func _exit_tree() -> void:
 	#take the laser with it
-	if laser_node and laser_node.get_parent():
-		laser_node.get_parent().remove_child(laser_node)
-	if laser_hit_node and laser_hit_node.get_parent():
-		laser_hit_node.get_parent().remove_child(laser_hit_node)
+	laser_node.get_parent().remove_child(laser_node)
+	laser_hit_node.get_parent().remove_child(laser_hit_node)
 
 
 func cast_validation_ray(p_length: float) -> Dictionary:
