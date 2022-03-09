@@ -20,7 +20,7 @@ func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_c
 		vr_render_tree_action.visible = false
 		
 		var controller_name: String = str(p_tracker.tracker)
-		if ! spatial_render_tree.load_render_tree(VRManager, controller_name):
+		if not spatial_render_tree.has_method("load_render_tree") or ! spatial_render_tree.load_render_tree(VRManager, controller_name):
 			printerr("Could not load render tree")
 		
 		vr_render_tree_action.visible = true
