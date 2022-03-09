@@ -13,9 +13,6 @@ func set_render_tree(p_render_tree) -> void:
 	render_tree = p_render_tree
 	_update_visibility()
 
-func _process(_delta: float) -> void:
-	if render_tree:
-		render_tree.update_render_tree()
 
 func _update_scale(p_scale) -> void:
 	if render_tree:
@@ -25,8 +22,7 @@ func _xr_mode_changed() -> void:
 	_update_visibility()
 
 func _ready() -> void:
-	assert(tracker.model_origin)
-	tracker.model_origin.add_child(render_tree, true)
+	add_child(render_tree, true)
 	
 	if VRManager.xr_origin:
 		_update_scale(VRManager.xr_origin.get_world_scale())

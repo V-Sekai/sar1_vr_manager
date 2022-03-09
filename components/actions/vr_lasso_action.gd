@@ -1,4 +1,5 @@
 extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_action.gd
+
 @export var straight_color : Color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.05)
 @export var unsnapped_color : Color = Color(247.0/255.0, 247.0/255.0, 1.0, 0.1)
 @export var snapped_color : Color = Color(254.0/255.0, 95.0/255.0, 85.0/255.0, 1.0)
@@ -47,8 +48,8 @@ func _update_lasso(_delta: float) -> void:
 		return
 	
 	# var start_time = Time.get_ticks_usec()
-	var lasso_analog_value: Vector2 = get_analog("/menu/lasso_analog")
-	var lasso: bool = is_pressed("/menu/lasso")
+	var lasso_analog_value: Vector2 = get_axis("/menu/lasso_analog")
+	var lasso: bool = is_button_pressed("/menu/lasso")
 	redirection_lock = redirection_lock && (lasso_analog_value.length_squared() > 0)
 	var new_snap = false
 	var primary_snap: Vector3
@@ -56,7 +57,7 @@ func _update_lasso(_delta: float) -> void:
 	var primary_power: float = 0.0
 	var secondary_power: float = 0.0
 	if(lasso_analog_value.x > 0):
-		var lasso_redirect_value: Vector2 = get_analog("/menu/lasso_redirect")
+		var lasso_redirect_value: Vector2 = get_axis("/menu/lasso_redirect")
 		# LogManager.printl(str(lasso_redirect_value))
 		var snapping_singleton = get_node("/root/SnappingSingleton")
 #		var points: Array = snapping_singleton.snapping_points
@@ -79,7 +80,7 @@ func _update_lasso(_delta: float) -> void:
 				secondary_power = 0
 				primary_snap = snap_point.get_global_transform().origin
 			else:
-				var snap_arr:Array = snapping_singleton.snapping_points.calc_top_two_snapping_power(tracker.laser_origin.global_transform, current_snap, snap_increase, lasso_analog_value.x, lasso)
+				var snap_arr:Array = snapping_singleton.snapping_points.calc_top_two_snapping_power(global_transform, current_snap, snap_increase, lasso_analog_value.x, lasso)
 				if(snap_arr.size() > 0 && snap_arr[0] && snap_arr[0].get_origin() && snap_arr[0].get_snap_score() > min_snap):
 					snap_point = snap_arr[0].get_origin()
 					primary_power = snap_arr[0].get_snap_score()
@@ -112,11 +113,8 @@ func _update_lasso(_delta: float) -> void:
 		redirection_ready = false
 		interact_ready = false
 	
-	#SO COOL HOW RUMBLE DOESNT WORK
 	if (Time.get_ticks_msec() - rumble_start_time < rumble_duration):
-		tracker.rumble = rumble_strength;
-	else:
-		tracker.rumble = 0.0
+		trigger_haptic_pulse("rumble", 85.0, rumble_strength, rumble_duration, 0.0)
 	
 	if(current_snap != null):
 		if(lasso && interact_ready):
@@ -209,17 +207,14 @@ func _ready() -> void:
 	# Saracen: disable visibility when not in XR mode
 	assert(VRManager.connect("xr_mode_changed", self._xr_mode_changed) == OK)
 	
-	#Align with the laser_origin we were given
-	assert(tracker.laser_origin)
-
 	straight_mesh = get_node(straight_laser) as MeshInstance3D
 	snapped_mesh = get_node(snapped_laser) as MeshInstance3D
 
 	straight_mesh.get_parent().remove_child(straight_mesh)
 	snapped_mesh.get_parent().remove_child(snapped_mesh)
 
-	tracker.laser_origin.add_child(straight_mesh, true)
-	tracker.laser_origin.add_child(snapped_mesh, true)
+	add_child(straight_mesh, true)
+	add_child(snapped_mesh, true)
 
 	straight_mesh.transform = Transform3D()
 	snapped_mesh.transform = Transform3D()
@@ -248,5 +243,5 @@ func _ready() -> void:
 	return
 
 func _exit_tree() -> void:
-	tracker.laser_origin.remove_child(straight_mesh)
-	tracker.laser_origin.remove_child(snapped_mesh)
+	remove_child(straight_mesh)
+	remove_child(snapped_mesh)
