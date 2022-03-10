@@ -28,7 +28,7 @@ func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_c
 		
 		### Assign callsbacks ###
 		action.set_can_teleport_funcref(self, "_can_teleport")
-		if action.connect("teleported", Callable(self, "_teleported")) != OK:
+		if action.teleported.connect(self._teleported) != OK:
 			printerr("Could not connect teleported signal!")
 		###
 		

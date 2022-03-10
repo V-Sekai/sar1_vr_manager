@@ -200,7 +200,7 @@ func _xr_mode_changed() -> void:
 func _ready() -> void:
 	super._ready()
 	# Saracen: disable visibility when not in XR mode
-	assert(VRManager.connect("xr_mode_changed", self._xr_mode_changed) == OK)
+	assert(VRManager.xr_mode_changed.connect(self._xr_mode_changed) == OK)
 	
 	#Align with the laser_origin we were given
 	assert(tracker.laser_origin)

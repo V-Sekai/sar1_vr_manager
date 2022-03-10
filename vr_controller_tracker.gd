@@ -53,7 +53,7 @@ func _on_action_pressed(p_action: String) -> void:
 			a.action = "ui_menu"
 			a.pressed = true 
 			Input.parse_input_event(a)
-	emit_signal("action_pressed", p_action)
+	action_pressed.emit(p_action)
 
 
 func _on_action_released(p_action: String) -> void:
@@ -64,7 +64,7 @@ func _on_action_released(p_action: String) -> void:
 			a.pressed = false
 			Input.parse_input_event(a)
 
-	emit_signal("action_released", p_action)
+	action_released.emit(p_action)
 
 
 func add_component_action(p_component_action: Node) -> void:

@@ -36,7 +36,7 @@ func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_c
 	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or\
 	tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
 		var vr_ui_pointer_action: Node3D = vr_ui_pointer_action_const.new()
-		assert(vr_ui_pointer_action.connect("requested_as_ui_selector", self._requested_as_ui_selector) == OK)
+		assert(vr_ui_pointer_action.requested_as_ui_selector.connect(self._requested_as_ui_selector) == OK)
 		p_tracker.add_component_action(vr_ui_pointer_action)
 		match tracker_hand:
 			XRPositionalTracker.TRACKER_HAND_LEFT:

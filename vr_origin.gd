@@ -78,7 +78,7 @@ func add_tracker(p_tracker_name: StringName) -> void:
 			print("Adding tracker " + str(p_tracker_name) + " at " + str(self.get_path()) + " name " + str(controller.tracker) + " and " + str(controller.name))
 			active_controllers[p_tracker_name] = controller
 			add_child(controller, true)
-			emit_signal("tracker_added", controller)
+			tracker_added.emit(controller)
 		else:
 			controller.free()
 			printerr("Attempted to add duplicate active tracker!")
@@ -106,7 +106,7 @@ func remove_tracker(p_tracker_name: StringName) -> void:
 				for component in components:
 					component.tracker_removed(controller)
 
-				emit_signal("tracker_removed", tracker)
+				tracker_removed.emit(tracker)
 
 			if controller.is_inside_tree():
 				controller.queue_free()

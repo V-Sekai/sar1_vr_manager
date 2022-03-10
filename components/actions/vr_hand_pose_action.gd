@@ -56,7 +56,7 @@ func update_virtual_hand_pose() -> void:
 	if new_hand_pose != current_hand_pose:
 		current_hand_pose = new_hand_pose
 		print("Emitting hand_pose_changed...")
-		emit_signal("hand_pose_changed", current_hand_pose)
+		hand_pose_changed.emit(current_hand_pose)
 	
 
 func _on_action_pressed(p_action: String) -> void:

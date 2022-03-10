@@ -134,7 +134,7 @@ func set_settings_values():
 	set_settings_value("laser_color", laser_color)
 	set_settings_value("movement_type", movement_type)
 	
-	emit_signal("settings_changed")
+	settings_changed.emit()
 
 func get_settings_value(p_key: String, p_type: int, p_default):
 	if get_settings_value_callback.is_valid():

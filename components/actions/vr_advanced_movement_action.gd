@@ -7,11 +7,11 @@ func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
 		"/locomotion/jump":
-			emit_signal("jump_pressed")
+			jump_pressed.emit()
 
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 	match p_action:
 		"/locomotion/jump":
-			emit_signal("jump_released")
+			jump_released.emit()

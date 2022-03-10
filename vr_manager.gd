@@ -289,7 +289,7 @@ func toggle_vr() -> void:
 		xr_active = false
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 		
-	emit_signal("xr_mode_changed")
+	xr_mode_changed.emit()
 
 func force_update() -> void:
 	if xr_active and xr_origin:
@@ -300,12 +300,12 @@ func force_update() -> void:
 func set_origin_world_scale(p_scale: float) -> void:
 	if xr_origin:
 		xr_origin.set_world_scale(p_scale)
-		emit_signal("world_origin_scale_changed", p_scale)
+		world_origin_scale_changed.emit(p_scale)
 	
 func assign_xr_origin(p_xr_origin) -> void:
 	if xr_origin != p_xr_origin:
 		xr_origin = p_xr_origin
-		emit_signal("new_origin_assigned", xr_origin)
+		new_origin_assigned.emit(xr_origin)
 	
 func apply_project_settings() -> void:
 	if Engine.is_editor_hint():
@@ -341,9 +341,9 @@ func _input(p_event: InputEvent) -> void:
 	if p_event.is_action_pressed("toggle_vr"):
 		toggle_vr()
 	elif p_event.is_action_pressed("request_vr_calibration"):
-		emit_signal("request_vr_calibration")
+		request_vr_calibration.emit()
 	elif p_event.is_action_pressed("confirm_vr_calibration"):
-		emit_signal("confirm_vr_calibration")
+		confirm_vr_calibration.emit()
 
 func _process(_delta) -> void:
 	force_update()
@@ -354,11 +354,11 @@ func _ready() -> void:
 	
 	settings_changed()
 	
-	if vr_user_preferences.connect("settings_changed", Callable(self, "settings_changed")) != OK:
+	if vr_user_preferences.settings_changed.connect(self.settings_changed) != OK:
 		printerr("Could not connect settings_changed!")
 	
 	vr_fader = ColorRect.new()
-	if FadeManager.connect("color_changed", Callable(self, "_fade_color_changed")) != OK:
+	if FadeManager.color_changed.connect(self._fade_color_changed) != OK:
 		printerr("Could not connect 'color_changed'!")
 
 	# Caches the laser material for laser use

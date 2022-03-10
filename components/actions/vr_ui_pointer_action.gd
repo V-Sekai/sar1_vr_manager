@@ -32,7 +32,7 @@ func _on_action_pressed(p_action: String) -> void:
 			else:
 				is_doubleclick = false
 			
-			emit_signal("requested_as_ui_selector", tracker.get_tracker_hand())
+			requested_as_ui_selector.emit(tracker.get_tracker_hand())
 			if not valid_ray_result.is_empty() and is_active_selector:
 				if valid_ray_result["collider"].has_method("on_pointer_pressed"):
 					valid_ray_result["collider"].on_pointer_pressed(valid_ray_result["position"], is_doubleclick)

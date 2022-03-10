@@ -119,11 +119,11 @@ func tracker_added(p_tracker: XRController3D) -> void: # XRController3D
 			XRPositionalTracker.TRACKER_HAND_LEFT:
 				assert(!is_instance_valid(left_hand_pose_action))
 				left_hand_pose_action = vr_hand_pose_action
-				assert(left_hand_pose_action.connect("hand_pose_changed", self.left_hand_pose_updated) == OK)
+				assert(left_hand_pose_action.hand_pose_changed.connect(self.left_hand_pose_updated) == OK)
 			XRPositionalTracker.TRACKER_HAND_RIGHT:
 				assert(!is_instance_valid(right_hand_pose_action))
 				right_hand_pose_action = vr_hand_pose_action
-				assert(right_hand_pose_action.connect("hand_pose_changed", self.right_hand_pose_updated) == OK)
+				assert(right_hand_pose_action.hand_pose_changed.connect(self.right_hand_pose_updated) == OK)
 				
 func tracker_removed(p_tracker: XRController3D) -> void: # XRController3D
 	super.tracker_removed(p_tracker)

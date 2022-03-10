@@ -80,7 +80,7 @@ func add_controller(p_controller: XRController3D, p_origin: XROrigin3D):
 					p_controller.get_is_action_pressed_funcref = Callable(
 						controller_actions, "is_action_pressed"
 					)
-					p_controller.get_analog_funcref = Callable(controller_actions, "get_analog")
+					p_controller.get_analog_funcref = controller_actions.get_analog
 
 func remove_controller(p_controller: XRController3D, p_origin: XROrigin3D):
 	super.remove_controller(p_controller, p_origin)

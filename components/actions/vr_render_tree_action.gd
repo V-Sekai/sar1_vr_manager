@@ -33,5 +33,5 @@ func _ready() -> void:
 	if VRManager.xr_origin:
 		_update_scale(VRManager.xr_origin.get_world_scale())
 	
-	assert(VRManager.connect("world_origin_scale_changed", self._update_scale) == OK)
-	assert(VRManager.connect("xr_mode_changed", self._xr_mode_changed) == OK)
+	assert(VRManager.world_origin_scale_changed.connect(self._update_scale) == OK)
+	assert(VRManager.xr_mode_changed.connect(self._xr_mode_changed) == OK)

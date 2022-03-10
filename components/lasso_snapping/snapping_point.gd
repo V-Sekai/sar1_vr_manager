@@ -81,24 +81,24 @@ func unregister_snapping_point() -> void:
 		lasso_point.unregister_point()
 
 func call_snap_hover() -> void:
-	emit_signal("on_snap_hover")
+	on_snap_hover.emit()
 
 func call_snap_interact(p_flick_target: Node3D) -> void:
 	if(flick_parent_to_hand_on_snap_interact):
 		flick_target = p_flick_target
 	if(!snap_interacting):
-		emit_signal("on_snap_interact")
+		on_snap_interact.emit()
 		snap_interacting = true
 	if(sleeping):
 		linear_velocity = calc_flick_velocity()
 
 func stop_snap_hover() -> void:
-	emit_signal("on_snap_hover_stop")
+	on_snap_hover_stop.emit()
 	snap_interacting = false
 
 func stop_snap_interact() -> void:
 	if(snap_interacting):
-		emit_signal("on_snap_interact_stop")
+		on_snap_interact_stop.emit()
 		snap_interacting = false
 		flick_target = null
 

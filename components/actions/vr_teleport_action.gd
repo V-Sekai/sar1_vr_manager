@@ -278,7 +278,7 @@ func _process(_delta):
 			user_feet_transform.basis.x = user_feet_transform.basis.y.cross(cam_transform.basis.z).normalized()
 			user_feet_transform.basis.z = user_feet_transform.basis.x.cross(user_feet_transform.basis.y).normalized()
 
-			emit_signal("teleported", new_transform * user_feet_transform.inverse())
+			teleported.emit(new_transform * user_feet_transform.inverse())
 
 		is_teleporting = false
 		$Teleport.visible = false

@@ -23,9 +23,9 @@ func tracker_added(p_tracker: XRController3D) -> void:
 		var action: Node3D = vr_advanced_movement_action.new()
 		
 		# Assign calls backs
-		if action.connect("jump_pressed", self._jump_pressed) != OK:
+		if action.jump_pressed.connect(self._jump_pressed) != OK:
 			printerr("Could not connect jump_pressed signal!")
-		if action.connect("jump_released", self._jump_released) != OK:
+		if action.jump_released.connect(self._jump_released) != OK:
 			printerr("Could not connect jump_released signal!")
 		###
 		

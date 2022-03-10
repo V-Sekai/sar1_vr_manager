@@ -47,15 +47,15 @@ func movement_action_released(_action: String) -> void:
 
 func _refresh_controllers() -> void:
 	if movement_controller and is_instance_valid(movement_controller):
-		if movement_controller.is_connected("action_pressed", Callable(self, "movement_action_pressed")):
-			movement_controller.disconnect("action_pressed", Callable(self, "movement_action_pressed"))
-		if movement_controller.is_connected("action_released", Callable(self, "movement_action_released")):
-			movement_controller.disconnect("action_released", Callable(self, "movement_action_released"))
+		if movement_controller.action_pressed.is_connected(self.movement_action_pressed):
+			movement_controller.action_pressed.disconnect(self.movement_action_pressed)
+		if movement_controller.action_released.is_connected(self.movement_action_released):
+			movement_controller.action_released.disconnect(self.movement_action_released)
 	if turning_controller and is_instance_valid(turning_controller):
-		if turning_controller.is_connected("action_pressed", Callable(self, "turning_action_pressed")):
-			turning_controller.disconnect("action_pressed", Callable(self, "turning_action_pressed"))
-		if turning_controller.is_connected("action_released", Callable(self, "turning_action_released")):
-			turning_controller.disconnect("action_released", Callable(self, "turning_action_released"))
+		if turning_controller.action_pressed.is_connected(self.turning_action_pressed):
+			turning_controller.action_pressed.disconnect(self.turning_action_pressed)
+		if turning_controller.action_released.is_connected(self.turning_action_released):
+			turning_controller.action_released.disconnect(self.turning_action_released)
 	
 	if Input.is_action_pressed("snap_left"):
 		Input.action_release("snap_left")
@@ -66,14 +66,14 @@ func _refresh_controllers() -> void:
 	turning_controller = _get_turning_controller()
 	
 	if movement_controller and is_instance_valid(movement_controller):
-		if movement_controller.connect("action_pressed", Callable(self, "movement_action_pressed")) != OK:
+		if movement_controller.action_pressed.connect(self.movement_action_pressed) != OK:
 			printerr("Could not connect 'action_pressed'!")
-		if movement_controller.connect("action_released", Callable(self, "movement_action_released")) != OK:
+		if movement_controller.action_released.connect(self.movement_action_released) != OK:
 			printerr("Could not connect 'action_released'!")
 	if turning_controller and is_instance_valid(turning_controller):
-		if turning_controller.connect("action_pressed", Callable(self, "turning_action_pressed")) != OK:
+		if turning_controller.action_pressed.connect(self.turning_action_pressed) != OK:
 			printerr("Could not connect 'action_pressed'!")
-		if turning_controller.connect("action_released", Callable(self, "turning_action_released")) != OK:
+		if turning_controller.action_released.connect(self.turning_action_released) != OK:
 			printerr("Could not connect 'action_released'!")
 
 
@@ -193,7 +193,7 @@ func _enter_tree():
 	set_name("LocomotionComponent")
 
 func _ready():
-	if connect("trackers_changed", Callable(self, "_refresh_controllers")) != OK:
+	if trackers_changed.connect(self._refresh_controllers) != OK:
 		printerr("Could not connect 'trackers_changed'!")
 		
 	_refresh_controllers()

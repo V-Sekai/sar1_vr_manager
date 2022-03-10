@@ -25,7 +25,7 @@ func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_c
 		_:
 			pass
 			
-	emit_signal("trackers_changed")
+	trackers_changed.emit()
 
 func tracker_removed(p_tracker: XRController3D) -> void: # vr_controller_tracker_const
 	var index: int = hand_controllers.find(p_tracker)
@@ -38,7 +38,7 @@ func tracker_removed(p_tracker: XRController3D) -> void: # vr_controller_tracker
 	if right_hand_controller == p_tracker:
 		right_hand_controller = null
 		
-	emit_signal("trackers_changed")
+	trackers_changed.emit()
 		
 func post_add_setup() -> void:
 	pass

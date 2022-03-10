@@ -34,7 +34,7 @@ func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_c
 		var action: Node3D = vr_pickup_action_const.instantiate()
 		
 		### Assign callsbacks ###
-		action.can_pickup_funcref = Callable(self, "_can_pickup")
+		action.can_pickup_funcref = self._can_pickup
 		
 		if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT:
 			action.assign_pickup(self, "_assign_left_pickup")
