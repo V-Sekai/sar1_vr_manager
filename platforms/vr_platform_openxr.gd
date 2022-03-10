@@ -1,6 +1,8 @@
 @tool
 extends "res://addons/sar1_vr_manager/platforms/vr_platform.gd" # vr_platform.gd
 
+const vr_render_tree_openxr_class = preload("./vr_render_tree_openxr.gd")
+
 var trackers: Array = []
 
 var controller_actions_scene_path: String = "res://addons/sar1_vr_manager/openxr/controller_actions.tscn"
@@ -13,10 +15,13 @@ var openxr_config: RefCounted = null
 func get_platform_name() -> String:
 	return "OpenXR"
 	
-static func create_pose(p_pose:Node3D, p_name: String, p_action: String, p_hand: int, p_origin: XROrigin3D) -> Node3D:
-	p_pose.set_name("Right%s" % p_name if p_hand == XRPositionalTracker.TRACKER_HAND_RIGHT else "Left%s" % p_name)
-	p_pose.set_action(p_action)
-	p_pose.set_on_hand(p_hand)
+func create_render_tree() -> Node3D:
+	return vr_render_tree_openxr_class.new()
+
+static func create_pose(p_pose:XRController3D, p_name: String, p_action: StringName, p_tracker: StringName, p_origin: XROrigin3D) -> Node3D:
+	p_pose.set_name("%s_%s" % [p_tracker, p_name])
+	p_pose.pose = p_action
+	p_pose.tracker = p_tracker
 	
 	p_origin.add_child(p_pose, true)
 	
@@ -24,18 +29,14 @@ static func create_pose(p_pose:Node3D, p_name: String, p_action: String, p_hand:
 	
 func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	if p_origin:
-		var openvr_pose_nativescript: NativeScript = load("res://addons/godot-openvr/OpenVRPose.gdns")
-		if openvr_pose_nativescript and openvr_pose_nativescript.can_instantiate():
-			var hand: int = p_controller.get_tracker_hand()
-			
-			#var model:Spatial = create_pose("Model", "/actions/menu/in/model", hand, p_origin)
-			var model_origin:Node3D = create_pose(openvr_pose_nativescript.new(), "ModelOrigin", "/actions/menu/in/model_origin", hand, p_origin)
-			var laser_origin:Node3D = create_pose(openvr_pose_nativescript.new(), "LaserOrigin", "/actions/menu/in/laser_origin", hand, p_origin)
-			
-			p_controller.model_origin = model_origin
-			p_controller.laser_origin = laser_origin
-		else:
-			printerr("VRPlatformOpenXR: OpenXRPose could not be instanced!")
+		var hand: int = p_controller.get_tracker_hand()
+		
+		#var model:Spatial = create_pose("Model", "/actions/menu/in/model", hand, p_origin)
+		var model_origin:Node3D = create_pose(XRController3D.new(), "ModelOrigin", &"grip", p_controller.tracker, p_origin)
+		var laser_origin:Node3D = create_pose(XRController3D.new(), "LaserOrigin", &"aim", p_controller.tracker, p_origin)
+		
+		p_controller.model_origin = model_origin
+		p_controller.laser_origin = laser_origin
 	else:
 		printerr("VRPlatformOpenXR: Origin does not exist!")
 		

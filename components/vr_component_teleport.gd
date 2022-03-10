@@ -4,8 +4,8 @@ extends "res://addons/sar1_vr_manager/components/vr_component.gd" # vr_component
 
 var vr_teleport_action_const = load("res://addons/sar1_vr_manager/components/actions/vr_teleport_action.tscn")
 
-var can_teleport_funcref
-var teleport_callback_funcref
+var can_teleport_funcref: Callable = Callable()
+var teleport_callback_funcref: Callable = Callable()
 
 func _teleported(p_transform: Transform3D) -> void:
 	if teleport_callback_funcref.is_valid():

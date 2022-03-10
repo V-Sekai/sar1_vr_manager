@@ -26,8 +26,6 @@ var print_mod = 0
 @export var rumble_duration: int = 100 #milisseconds
 @export var rumble_strength: float = 1.0
 
-var rumble_start_time: int = 0
-
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
@@ -103,7 +101,7 @@ func _update_lasso(_delta: float) -> void:
 			if(current_snap != null):
 				#HERE IS THE SNAP
 				#do haptics here
-				rumble_start_time = Time.get_ticks_msec()
+				tracker.trigger_haptic_pulse("rumble", 85.0, rumble_strength, rumble_duration, 0.0)
 				current_snap.call_snap_hover()
 	else:
 		if(current_snap != null):
@@ -111,12 +109,6 @@ func _update_lasso(_delta: float) -> void:
 		current_snap = null
 		redirection_ready = false
 		interact_ready = false
-	
-	#SO COOL HOW RUMBLE DOESNT WORK
-	if (Time.get_ticks_msec() - rumble_start_time < rumble_duration):
-		tracker.rumble = rumble_strength;
-	else:
-		tracker.rumble = 0.0
 	
 	if(current_snap != null):
 		if(lasso && interact_ready):
@@ -206,6 +198,7 @@ func _xr_mode_changed() -> void:
 	_update_visibility()
 
 func _ready() -> void:
+	super._ready()
 	# Saracen: disable visibility when not in XR mode
 	assert(VRManager.connect("xr_mode_changed", self._xr_mode_changed) == OK)
 	

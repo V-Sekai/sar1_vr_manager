@@ -98,4 +98,5 @@ func _on_action_released(p_action: String) -> void:
 			update_virtual_hand_pose()
 
 func _ready() -> void:
+	super._ready()
 	pass

@@ -2,10 +2,10 @@ extends "res://addons/sar1_vr_manager/components/vr_component.gd" # vr_component
 
 const vr_pickup_action_const = preload("actions/vr_interaction_action.gd")
 
-var assign_left_pickup_funcref
-var assign_right_pickup_funcref
+var assign_left_pickup_funcref: Callable = Callable()
+var assign_right_pickup_funcref: Callable = Callable()
 
-var can_pickup_funcref
+var can_pickup_funcref: Callable = Callable()
 
 func _can_pickup(p_body: PhysicsBody3D) -> bool:
 	if can_pickup_funcref.is_valid():

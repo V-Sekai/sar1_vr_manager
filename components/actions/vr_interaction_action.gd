@@ -4,8 +4,8 @@ const math_funcs_const = preload("res://addons/math_util/math_funcs.gd")
 
 var objects_within_range: Array = []
 
-var assign_pickup_funcref
-var can_pickup_funcref
+var assign_pickup_funcref: Callable = Callable()
+var can_pickup_funcref: Callable = Callable()
 
 var last_position: Vector3 = Vector3(0.0, 0.0, 0.0)
 var velocity: Vector3 = Vector3(0.0, 0.0, 0.0)
@@ -16,7 +16,7 @@ static func get_hand_object_id_for_tracker_controller(
 	p_player_pickup_controller: Node, p_tracker_controller: XRController3D
 ):
 	if p_player_pickup_controller:
-		match p_tracker_controller.get_hand():
+		match p_tracker_controller.get_tracker_hand():
 			XRPositionalTracker.TRACKER_HAND_LEFT:
 				return p_player_pickup_controller.LEFT_HAND_ID
 			XRPositionalTracker.TRACKER_HAND_RIGHT:

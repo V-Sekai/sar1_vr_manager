@@ -42,7 +42,7 @@ func add_tracker(p_tracker_name: StringName) -> void:
 	print("IN add_tracker " + str(p_tracker_name))
 	var tracker: XRPositionalTracker = XRServer.get_tracker(p_tracker_name)
 	if tracker != null && tracker.type == XRServer.TRACKER_CONTROLLER:
-		var tracker_hand: int = tracker.hand
+		var tracker_hand: int = tracker.get_tracker_hand()
 		var controller: XRController3D = vr_controller_tracker_const.new()
 
 		match tracker_hand:
@@ -75,6 +75,7 @@ func add_tracker(p_tracker_name: StringName) -> void:
 			component.tracker_added(controller)
 
 		if ! active_controllers.has(p_tracker_name):
+			print("Adding tracker " + str(p_tracker_name) + " at " + str(self.get_path()) + " name " + str(controller.tracker) + " and " + str(controller.name))
 			active_controllers[p_tracker_name] = controller
 			add_child(controller, true)
 			emit_signal("tracker_added", controller)
