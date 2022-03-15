@@ -29,7 +29,7 @@ static func create_pose(p_pose:XRController3D, p_name: String, p_action: StringN
 	
 func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	if p_origin:
-		var hand: int = p_controller.get_tracker_hand()
+		var _hand: int = p_controller.get_tracker_hand()
 		
 		#var model:Spatial = create_pose("Model", "/actions/menu/in/model", hand, p_origin)
 		var model_origin:Node3D = create_pose(XRController3D.new(), "ModelOrigin", &"grip", p_controller.tracker, p_origin)

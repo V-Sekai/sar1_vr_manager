@@ -249,8 +249,6 @@ func setup_vr_interface() -> void:
 		xr_interface = XRServer.find_interface(interface_name)
 		if xr_interface:
 			print("Attempting to initialise %s..." % interface_name)
-			var is_interface_initalized: bool = xr_interface.is_initialized()
-			
 			if xr_interface.initialize():
 				print("%s Initalised!" % interface_name)
 				create_vr_platform_for_interface(interface_name)
