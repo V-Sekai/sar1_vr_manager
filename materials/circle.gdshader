@@ -23,12 +23,12 @@ void vertex() {
 	VERTEX.y = 0.0;
 
 	// translate to our world vector
-	VERTEX = (WORLD_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	VERTEX = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	
 	// and apply our camera matrix
-	VERTEX = (INV_CAMERA_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	vec3 obj_center = (WORLD_MATRIX * vec4(0,0,0,1)).xyz; // can break if multiple of these are combined into one mesh.
-	vec3 camera_pos = (CAMERA_MATRIX * vec4(0,0,0,1)).xyz;
+	VERTEX = (VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	vec3 obj_center = (MODEL_MATRIX * vec4(0,0,0,1)).xyz; // can break if multiple of these are combined into one mesh.
+	vec3 camera_pos = (INV_VIEW_MATRIX * vec4(0,0,0,1)).xyz;
 	float camera_distance = distance(camera_pos, obj_center);
 	VERTEX += vec3(half_width * camera_distance, 0.0, 0.0);
 	VERTEX += vec3(0.0, half_height * camera_distance, 0.0);

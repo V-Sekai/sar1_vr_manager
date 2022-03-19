@@ -39,18 +39,18 @@ void vertex() {
 	// float t2 = t * t;
 
 	// translate to our world vector
-	VERTEX = (WORLD_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	next_vertex = (WORLD_MATRIX * vec4(next_vertex, 1.0)).xyz;
+	VERTEX = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	next_vertex = (MODEL_MATRIX * vec4(next_vertex, 1.0)).xyz;
 	
 	vec3 along_line = normalize((VERTEX - next_vertex));
-	vec3 camera_pos = (CAMERA_MATRIX * vec4(0,0,0,1)).xyz;
+	vec3 camera_pos = (INV_VIEW_MATRIX * vec4(0,0,0,1)).xyz;
 	vec3 camera_line = normalize(camera_pos - VERTEX);
 	vec3 cross_prod = normalize(cross(along_line, camera_line));
 	vec3 sideways = cross_prod * half_width;
 	VERTEX += sideways;
 	
 	// and apply our camera matrix
-	VERTEX = (INV_CAMERA_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	VERTEX = (VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
 void fragment() {
