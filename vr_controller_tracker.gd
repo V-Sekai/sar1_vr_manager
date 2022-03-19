@@ -96,7 +96,3 @@ func _process(_delta: float) -> void:
 	apply_world_scale()
 	if ! get_is_active():
 		visible = false
-
-
-func _ready() -> void:
-	pass
