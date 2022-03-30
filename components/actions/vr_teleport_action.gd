@@ -148,7 +148,7 @@ func _process(_delta):
 	if ! locomotion:
 		return
 
-	var teleport_pressed: bool = controller.is_pressed("/locomotion/teleport")
+	var teleport_pressed: bool = controller.is_pressed("/locomotion/teleport") or controller.is_pressed("secondary_click")
 	
 	if (
 		controller

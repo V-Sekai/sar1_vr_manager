@@ -29,14 +29,14 @@ var print_mod = 0
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
-		"/menu/lasso":
+		"/menu/lasso", "trigger_click":
 			pass
 
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 	match p_action:
-		"/menu/lasso":
+		"/menu/lasso", "trigger_click":
 			pass
 
 func _update_lasso(_delta: float) -> void:

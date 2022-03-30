@@ -2,6 +2,7 @@ extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_acti
 
 signal hand_pose_changed(p_pose)
 
+var thumb_touched_ctr: int = 0
 var thumb_touched: bool = false
 var trigger_touched: bool = false
 var grip_touched: bool = false
@@ -62,38 +63,44 @@ func update_virtual_hand_pose() -> void:
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
-		"/hands/hand_pose_thumb_touched":
+		"/hands/hand_pose_thumb_touched", "primary_touch", "secondary_touch", "ax_touch", "by_touch":
 			thumb_touched = true
+			thumb_touched_ctr += 1
+			if thumb_touched_ctr > 4:
+				thumb_touched_ctr = 4
 			update_virtual_hand_pose()
-		"/hands/hand_pose_trigger_touched":
+		"/hands/hand_pose_trigger_touched", "trigger_touch":
 			trigger_touched = true
 			update_virtual_hand_pose()
-		"/hands/hand_pose_trigger_pressed":
+		"/hands/hand_pose_trigger_pressed", "trigger_click":
 			trigger_pressed = true
 			update_virtual_hand_pose()
-		"/hands/hand_pose_grip_touched":
+		"/hands/hand_pose_grip_touched", "grip_touch":
 			grip_touched = true
 			update_virtual_hand_pose()
-		"/hands/hand_pose_grip_pressed":
+		"/hands/hand_pose_grip_pressed", "grip_click":
 			grip_pressed = true
 			update_virtual_hand_pose()
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 	match p_action:
-		"/hands/hand_pose_thumb_touched":
-			thumb_touched = false
+		"/hands/hand_pose_thumb_touched", "primary_touch", "secondary_touch", "ax_touch", "by_touch":
+			thumb_touched_ctr -= 1
+			if thumb_touched_ctr <= 0:
+				thumb_touched = false
+				thumb_touched_ctr = 0
 			update_virtual_hand_pose()
-		"/hands/hand_pose_trigger_touched":
+		"/hands/hand_pose_trigger_touched", "trigger_touch":
 			trigger_touched = false
 			update_virtual_hand_pose()
-		"/hands/hand_pose_trigger_pressed":
+		"/hands/hand_pose_trigger_pressed", "trigger_click":
 			trigger_pressed = false
 			update_virtual_hand_pose()
-		"/hands/hand_pose_grip_touched":
+		"/hands/hand_pose_grip_touched", "grip_touch":
 			grip_touched = false
 			update_virtual_hand_pose()
-		"/hands/hand_pose_grip_pressed":
+		"/hands/hand_pose_grip_pressed", "grip_click":
 			grip_pressed = false
 			update_virtual_hand_pose()
 

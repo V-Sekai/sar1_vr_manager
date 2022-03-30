@@ -47,8 +47,9 @@ func apply_world_scale():
 
 
 func _on_action_pressed(p_action: String) -> void:
+	print("Action was pressed! " + str(p_action))
 	match p_action:
-		"/menu/menu_toggle":
+		"/menu/menu_toggle", "by_button":
 			var a: InputEventAction = InputEventAction.new()
 			a.action = "ui_menu"
 			a.pressed = true 
@@ -58,7 +59,7 @@ func _on_action_pressed(p_action: String) -> void:
 
 func _on_action_released(p_action: String) -> void:
 	match p_action:
-		"/menu/menu_toggle":
+		"/menu/menu_toggle", "by_button":
 			var a: InputEventAction = InputEventAction.new()
 			a.action = "ui_menu"
 			a.pressed = false

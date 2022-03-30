@@ -6,12 +6,12 @@ signal jump_released()
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
-		"/locomotion/jump":
+		"/locomotion/jump", "by_button":
 			jump_pressed.emit()
 
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 	match p_action:
-		"/locomotion/jump":
+		"/locomotion/jump", "by_button":
 			jump_released.emit()

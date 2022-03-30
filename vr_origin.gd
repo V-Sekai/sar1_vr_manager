@@ -175,7 +175,14 @@ func setup_components() -> void:
 		
 func _ready() -> void:
 	set_process_internal(false)
-		
+	clear_controllers()
+	for key in VRManager.xr_trackers:
+		add_tracker(key)
+	if VRManager.tracker_added.connect(self._on_tracker_added) != OK:
+		printerr("tracker_added could not be connected")
+	if VRManager.tracker_removed.connect(self._on_tracker_removed) != OK:
+		printerr("tracker_removed could not be connected")
+
 func _exit_tree() -> void:
 	if VRManager.xr_origin == self:
 		VRManager.xr_origin = null
@@ -197,14 +204,4 @@ func _enter_tree() -> void:
 	VRManager.assign_xr_origin(self)
 	
 	create_components()
-	var properties = VRManager.get_property_list()
-	if properties.has("tracker_names"):
-		for key in VRManager.tracker_names:
-			add_tracker(key)
-		
 	setup_components()
-
-	if VRManager.tracker_added.connect(self._on_tracker_added) != OK:
-		printerr("tracker_added could not be connected")
-	if VRManager.tracker_removed.connect(self._on_tracker_removed) != OK:
-		printerr("tracker_removed could not be connected")

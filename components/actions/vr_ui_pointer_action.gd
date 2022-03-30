@@ -24,7 +24,7 @@ signal requested_as_ui_selector(p_hand)
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
-		"/menu/menu_interaction":
+		"/menu/menu_interaction", "trigger_click":
 			var current_msec: int = Time.get_ticks_msec()
 			if !is_doubleclick:
 				if current_msec < last_click_time + DOUBLECLICK_TIME:
@@ -43,7 +43,7 @@ func _on_action_pressed(p_action: String) -> void:
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 	match p_action:
-		"/menu/menu_interaction":
+		"/menu/menu_interaction", "trigger_click":
 			if not valid_ray_result.is_empty() and is_active_selector:
 				if valid_ray_result["collider"].has_method("on_pointer_release"):
 					valid_ray_result["collider"].on_pointer_release(valid_ray_result["position"])

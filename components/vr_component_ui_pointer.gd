@@ -40,10 +40,10 @@ func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_c
 		p_tracker.add_component_action(vr_ui_pointer_action)
 		match tracker_hand:
 			XRPositionalTracker.TRACKER_HAND_LEFT:
-				assert(!is_instance_valid(left_ui_pointer_action))
+				# assert(!is_instance_valid(left_ui_pointer_action))
 				left_ui_pointer_action = vr_ui_pointer_action
 			XRPositionalTracker.TRACKER_HAND_RIGHT:
-				assert(!is_instance_valid(right_ui_pointer_action))
+				# assert(!is_instance_valid(right_ui_pointer_action))
 				right_ui_pointer_action = vr_ui_pointer_action
 
 func tracker_removed(p_tracker: XRController3D) -> void: # vr_controller_tracker_const

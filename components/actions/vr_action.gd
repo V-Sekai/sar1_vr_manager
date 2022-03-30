@@ -2,7 +2,7 @@ extends Node3D
 
 var vr_module: Node = null
 
-var vr_tracker_script = null
+const vr_tracker_script = preload("res://addons/sar1_vr_manager/vr_controller_tracker.gd")
 var tracker: XRController3D = null
 
 
@@ -14,11 +14,13 @@ func get_analog(p_action: String) -> Vector2:
 	return tracker.get_analog(p_action)
 
 
-func _on_action_pressed(_action: String) -> void:
+func _on_action_pressed(p_action: String) -> void:
+	print("BASE Action was pressed! " + str(p_action))
 	pass
 
 
-func _on_action_released(_action: String) -> void:
+func _on_action_released(p_action: String) -> void:
+	print("BASE Action was pressed! " + str(p_action))
 	pass
 
 
@@ -33,11 +35,9 @@ func find_parent_controller() -> Node:
 
 
 func _ready() -> void:
-	vr_tracker_script = load("res://addons/sar1_vr_manager/vr_controller_tracker.gd")
-
 	tracker = find_parent_controller()
 	if tracker:
-		print("vr_action.gd TRACKER " + str(tracker.get_path))
+		print("vr_action.gd TRACKER " + str(tracker.get_path()))
 		if tracker.button_pressed.connect(self._on_action_pressed) != OK:
 			printerr("action_pressed not connected!")
 		if tracker.button_released.connect(self._on_action_released) != OK:
