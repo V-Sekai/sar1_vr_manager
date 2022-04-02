@@ -129,16 +129,15 @@ func settings_changed() -> void:
 	update_turning_radians()
 
 func create_render_tree() -> Node3D:
-	if xr_interface:
-		print("Creating render tree for platform %s" % vr_platform.get_platform_name())
-		var render_tree: Node3D = vr_platform.create_render_tree()
-
-		if render_tree:
-			render_tree.set_name("RenderTree")
-
-		return render_tree
-	else:
+	if not xr_interface:
 		return null
+	print("Creating render tree for platform %s" % vr_platform.get_platform_name())
+	var render_tree: Node3D = vr_platform.create_render_tree()
+
+	if render_tree:
+		render_tree.set_name("RenderTree")
+
+	return render_tree
 
 
 func is_joypad_id_input_map_valid(p_id: int) -> bool:
