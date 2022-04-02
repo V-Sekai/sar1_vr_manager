@@ -26,9 +26,11 @@ func _xr_mode_changed() -> void:
 
 func _ready() -> void:
 	super._ready()
-	# TODO: Check if there is a model_origin to offset the render model.
-	assert(tracker) # tracker.model_origin
-	tracker.add_child(render_tree, true)
+	if not tracker:
+		return
+	if not render_tree:
+		return
+	tracker.call_deferred("add_child", render_tree, true)
 	
 	if VRManager.xr_origin:
 		_update_scale(VRManager.xr_origin.get_world_scale())

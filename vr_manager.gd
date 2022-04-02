@@ -234,9 +234,13 @@ func create_vr_platforms() -> void:
 			vr_platform_openxr.pre_setup()
 
 func platform_add_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
+	if not vr_platform:
+		return
 	vr_platform.add_controller(p_controller, p_origin)
 
-func platform_remove_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
+func platform_remove_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:	
+	if not vr_platform:
+		return
 	vr_platform.remove_controller(p_controller, p_origin)
 
 func is_quitting() -> void:

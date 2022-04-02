@@ -79,8 +79,11 @@ func create_nodes() -> void:
 func _ready() -> void:
 	super._ready()
 	create_nodes()
+	if not tracker:
+		return
 
-	assert(tracker.laser_origin)
+	if not tracker.laser_origin:
+		return
 	tracker.laser_origin.add_child(laser_node, true)
 	tracker.laser_origin.add_child(laser_hit_node, true)
 

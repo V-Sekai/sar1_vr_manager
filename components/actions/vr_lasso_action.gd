@@ -203,7 +203,8 @@ func _ready() -> void:
 	assert(VRManager.xr_mode_changed.connect(self._xr_mode_changed) == OK)
 	
 	#Align with the laser_origin we were given
-	assert(tracker.laser_origin)
+	if not tracker.laser_origin:
+		return
 
 	straight_mesh = get_node(straight_laser) as MeshInstance3D
 	snapped_mesh = get_node(snapped_laser) as MeshInstance3D
@@ -241,5 +242,9 @@ func _ready() -> void:
 	return
 
 func _exit_tree() -> void:
+	if not tracker: 
+		return
+	if not tracker.laser_origin:
+		return
 	tracker.laser_origin.remove_child(straight_mesh)
 	tracker.laser_origin.remove_child(snapped_mesh)
