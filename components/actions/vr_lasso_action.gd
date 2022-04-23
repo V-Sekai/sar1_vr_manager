@@ -185,8 +185,10 @@ func _process(p_delta: float) -> void:
 # Saracen
 func _update_visibility() -> void:
 	if VRManager.xr_active:
-		straight_mesh.show()
-		snapped_mesh.show()
+		if straight_mesh:
+			straight_mesh.show()
+		if snapped_mesh:
+			snapped_mesh.show()
 		set_process(true)
 	else:
 		straight_mesh.hide()
