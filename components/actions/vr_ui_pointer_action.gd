@@ -92,8 +92,10 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	#take the laser with it
-	laser_node.get_parent().remove_child(laser_node)
-	laser_hit_node.get_parent().remove_child(laser_hit_node)
+	if laser_node:
+		laser_node.queue_free()
+	if laser_hit_node:
+		laser_hit_node.queue_free()
 
 
 func cast_validation_ray(p_length: float) -> Dictionary:
