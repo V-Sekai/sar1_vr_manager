@@ -110,7 +110,6 @@ func remove_tracker(p_tracker_name: StringName) -> void:
 
 			if controller.is_inside_tree():
 				controller.queue_free()
-				controller.get_parent().remove_child(controller)
 			else:
 				printerr("Tracker is not inside tree!")
 		else:
