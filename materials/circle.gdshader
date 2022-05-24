@@ -3,8 +3,8 @@ render_mode unshaded, cull_disabled, skip_vertex_transform, depth_test_disabled;
 
 uniform float width = 0.1;
 uniform float height = 0.1;
-uniform vec4 mix_color : hint_color;
-uniform sampler2D main_texture : hint_albedo;
+uniform vec4 mix_color : source_color;
+uniform sampler2D main_texture : source_color;
 
 void vertex() {
 	// vec3 down = vec3(0.0, -1.0 / ws, 0.0);
