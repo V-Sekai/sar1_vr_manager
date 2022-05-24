@@ -131,6 +131,8 @@ func settings_changed() -> void:
 func create_render_tree() -> Node3D:
 	if not xr_interface:
 		return null
+	if not vr_platform:
+		return null
 	print("Creating render tree for platform %s" % vr_platform.get_platform_name())
 	var render_tree: Node3D = vr_platform.create_render_tree()
 
