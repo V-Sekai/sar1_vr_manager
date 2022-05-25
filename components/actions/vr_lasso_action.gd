@@ -191,8 +191,10 @@ func _update_visibility() -> void:
 			snapped_mesh.show()
 		set_process(true)
 	else:
-		straight_mesh.hide()
-		snapped_mesh.hide()
+		if straight_mesh:
+			straight_mesh.hide()
+		if snapped_mesh:
+			snapped_mesh.hide()
 		set_process(false)
 		
 # Saracen
