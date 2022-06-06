@@ -24,7 +24,7 @@ func is_pressed(p_action: String) -> bool:
 	return false
 
 
-func get_analog(p_action: String) -> Vector2:
+func get_axis(p_action: StringName) -> Vector2:
 	if get_analog_funcref.is_valid():
 		return get_analog_funcref.call(p_action)
 

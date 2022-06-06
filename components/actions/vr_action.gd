@@ -10,8 +10,8 @@ func is_pressed(p_action: String) -> bool:
 	return tracker.is_pressed(p_action)
 
 
-func get_analog(p_action: String) -> Vector2:
-	return tracker.get_analog(p_action)
+func get_axis(p_action: String) -> Vector2:
+	return tracker.get_axis(p_action)
 
 
 func _on_action_pressed(p_action: String) -> void:
