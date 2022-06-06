@@ -82,14 +82,14 @@ func get_controller_movement_vector() -> Vector2:
 	
 	if hand_controllers.size() >= 2 and left_hand_controller and right_hand_controller and is_instance_valid(left_hand_controller) and is_instance_valid(right_hand_controller):
 		movement_controller = left_hand_controller
-		movement_vector = movement_controller.get_analog("/locomotion/movement")
+		movement_vector = movement_controller.get_axis("primary")
 		if ! VRManager.vr_user_preferences.strafe_movement:
 			movement_controller.x = 0.0
 		if VRManager.vr_user_preferences.movement_on_rotation_controller:
 			turning_controller = right_hand_controller
-			movement_vector.y += turning_controller.get_analog("/locomotion/movement").y
+			movement_vector.y += turning_controller.get_analog("primary").y
 	elif hand_controllers.size() == 1:
-		movement_vector = Vector2(0.0, hand_controllers[0].get_analog("/locomotion/movement").y)
+		movement_vector = Vector2(0.0, hand_controllers[0].get_analog("primary").y)
 		
 	# Test the deadzone
 	if abs(movement_vector.x) < VRManager.vr_user_preferences.movement_deadzone:
