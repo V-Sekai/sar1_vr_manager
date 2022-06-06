@@ -106,7 +106,7 @@ func _ready():
 	if camera:
 		camera_node = get_node(camera)
 	else:
-		camera_node = origin_node.get_node('ARVRCamera')
+		camera_node = origin_node.get_node('XRCamera')
 
 	collision_shape = CapsuleShape3D.new()
 

@@ -81,7 +81,7 @@ func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 
 	match p_action:
-		"/hands/grip", "grip_clicK":
+		"/hands/grip", "grip_click":
 			try_to_dropping_object()
 
 
