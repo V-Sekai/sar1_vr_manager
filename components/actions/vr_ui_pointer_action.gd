@@ -149,5 +149,5 @@ func update_ray() -> void:
 	laser_hit_node.hide()
 
 
-func _process(_delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	update_ray()
