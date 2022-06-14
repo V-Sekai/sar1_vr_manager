@@ -32,17 +32,6 @@ func load_render_tree(p_vrmanager: Node, p_name: String) -> bool:
 	if render_cache:
 		render_mesh = render_cache.get_render_mesh(controller_name)
 
-	if render_mesh == null:
-		# TODO: There is currently no OpenXR api for accessing the render model.
-		# So we have a cylinder as a placeholder instead.
-		render_mesh = CylinderMesh.new() # openvr_render_model.new()
-		render_mesh.top_radius = 0.05
-		render_mesh.height = 0.05
-		# render_mesh.load_model(controller_name)
-		render_mesh.set_name(controller_name)
-		if render_cache:
-			render_cache.add_render_mesh(controller_name, render_mesh)
-
 	if render_mesh != null:
 		mesh_instance.set_mesh(render_mesh)
 

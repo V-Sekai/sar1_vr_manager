@@ -12,9 +12,9 @@ subdivide_depth = 40
 [sub_resource type="ShaderMaterial" id="2"]
 render_priority = 127
 shader = ExtResource( "4" )
-shader_param/width = null
 shader_param/height = null
 shader_param/mix_color = null
+shader_param/width = null
 
 [sub_resource type="QuadMesh" id="3"]
 

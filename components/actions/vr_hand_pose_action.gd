@@ -106,4 +106,3 @@ func _on_action_released(p_action: String) -> void:
 
 func _ready() -> void:
 	super._ready()
-	pass
