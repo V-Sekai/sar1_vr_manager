@@ -120,7 +120,7 @@ func remove_tracker(p_tracker_name: StringName) -> void:
 
 func _on_tracker_added(p_tracker_name: StringName, p_type: int) -> void:
 	print(
-		"Adding hand for tracker {tracker_name} type {tracker_type_name} id {id} to VR Player".format(
+		"Adding controller for tracker {tracker_name} type {tracker_type_name} id {id} to VR Player".format(
 			{
 				"tracker_name": p_tracker_name,
 				"tracker_type_name": VRManager.get_tracker_type_name(p_type),
