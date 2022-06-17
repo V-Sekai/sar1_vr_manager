@@ -31,9 +31,8 @@ func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigi
 	if p_origin:
 		var _hand: int = p_controller.get_tracker_hand()
 		
-		#var model:Spatial = create_pose("Model", "/actions/menu/in/model", hand, p_origin)
-		var model_origin:Node3D = create_pose(XRController3D.new(), "ModelOrigin", &"grip", p_controller.tracker, p_origin)
-		var laser_origin:Node3D = create_pose(XRController3D.new(), "LaserOrigin", &"aim", p_controller.tracker, p_origin)
+		var model_origin:Node3D = create_pose(XRController3D.new(), "ModelOrigin", &"aim_pose", p_controller.tracker, p_origin)
+		var laser_origin:Node3D = create_pose(XRController3D.new(), "LaserOrigin", &"aim_pose", p_controller.tracker, p_origin)
 		
 		p_controller.model_origin = model_origin
 		p_controller.laser_origin = laser_origin
