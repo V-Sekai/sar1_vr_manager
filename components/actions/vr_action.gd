@@ -15,12 +15,14 @@ func get_axis(p_action: String) -> Vector2:
 
 
 func _on_action_pressed(p_action: String) -> void:
-	print("BASE Action was pressed! " + str(p_action))
+# Unhandled cases shouldn't spam.
+#	print("BASE Action was pressed! " + str(p_action))
 	pass
 
 
 func _on_action_released(p_action: String) -> void:
-	print("BASE Action was pressed! " + str(p_action))
+# Unhandled cases shouldn't spam.
+#	print("BASE Action was pressed! " + str(p_action))
 	pass
 
 
