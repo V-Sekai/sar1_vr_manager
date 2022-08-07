@@ -126,11 +126,11 @@ func _update_lasso(_delta: float) -> void:
 			elif(primary_power > min_snap):
 				secondary_alpha = (secondary_power / primary_power)
 			else:
-				primary_alpha = lerp(snap_circle_min_alpha, 0.5, primary_power / (min_snap + 0.001))
-				secondary_alpha = lerp(snap_circle_min_alpha, 0.5, secondary_power / (min_snap + 0.001))
+				primary_alpha = lerpf(snap_circle_min_alpha, 0.5, primary_power / (min_snap + 0.001))
+				secondary_alpha = lerpf(snap_circle_min_alpha, 0.5, secondary_power / (min_snap + 0.001))
 
-			var primary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerp(snap_circle_min_alpha, 1.0, primary_alpha))
-			var secondary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerp(snap_circle_min_alpha, 1.0, secondary_alpha))
+			var primary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerpf(snap_circle_min_alpha, 1.0, primary_alpha))
+			var secondary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerpf(snap_circle_min_alpha, 1.0, secondary_alpha))
 			if(primary_mesh != null):
 				primary_mesh.visible = primary_power > 0
 				if(primary_power > 0):

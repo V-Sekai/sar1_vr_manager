@@ -49,7 +49,7 @@ func update_plane(p_lerp: float) -> void:
 			var z_near: float = camera.near
 			var z_far: float = camera.far
 			
-			var lerp_position: float = lerp(z_near, z_far, p_lerp)
+			var lerp_position: float = lerpf(z_near, z_far, p_lerp)
 			
 			set_transform(Transform3D(
 				Basis.from_euler(Vector3(PI * 0.5, 0.0, 0.0)).scaled(Vector3(lerped_size.x, lerped_size.y, 1.0)),
