@@ -84,7 +84,7 @@ func get_controller_movement_vector() -> Vector2:
 		movement_controller = left_hand_controller
 		movement_vector = movement_controller.get_axis("primary")
 		if ! VRManager.vr_user_preferences.strafe_movement:
-			movement_controller.x = 0.0
+			movement_vector.x = 0.0
 		if VRManager.vr_user_preferences.movement_on_rotation_controller:
 			turning_controller = right_hand_controller
 			movement_vector.y += turning_controller.get_axis("primary").y
