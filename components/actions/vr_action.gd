@@ -14,15 +14,11 @@ func get_axis(p_action: String) -> Vector2:
 	return tracker.get_axis(p_action)
 
 
-func _on_action_pressed(p_action: String) -> void:
-# Unhandled cases shouldn't spam.
-#	print("BASE Action was pressed! " + str(p_action))
+func _on_action_pressed(_action: String) -> void:
 	pass
 
 
-func _on_action_released(p_action: String) -> void:
-# Unhandled cases shouldn't spam.
-#	print("BASE Action was pressed! " + str(p_action))
+func _on_action_released(_action: String) -> void:
 	pass
 
 
