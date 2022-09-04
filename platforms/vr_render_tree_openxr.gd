@@ -6,7 +6,7 @@ var tree: Node3D = null
 func setup_openvr_dummy_attachment(p_name: StringName) -> Node3D:
 	var spatial: Node3D = create_attachment_point(p_name)
 	spatial.translate(Vector3(0.0, -0.01, 0.05))
-	spatial.rotate_x(deg2rad(-45))
+	spatial.rotate_x(deg_to_rad(-45))
 
 	return spatial
 

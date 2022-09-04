@@ -22,7 +22,7 @@ mesh = SubResource( "1" )
 [node name="Target" type="MeshInstance3D" parent="."]
 mesh = SubResource( "2" )
 
-[node name="Player_figure" type="Position3D" parent="Target"]
+[node name="Player_figure" type="Marker3D" parent="Target"]
 
 [node name="Capsule" type="MeshInstance3D" parent="Target/Player_figure"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)

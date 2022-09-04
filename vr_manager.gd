@@ -117,13 +117,13 @@ func get_origin() -> XROrigin3D:
 func update_turning_radians() -> void:
 	match vr_user_preferences.turning_mode:
 		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_30:
-			snap_turning_radians = deg2rad(30.0)
+			snap_turning_radians = deg_to_rad(30.0)
 		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_45:
-			snap_turning_radians = deg2rad(45.0)
+			snap_turning_radians = deg_to_rad(45.0)
 		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_90:
-			snap_turning_radians = deg2rad(90.0)
+			snap_turning_radians = deg_to_rad(90.0)
 		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_CUSTOM:
-			snap_turning_radians = deg2rad(vr_user_preferences.snap_turning_degrees_custom)
+			snap_turning_radians = deg_to_rad(vr_user_preferences.snap_turning_degrees_custom)
 
 func settings_changed() -> void:
 	update_turning_radians()

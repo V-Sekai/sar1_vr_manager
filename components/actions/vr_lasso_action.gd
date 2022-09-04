@@ -135,23 +135,23 @@ func _update_lasso(_delta: float) -> void:
 				primary_mesh.visible = primary_power > 0
 				if(primary_power > 0):
 					if(primary_mesh.material_override != null):
-						primary_mesh.material_override.set_shader_uniform('mix_color', primary_color)
+						primary_mesh.material_override.set_shader_parameter('mix_color', primary_color)
 					primary_mesh.global_transform.origin = primary_snap
 			if(secondary_mesh != null):
 				secondary_mesh.visible = secondary_power > 0
 				if(secondary_power > 0):
 					if(secondary_mesh.material_override != null):
-						secondary_mesh.material_override.set_shader_uniform('mix_color', secondary_color)
+						secondary_mesh.material_override.set_shader_parameter('mix_color', secondary_color)
 					secondary_mesh.global_transform.origin = secondary_snap
 
 			if(lasso):
-				snapped_mesh.material_override.set_shader_uniform('speed', -10.0)
+				snapped_mesh.material_override.set_shader_parameter('speed', -10.0)
 			else:
-				snapped_mesh.material_override.set_shader_uniform('speed', 0.0)
+				snapped_mesh.material_override.set_shader_parameter('speed', 0.0)
 
 			if(lasso_analog_value.x <= 0):
 				if(snapped_mesh.visible):
-					snapped_mesh.material_override.set_shader_uniform('mix_color', unsnapped_color)
+					snapped_mesh.material_override.set_shader_parameter('mix_color', unsnapped_color)
 				straight_mesh.visible = false
 				snapped_mesh.visible = false
 			else:
@@ -159,17 +159,17 @@ func _update_lasso(_delta: float) -> void:
 				snapped_mesh.visible = true
 				if(current_snap != null):
 					if(new_snap):
-						snapped_mesh.material_override.set_shader_uniform('mix_color', snapped_color)
+						snapped_mesh.material_override.set_shader_parameter('mix_color', snapped_color)
 					var target_local = (((current_snap.global_transform.origin) * (straight_mesh.global_transform)))
 					var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001) #when there's very little snapping, this will equal .length() when there is a lot it'll be longer
-					straight_mesh.material_override.set_shader_uniform('target', Vector3(0.0, 0.0, -straight_length))
-					snapped_mesh.material_override.set_shader_uniform('target', target_local)
+					straight_mesh.material_override.set_shader_parameter('target', Vector3(0.0, 0.0, -straight_length))
+					snapped_mesh.material_override.set_shader_parameter('target', target_local)
 				else:
 					if(new_snap):
-						snapped_mesh.material_override.set_shader_uniform('mix_color', unsnapped_color)
+						snapped_mesh.material_override.set_shader_parameter('mix_color', unsnapped_color)
 					var into_infinity = Vector3(0.0, 0.0, -10)
-					straight_mesh.material_override.set_shader_uniform('target', Vector3(0.0, 0.0, 0.0))
-					snapped_mesh.material_override.set_shader_uniform('target', into_infinity)
+					straight_mesh.material_override.set_shader_parameter('target', Vector3(0.0, 0.0, 0.0))
+					snapped_mesh.material_override.set_shader_parameter('target', into_infinity)
 		else:
 			straight_mesh.visible = false
 			snapped_mesh.visible = false
@@ -225,18 +225,18 @@ func _ready() -> void:
 	primary_mesh = get_node(primary_circle) as MeshInstance3D
 	secondary_mesh = get_node(secondary_circle) as MeshInstance3D
 	if(straight_mesh != null && straight_mesh.material_override != null):
-		straight_mesh.material_override.set_shader_uniform('mix_color', straight_color)
+		straight_mesh.material_override.set_shader_parameter('mix_color', straight_color)
 		straight_mesh.material_override = straight_mesh.material_override.duplicate(true)
 	if(snapped_mesh != null && snapped_mesh.material_override != null):
 		snapped_mesh.material_override = snapped_mesh.material_override.duplicate(true)
 
 
 	if(primary_mesh != null && primary_mesh.material_override != null):
-		primary_mesh.material_override.set_shader_uniform('mix_color', snap_circle_color)
+		primary_mesh.material_override.set_shader_parameter('mix_color', snap_circle_color)
 		primary_mesh.material_override = primary_mesh.material_override.duplicate(true)
 		primary_mesh.visible = false
 	if(secondary_mesh != null && secondary_mesh.material_override != null):
-		secondary_mesh.material_override.set_shader_uniform('mix_color', snap_circle_color)
+		secondary_mesh.material_override.set_shader_parameter('mix_color', snap_circle_color)
 		secondary_mesh.material_override = secondary_mesh.material_override.duplicate(true)
 		secondary_mesh.visible = false
 	
