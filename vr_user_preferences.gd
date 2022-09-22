@@ -64,7 +64,7 @@ class  turning_mode_enum :
 	const TURNING_MODE_SNAP_90=3
 	const TURNING_MODE_SNAP_CUSTOM=4
 
-@export var turning_mode: int = turning_mode_enum.TURNING_MODE_SNAP_45
+@export var turning_mode: int = turning_mode_enum.TURNING_MODE_SMOOTH
 @export var snap_turning_degrees_custom: int = 0
 
 class  play_position_enum :
