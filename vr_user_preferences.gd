@@ -85,7 +85,7 @@ class  movement_type_enum :
 	const MOVEMENT_TYPE_TELEPORT=0
 	const MOVEMENT_TYPE_LOCOMOTION=1
 
-var movement_type: int = movement_type_enum.MOVEMENT_TYPE_TELEPORT
+var movement_type: int = movement_type_enum.MOVEMENT_TYPE_LOCOMOTION
 
 # 1.0 arm vs 0.0 eye
 @export var eye_to_arm_ratio : float = 1.0
