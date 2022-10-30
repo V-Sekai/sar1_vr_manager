@@ -45,8 +45,11 @@ func _update_lasso(_delta: float) -> void:
 		return
 	
 	# var start_time = Time.get_ticks_usec()
-	var lasso_analog_value: Vector2 = get_axis("/menu/lasso_analog")
-	var lasso: bool = is_pressed("/menu/lasso")
+	var lasso_analog_value: Vector2 = get_axis("primary") # /menu/lasso_analog")
+	var grip_strength = get_value("grip")
+	var lasso: bool = grip_strength > 0.5 # is_pressed("/menu/lasso")
+	if grip_strength < 0.05:
+		lasso_analog_value = Vector2(0,0)
 	redirection_lock = redirection_lock && (lasso_analog_value.length_squared() > 0)
 	var new_snap = false
 	var primary_snap: Vector3
@@ -54,7 +57,7 @@ func _update_lasso(_delta: float) -> void:
 	var primary_power: float = 0.0
 	var secondary_power: float = 0.0
 	if(lasso_analog_value.x > 0):
-		var lasso_redirect_value: Vector2 = get_axis("/menu/lasso_redirect")
+		var lasso_redirect_value: Vector2 = get_axis("secondary") # /menu/lasso_redirect")
 		# LogManager.printl(str(lasso_redirect_value))
 		var snapping_singleton = get_node("/root/SnappingSingleton")
 #		var points: Array = snapping_singleton.snapping_points
