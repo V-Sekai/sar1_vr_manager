@@ -110,12 +110,10 @@ func remove_tracker(p_tracker_name: StringName) -> void:
 
 			if controller.is_inside_tree():
 				controller.queue_free()
-			else:
-				printerr("Tracker is not inside tree!")
 		else:
-			printerr("Attampted to erase invalid tracker!")
+			printerr("Attempted to erase an invalid tracker!")
 	else:
-		printerr("Attempted to erase invalid active tracker!")
+		printerr("Attempted to erase an invalid active tracker!")
 
 
 func _on_tracker_added(p_tracker_name: StringName, p_type: int) -> void:
