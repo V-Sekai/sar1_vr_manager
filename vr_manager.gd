@@ -2,7 +2,7 @@
 extends Node
 
 const string_util_const = preload("res://addons/gd_util/string_util.gd")
-const vr_user_preferences_const = preload("vr_user_preferences.gd")
+const vr_user_preferences_const = preload("res://addons/sar1_vr_manager/vr_user_preferences.gd")
 
 var vr_user_preferences: RefCounted = vr_user_preferences_const.new()
 var vr_components: Array = []
@@ -43,12 +43,12 @@ const movement_type_names = (
 	"TR_VR_MANAGER_MOVEMENT_LOCOMOTION"])
 
 # Platforms
-const vr_platform_const = preload("platforms/vr_platform.gd")
-const vr_platform_openxr_const = preload("platforms/vr_platform_openxr.gd")
+const vr_platform_const = preload("res://addons/sar1_vr_manager/platforms/vr_platform.gd")
+const vr_platform_openxr_const = preload("res://addons/sar1_vr_manager/platforms/vr_platform_openxr.gd")
 
-const vr_constants_const = preload("vr_constants.gd")
-const vr_render_cache_const = preload("vr_render_cache.gd")
-const vr_render_tree_const = preload("vr_render_tree.gd")
+const vr_constants_const = preload("res://addons/sar1_vr_manager/vr_constants.gd")
+const vr_render_cache_const = preload("res://addons/sar1_vr_manager/vr_render_cache.gd")
+const vr_render_tree_const = preload("res://addons/sar1_vr_manager/vr_render_tree.gd")
 
 var vr_platform: RefCounted = null # vr_platform_const = null
 
@@ -116,13 +116,13 @@ func get_origin() -> XROrigin3D:
 
 func update_turning_radians() -> void:
 	match vr_user_preferences.turning_mode:
-		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_30:
+		vr_user_preferences_const.TURNING_MODE_SNAP_30:
 			snap_turning_radians = deg_to_rad(30.0)
-		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_45:
+		vr_user_preferences_const.TURNING_MODE_SNAP_45:
 			snap_turning_radians = deg_to_rad(45.0)
-		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_90:
+		vr_user_preferences_const.TURNING_MODE_SNAP_90:
 			snap_turning_radians = deg_to_rad(90.0)
-		vr_user_preferences_const.turning_mode_enum.TURNING_MODE_SNAP_CUSTOM:
+		vr_user_preferences_const.TURNING_MODE_SNAP_CUSTOM:
 			snap_turning_radians = deg_to_rad(vr_user_preferences.snap_turning_degrees_custom)
 
 func settings_changed() -> void:

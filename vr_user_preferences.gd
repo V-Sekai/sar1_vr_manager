@@ -57,14 +57,13 @@ class  body_awareness_enum :
 @export var max_positional_distance_start: float = 1.0
 @export var max_positional_distance_end: float = 1.1
 
-class  turning_mode_enum :
-	const TURNING_MODE_SMOOTH=0
-	const TURNING_MODE_SNAP_30=1
-	const TURNING_MODE_SNAP_45=2
-	const TURNING_MODE_SNAP_90=3
-	const TURNING_MODE_SNAP_CUSTOM=4
+const TURNING_MODE_SMOOTH=0
+const TURNING_MODE_SNAP_30=1
+const TURNING_MODE_SNAP_45=2
+const TURNING_MODE_SNAP_90=3
+const TURNING_MODE_SNAP_CUSTOM=4
 
-@export var turning_mode: int = turning_mode_enum.TURNING_MODE_SMOOTH
+@export var turning_mode: int = TURNING_MODE_SMOOTH
 @export var snap_turning_degrees_custom: int = 0
 
 class  play_position_enum :
