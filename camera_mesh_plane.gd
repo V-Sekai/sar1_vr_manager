@@ -1,6 +1,8 @@
 @tool
 extends MeshInstance3D
 
+const camera_mesh_plane_const = preload("res://addons/sar1_vr_manager/camera_mesh_plane.gd")
+
 @export var distance : float = 1.0 :
 	set = set_distance
 
@@ -39,7 +41,7 @@ static func get_endpoints_for_camera(p_camera: Camera3D) -> PackedVector2Array:
 func update_plane(p_lerp: float) -> void:
 	var camera: Camera3D = get_parent()
 	if camera:
-		var sizes = get_endpoints_for_camera(camera)
+		var sizes = camera_mesh_plane_const.get_endpoints_for_camera(camera)
 		if sizes.size() > 0:
 			var far = Vector2(sizes[0].x, sizes[0].y) * 2.0
 			var near = Vector2(sizes[1].x, sizes[1].y) * 2.0

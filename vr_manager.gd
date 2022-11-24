@@ -3,6 +3,7 @@ extends Node
 
 const string_util_const = preload("res://addons/gd_util/string_util.gd")
 const vr_user_preferences_const = preload("res://addons/sar1_vr_manager/vr_user_preferences.gd")
+const vr_manager_const = preload("res://addons/sar1_vr_manager/vr_manager.gd")
 
 var vr_user_preferences: RefCounted = vr_user_preferences_const.new()
 var vr_components: Array = []
@@ -186,7 +187,7 @@ func _on_tracker_added(p_tracker_name: StringName, p_type: int) -> void:
 		"Tracker added {tracker_name} type {tracker_type_name}".format(
 			{
 				"tracker_name": p_tracker_name,
-				"tracker_type_name": get_tracker_type_name(p_type)
+				"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type)
 			}
 		)
 	)
@@ -205,7 +206,7 @@ func _on_tracker_removed(p_tracker_name: StringName, p_type: int) -> void:
 		"Tracker removed {tracker_name} type {tracker_type_name}".format(
 			{
 				"tracker_name": p_tracker_name,
-				"tracker_type_name": get_tracker_type_name(p_type)
+				"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type)
 			}
 		)
 	)

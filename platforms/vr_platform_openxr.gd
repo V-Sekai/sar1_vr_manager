@@ -1,6 +1,7 @@
 @tool
-extends "res://addons/sar1_vr_manager/platforms/vr_platform.gd" # vr_platform.gd
+extends "res://addons/sar1_vr_manager/platforms/vr_platform.gd"
 
+const vr_platform_openxr_const = preload("res://addons/sar1_vr_manager/platforms/vr_platform_openxr.gd")
 const vr_render_tree_openxr_class = preload("./vr_render_tree_openxr.gd")
 
 var trackers: Array = []
@@ -31,8 +32,8 @@ func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigi
 	if p_origin:
 		var _hand: int = p_controller.get_tracker_hand()
 		
-		var model_origin:Node3D = create_pose(XRController3D.new(), "ModelOrigin", &"aim_pose", p_controller.tracker, p_origin)
-		var laser_origin:Node3D = create_pose(XRController3D.new(), "LaserOrigin", &"aim_pose", p_controller.tracker, p_origin)
+		var model_origin:Node3D = vr_platform_openxr_const.create_pose(XRController3D.new(), "ModelOrigin", &"aim_pose", p_controller.tracker, p_origin)
+		var laser_origin:Node3D = vr_platform_openxr_const.create_pose(XRController3D.new(), "LaserOrigin", &"aim_pose", p_controller.tracker, p_origin)
 		
 		p_controller.model_origin = model_origin
 		p_controller.laser_origin = laser_origin

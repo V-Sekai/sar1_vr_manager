@@ -1,5 +1,6 @@
 extends XROrigin3D
 
+const vr_manager_const = preload("res://addons/sar1_vr_manager/vr_manager.gd")
 const vr_controller_tracker_const = preload("res://addons/sar1_vr_manager/vr_controller_tracker.gd")
 
 var active_controllers: Dictionary = {}
@@ -121,7 +122,7 @@ func _on_tracker_added(p_tracker_name: StringName, p_type: int) -> void:
 		"Adding controller for tracker {tracker_name} type {tracker_type_name} id {id} to VR Player".format(
 			{
 				"tracker_name": p_tracker_name,
-				"tracker_type_name": VRManager.get_tracker_type_name(p_type),
+				"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type),
 			}
 		)
 	)
@@ -133,7 +134,7 @@ func _on_tracker_removed(p_tracker_name: StringName, p_type: int) -> void:
 		"Removing hand for tracker {tracker_name} type {tracker_type_name} id {id} to VR Player".format(
 			{
 				"tracker_name": p_tracker_name,
-				"tracker_type_name": VRManager.get_tracker_type_name(p_type),
+				"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type),
 			}
 		)
 	)
