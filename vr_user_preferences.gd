@@ -90,7 +90,7 @@ var movement_type: int = movement_type_enum.MOVEMENT_TYPE_LOCOMOTION
 @export var eye_to_arm_ratio : float = 1.0
 
 # Measured in centimeters
-@export var custom_player_height: float = 1.8
+@export var custom_player_height: float = 1.63
 
 # Full armspan/wingspan (to fingers).
 # Data indicates that the average armspan is that of overall height

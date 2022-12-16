@@ -10,7 +10,7 @@ const AXIS_MAXIMUM = 0.5
 @export var can_teleport_color : Color = Color(0.0, 1.0, 0.0, 1.0)
 @export var cant_teleport_color : Color = Color(1.0, 0.0, 0.0, 1.0)
 @export var no_collision_color : Color = Color(45.0 / 255.0, 80.0 / 255.0, 220.0 / 255.0, 1.0)
-@export var player_height = 1.8 :
+@export var player_height = 1.63 :
 	set = set_player_height,
 	get = get_player_height
 
