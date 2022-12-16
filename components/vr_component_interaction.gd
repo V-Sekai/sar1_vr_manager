@@ -30,7 +30,7 @@ func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_c
 	
 	var tracker_hand: int = p_tracker.get_tracker_hand()
 	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or\
-	tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT_HAND:
+	tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
 		var action: Node3D = vr_pickup_action_const.instantiate()
 		
 		### Assign callsbacks ###
