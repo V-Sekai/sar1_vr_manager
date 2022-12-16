@@ -1,11 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://dhpvk1qajtjsy"]
+[gd_scene load_steps=4 format=3 uid="uid://dhpvk1qajtjsy"]
 
 [ext_resource type="Script" path="res://addons/sar1_vr_manager/vr_origin.gd" id="1"]
 [ext_resource type="Environment" uid="uid://cp0t8jp2ellve" path="res://vsk_default/environments/default_env.tres" id="2_goiwr"]
+
+[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_c6u0k"]
+auto_exposure_enabled = true
+frustum_focus_distance = 112.0
+frustum_focal_length = 17.0
 
 [node name="ARVROrigin" type="XROrigin3D"]
 script = ExtResource("1")
 
 [node name="ARVRCamera" type="XRCamera3D" parent="."]
 environment = ExtResource("2_goiwr")
+attributes = SubResource("CameraAttributesPhysical_c6u0k")
 current = true
