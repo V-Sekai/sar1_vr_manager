@@ -104,10 +104,16 @@ func _exit_tree() -> void:
 
 
 func cast_validation_ray(p_length: float) -> Dictionary:
+	if not is_inside_tree():
+		return {}
+	
 	var dss: PhysicsDirectSpaceState3D = (
 		PhysicsServer3D . space_get_direct_state(get_world_3d().get_space())
 	)
 	if !dss:
+		return {}
+
+	if not laser_node.is_inside_tree():
 		return {}
 
 	var start: Vector3 = laser_node.global_transform.origin
