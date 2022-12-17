@@ -12,6 +12,7 @@ var get_analog_funcref: Callable = Callable()
 signal action_pressed(p_action)
 signal action_released(p_action)
 
+
 func is_pressed(p_action: String) -> bool:
 	if get_is_action_pressed_funcref.is_valid():
 		return get_is_action_pressed_funcref.call(p_action)
@@ -41,7 +42,7 @@ func _on_action_pressed(p_action: String) -> void:
 		"/menu/menu_toggle", "by_button":
 			var a: InputEventAction = InputEventAction.new()
 			a.action = "ui_menu"
-			a.pressed = true 
+			a.pressed = true
 			Input.parse_input_event(a)
 	action_pressed.emit(p_action)
 
@@ -67,16 +68,16 @@ func add_component_action(p_component_action: Node) -> void:
 
 
 func remove_component_action(p_component_action: Node) -> void:
-	assert(p_component_action)	
+	assert(p_component_action)
 	var index: int = component_action.find(p_component_action)
 	if index != -1:
 		component_action.remove_at(index)
 	else:
-		printerr("Attempted to remove invalid module tracker!")		
+		printerr("Attempted to remove invalid module tracker!")
 	p_component_action.queue_free()
 	remove_child(p_component_action)
 
 
 func _process(_delta: float) -> void:
-	if ! get_is_active():
+	if !get_is_active():
 		visible = false

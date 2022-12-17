@@ -10,7 +10,8 @@ var hand_controllers: Array = []
 var left_hand_controller: XRController3D = null
 var right_hand_controller: XRController3D = null
 
-func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_const
+
+func tracker_added(p_tracker: XRController3D) -> void:  # vr_controller_tracker_const
 	var tracker_hand: int = p_tracker.get_tracker_hand()
 	match tracker_hand:
 		XRPositionalTracker.TRACKER_HAND_LEFT:
@@ -24,24 +25,27 @@ func tracker_added(p_tracker: XRController3D) -> void: # vr_controller_tracker_c
 				hand_controllers.push_back(p_tracker)
 		_:
 			pass
-			
+
 	trackers_changed.emit()
 
-func tracker_removed(p_tracker: XRController3D) -> void: # vr_controller_tracker_const
+
+func tracker_removed(p_tracker: XRController3D) -> void:  # vr_controller_tracker_const
 	var index: int = hand_controllers.find(p_tracker)
 	if index != -1:
 		hand_controllers.remove_at(index)
-		
+
 	if left_hand_controller == p_tracker:
 		left_hand_controller = null
 
 	if right_hand_controller == p_tracker:
 		right_hand_controller = null
-		
+
 	trackers_changed.emit()
-		
+
+
 func post_add_setup() -> void:
 	pass
-	
+
+
 func _enter_tree():
 	set_name("VRComponent")

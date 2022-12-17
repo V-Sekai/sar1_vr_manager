@@ -1,7 +1,8 @@
-extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_action.gd
+extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd"  # vr_action.gd
 
-signal jump_pressed()
-signal jump_released()
+signal jump_pressed
+signal jump_released
+
 
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)

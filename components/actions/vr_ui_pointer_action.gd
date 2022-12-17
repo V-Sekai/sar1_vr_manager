@@ -1,4 +1,4 @@
-extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_action.gd
+extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd"  # vr_action.gd
 
 const LASER_THICKNESS = 0.001
 const LASER_HIT_SIZE = 0.01
@@ -15,11 +15,12 @@ var laser_node: Node3D = null
 var laser_hit_node: MeshInstance3D = null
 
 # Simulate doubleclicks so we can use file browsers in VR
-const DOUBLECLICK_TIME = 1000 # 1 second
+const DOUBLECLICK_TIME = 1000  # 1 second
 var last_click_time: int = -DOUBLECLICK_TIME
 var is_doubleclick: bool = false
 
 signal requested_as_ui_selector(p_hand)
+
 
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
@@ -31,14 +32,17 @@ func _on_action_pressed(p_action: String) -> void:
 					is_doubleclick = true
 			else:
 				is_doubleclick = false
-			
+
 			requested_as_ui_selector.emit(tracker.get_tracker_hand())
 			if not valid_ray_result.is_empty() and is_active_selector:
 				if valid_ray_result["collider"].has_method("on_pointer_pressed"):
-					valid_ray_result["collider"].on_pointer_pressed(valid_ray_result["position"], is_doubleclick)
-			
+					(
+						valid_ray_result["collider"]
+						. on_pointer_pressed(valid_ray_result["position"], is_doubleclick)
+					)
+
 			last_click_time = Time.get_ticks_msec()
-			
+
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
@@ -69,7 +73,7 @@ func create_nodes() -> void:
 	laser_hit_mesh.radius *= LASER_HIT_SIZE
 	laser_hit_mesh.height *= LASER_HIT_SIZE
 	var tmpmaterial: Variant = VRManager.get_laser_material()
-	laser_hit_mesh.material = tmpmaterial # workaround gd bug
+	laser_hit_mesh.material = tmpmaterial  # workaround gd bug
 
 	laser_hit_node = MeshInstance3D.new()
 	laser_hit_node.name = "LaserHit"
@@ -90,6 +94,7 @@ func _ready() -> void:
 	laser_node.hide()
 	laser_hit_node.hide()
 
+
 func _exit_tree() -> void:
 	#take the laser with it
 	if laser_node:
@@ -99,14 +104,16 @@ func _exit_tree() -> void:
 
 
 func cast_validation_ray(p_length: float) -> Dictionary:
-	var dss: PhysicsDirectSpaceState3D = PhysicsServer3D.space_get_direct_state(get_world_3d().get_space())
-	if ! dss:
+	var dss: PhysicsDirectSpaceState3D = (
+		PhysicsServer3D . space_get_direct_state(get_world_3d().get_space())
+	)
+	if !dss:
 		return {}
 
 	var start: Vector3 = laser_node.global_transform.origin
 	var end: Vector3 = (
 		laser_node.global_transform.origin
-		+ laser_node.global_transform.basis*(Vector3(0.0, 0.0, -p_length))
+		+ laser_node.global_transform.basis * (Vector3(0.0, 0.0, -p_length))
 	)
 	var parameters: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
 	parameters.from = start
@@ -136,10 +143,11 @@ func cast_validation_ray(p_length: float) -> Dictionary:
 func update_ray() -> void:
 	if is_active_selector and VRManager.xr_active:
 		valid_ray_result = cast_validation_ray(maxiumum_ray_length)
-		if ! valid_ray_result.is_empty() and is_active_selector:
+		if !valid_ray_result.is_empty() and is_active_selector:
 			if valid_ray_result["collider"].has_method("on_pointer_moved"):
-				valid_ray_result["collider"].on_pointer_moved(
-					valid_ray_result["position"], valid_ray_result["normal"]
+				(
+					valid_ray_result["collider"]
+					. on_pointer_moved(valid_ray_result["position"], valid_ray_result["normal"])
 				)
 			laser_node.show()
 			laser_hit_node.show()

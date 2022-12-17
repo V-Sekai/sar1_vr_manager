@@ -13,35 +13,37 @@ var interface_names: Array = []
 var flat_resolution: Vector2 = Vector2(1280, 720)
 
 # Names
-const body_awareness_names = (
-	["TR_VR_MANAGER_BODY_AWARENESS_HANDS_ONLY",\
-	"TR_VR_MANAGER_BODY_AWARENESS_CONTROLLERS_ONLY",\
-	"TR_VR_MANAGER_BODY_AWARENESS_FULL_BODY"])
-const turning_mode_names = (
-	["TR_VR_MANAGER_TURN_SMOOTH",\
+const body_awareness_names = [
+	"TR_VR_MANAGER_BODY_AWARENESS_HANDS_ONLY",
+	"TR_VR_MANAGER_BODY_AWARENESS_CONTROLLERS_ONLY",
+	"TR_VR_MANAGER_BODY_AWARENESS_FULL_BODY"
+]
+const turning_mode_names = [
+	"TR_VR_MANAGER_TURN_SMOOTH",
 	"TR_VR_MANAGER_TURN_30_DEGREES",
-	"TR_VR_MANAGER_TURN_45_DEGREES",\
-	"TR_VR_MANAGER_TURN_90_DEGREES",\
-	"TR_VR_MANAGER_TURN_CUSTOM"]
-)
-const play_position_names = (
-	["TR_VR_MANAGER_PLAY_POSITION_STANDING",\
-	"TR_VR_MANAGER_PLAY_POSITION_SEATED"])
-const movement_orientation_names = (
-	["TR_VR_MANAGER_HEAD_ORIENTED_MOVEMENT",\
-	"TR_VR_MANAGER_HAND_ORIENTED_MOVEMENT",\
-	"TR_VR_MANAGER_PLAYSPACE_ORIENTED_MOVEMENT"]
-)
-const vr_hmd_mirroring_names = (
-	["TR_VR_MANAGER_UI_NO_MIRROR", "TR_VR_MANAGER_UI_MIRROR_VR"])
-const vr_control_type_names = (
-	["TR_VR_MANAGER_CONTROL_TYPE_CLASSIC", "TR_VR_MANAGER_CONTROL_TYPE_DUAL"])
-const preferred_hand_oriented_movement_hand_names = (
-	["TR_VR_MANAGER_PREFERRED_HAND_ORIENTED_MOVEMENT_LEFT",\
-	"TR_VR_MANAGER_PREFERRED_HAND_ORIENTED_MOVEMENT_RIGHT"])
-const movement_type_names = (
-	["TR_VR_MANAGER_MOVEMENT_TELEPORTATION",\
-	"TR_VR_MANAGER_MOVEMENT_LOCOMOTION"])
+	"TR_VR_MANAGER_TURN_45_DEGREES",
+	"TR_VR_MANAGER_TURN_90_DEGREES",
+	"TR_VR_MANAGER_TURN_CUSTOM"
+]
+const play_position_names = [
+	"TR_VR_MANAGER_PLAY_POSITION_STANDING", "TR_VR_MANAGER_PLAY_POSITION_SEATED"
+]
+const movement_orientation_names = [
+	"TR_VR_MANAGER_HEAD_ORIENTED_MOVEMENT",
+	"TR_VR_MANAGER_HAND_ORIENTED_MOVEMENT",
+	"TR_VR_MANAGER_PLAYSPACE_ORIENTED_MOVEMENT"
+]
+const vr_hmd_mirroring_names = ["TR_VR_MANAGER_UI_NO_MIRROR", "TR_VR_MANAGER_UI_MIRROR_VR"]
+const vr_control_type_names = [
+	"TR_VR_MANAGER_CONTROL_TYPE_CLASSIC", "TR_VR_MANAGER_CONTROL_TYPE_DUAL"
+]
+const preferred_hand_oriented_movement_hand_names = [
+	"TR_VR_MANAGER_PREFERRED_HAND_ORIENTED_MOVEMENT_LEFT",
+	"TR_VR_MANAGER_PREFERRED_HAND_ORIENTED_MOVEMENT_RIGHT"
+]
+const movement_type_names = [
+	"TR_VR_MANAGER_MOVEMENT_TELEPORTATION", "TR_VR_MANAGER_MOVEMENT_LOCOMOTION"
+]
 
 # Platforms
 const vr_platform_const = preload("res://addons/sar1_vr_manager/platforms/vr_platform.gd")
@@ -50,10 +52,10 @@ const vr_constants_const = preload("res://addons/sar1_vr_manager/vr_constants.gd
 const vr_render_cache_const = preload("res://addons/sar1_vr_manager/vr_render_cache.gd")
 const vr_render_tree_const = preload("res://addons/sar1_vr_manager/vr_render_tree.gd")
 
-var vr_platform: RefCounted = null # vr_platform_const = null
+var vr_platform: RefCounted = null  # vr_platform_const = null
 
-var vr_platform_openxr: RefCounted = null # : vr_platform_const = null
-	
+var vr_platform_openxr: RefCounted = null  # : vr_platform_const = null
+
 var render_cache = vr_render_cache_const.new()
 
 var xr_interface: XRInterface = null
@@ -69,20 +71,21 @@ var snap_turning_radians: float = 0.0
 
 signal new_origin_assigned(p_origin)
 
-signal xr_mode_changed()
+signal xr_mode_changed
 signal world_origin_scale_changed(p_scale)
 
 signal tracker_added(tracker_name, type)
 signal tracker_removed(tracker_name, type)
 
 # Called for changes to height and armspan
-signal proportions_changed()
+signal proportions_changed
 
-signal request_vr_calibration()
-signal confirm_vr_calibration()
+signal request_vr_calibration
+signal confirm_vr_calibration
 
 var laser_material: Material = null
 var laser_hit_material: Material = null
+
 
 func _fade_color_changed(p_color: Color) -> void:
 	vr_fader.color = p_color
@@ -114,6 +117,7 @@ func is_xr_active() -> bool:
 func get_origin() -> XROrigin3D:
 	return xr_origin
 
+
 func update_turning_radians() -> void:
 	match vr_user_preferences.turning_mode:
 		vr_user_preferences_const.TURNING_MODE_SNAP_30:
@@ -125,8 +129,10 @@ func update_turning_radians() -> void:
 		vr_user_preferences_const.TURNING_MODE_SNAP_CUSTOM:
 			snap_turning_radians = deg_to_rad(vr_user_preferences.snap_turning_degrees_custom)
 
+
 func settings_changed() -> void:
 	update_turning_radians()
+
 
 func create_render_tree() -> Node3D:
 	if not xr_interface:
@@ -183,11 +189,14 @@ func _on_interface_removed(p_interface_name: StringName) -> void:
 
 func _on_tracker_added(p_tracker_name: StringName, p_type: int) -> void:
 	print(
-		"Tracker added {tracker_name} type {tracker_type_name}".format(
-			{
-				"tracker_name": p_tracker_name,
-				"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type)
-			}
+		(
+			"Tracker added {tracker_name} type {tracker_type_name}"
+			. format(
+				{
+					"tracker_name": p_tracker_name,
+					"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type)
+				}
+			)
 		)
 	)
 
@@ -196,22 +205,25 @@ func _on_tracker_added(p_tracker_name: StringName, p_type: int) -> void:
 	var tracker: XRPositionalTracker = XRServer.get_tracker(p_tracker_name)
 
 	xr_trackers[p_tracker_name] = tracker
-	
+
 	tracker_added.emit(p_tracker_name, p_type)
 
 
 func _on_tracker_removed(p_tracker_name: StringName, p_type: int) -> void:
 	print(
-		"Tracker removed {tracker_name} type {tracker_type_name}".format(
-			{
-				"tracker_name": p_tracker_name,
-				"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type)
-			}
+		(
+			"Tracker removed {tracker_name} type {tracker_type_name}"
+			. format(
+				{
+					"tracker_name": p_tracker_name,
+					"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type)
+				}
+			)
 		)
 	)
 
 	xr_tracker_count -= 1
-	
+
 	if xr_trackers.has(p_tracker_name):
 		if xr_trackers.erase(p_tracker_name):
 			tracker_removed.emit(p_tracker_name, p_type)
@@ -238,14 +250,17 @@ func platform_add_controller(p_controller: XRController3D, p_origin: XROrigin3D)
 		return
 	vr_platform.add_controller(p_controller, p_origin)
 
-func platform_remove_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:	
+
+func platform_remove_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	if not vr_platform:
 		return
 	vr_platform.remove_controller(p_controller, p_origin)
 
+
 func is_quitting() -> void:
 	vr_user_preferences.set_settings_values()
-	
+
+
 func setup_vr_interface() -> void:
 	# Search through all the vr interface names in project configuration
 	# Break when one has been found
@@ -256,86 +271,93 @@ func setup_vr_interface() -> void:
 			if xr_interface.initialize():
 				print("%s Initalised!" % interface_name)
 				create_vr_platform_for_interface(interface_name)
-				
+
 				if vr_user_preferences.vr_mode_enabled:
 					DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 					xr_active = true
 					return
-					
+
 				break
 			else:
 				print("Could not initalise interface %s..." % interface_name)
-					
+
 	print("Could not initalise any VR interface...")
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 	xr_active = false
-		
+
+
 func initialise_vr_interface(p_force: bool = false) -> void:
-	if (!xr_interface and vr_user_preferences.vr_mode_enabled) or \
-		p_force:
+	if (!xr_interface and vr_user_preferences.vr_mode_enabled) or p_force:
 		setup_vr_interface()
-		
+
+
 func toggle_vr() -> void:
 	var enabled: bool = !vr_user_preferences.vr_mode_enabled
-	vr_user_preferences.vr_mode_enabled = enabled	
-	initialise_vr_interface()	
+	vr_user_preferences.vr_mode_enabled = enabled
+	initialise_vr_interface()
 	if xr_interface:
 		xr_active = enabled
 		if enabled:
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
-		else:			
+		else:
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	else:
 		xr_active = false
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)		
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 	xr_mode_changed.emit()
+
 
 func force_update() -> void:
 	if xr_active and xr_origin:
 		xr_origin.notification(NOTIFICATION_INTERNAL_PROCESS)
 		#xr_origin._cache_world_origin_transform()
 		#xr_origin._update_tracked_camera()
-	
+
+
 func set_origin_world_scale(p_scale: float) -> void:
 	if xr_origin:
 		xr_origin.set_world_scale(p_scale)
 		world_origin_scale_changed.emit(p_scale)
-	
+
+
 func assign_xr_origin(p_xr_origin) -> void:
 	if xr_origin != p_xr_origin:
 		xr_origin = p_xr_origin
 		new_origin_assigned.emit(xr_origin)
-	
+
+
 func apply_project_settings() -> void:
 	if Engine.is_editor_hint():
 		#################
 		# VR Interfaces #
 		#################
-		if ! ProjectSettings.has_setting("vr/config/interfaces"):
+		if !ProjectSettings.has_setting("vr/config/interfaces"):
 			ProjectSettings.set_setting("vr/config/interfaces", PackedStringArray())
-	
+
 			var vr_interfaces_property_info: Dictionary = {
 				"name": "vr/config/interfaces",
 				"type": TYPE_PACKED_STRING_ARRAY,
 				"hint": PROPERTY_HINT_NONE,
 				"hint_string": ""
 			}
-		
+
 			ProjectSettings.add_property_info(vr_interfaces_property_info)
-	
-		if ! ProjectSettings.has_setting("vr/config/process_priority"):
+
+		if !ProjectSettings.has_setting("vr/config/process_priority"):
 			ProjectSettings.set_setting("vr/config/process_priority", 0)
-	
+
 		########
 		# Save #
 		########
 		if ProjectSettings.save() != OK:
 			printerr("Could not save project settings!")
 
+
 func get_project_settings() -> void:
 	interface_names = ProjectSettings.get_setting("vr/config/interfaces")
 	process_priority = ProjectSettings.get_setting("vr/config/process_priority")
-	
+
+
 func _input(p_event: InputEvent) -> void:
 	if p_event.is_action_pressed("toggle_vr"):
 		toggle_vr()
@@ -344,18 +366,20 @@ func _input(p_event: InputEvent) -> void:
 	elif p_event.is_action_pressed("confirm_vr_calibration"):
 		confirm_vr_calibration.emit()
 
+
 func _process(_delta) -> void:
 	force_update()
+
 
 func _ready() -> void:
 	apply_project_settings()
 	get_project_settings()
-	
+
 	settings_changed()
-	
+
 	if vr_user_preferences.settings_changed.connect(self.settings_changed) != OK:
 		printerr("Could not connect settings_changed!")
-	
+
 	vr_fader = ColorRect.new()
 	if FadeManager.color_changed.connect(self._fade_color_changed) != OK:
 		printerr("Could not connect 'color_changed'!")
@@ -366,10 +390,10 @@ func _ready() -> void:
 	# Sets up the VR state
 	create_vr_platforms()
 
-	if ! Engine.is_editor_hint():
+	if !Engine.is_editor_hint():
 		print("CONNECTING TO XRSERVER")
 		InputManager.assign_input_map_validation_callback(self, "is_joypad_id_input_map_valid")
-		for initial_iface in XRServer.get_interfaces(): # [{"id":1,"name":"some_name"}] for some reason
+		for initial_iface in XRServer.get_interfaces():  # [{"id":1,"name":"some_name"}] for some reason
 			self._on_interface_added.call_deferred(StringName(initial_iface["name"]))
 		var initial_trackers = XRServer.get_trackers(XRServer.TRACKER_ANY)
 
@@ -377,26 +401,14 @@ func _ready() -> void:
 			var postracker: XRPositionalTracker = xrpt
 			self._on_tracker_added.call_deferred(postracker.name, postracker.type)
 
-		if (
-			XRServer.interface_added.connect(self._on_interface_added, CONNECT_DEFERRED)
-			!= OK
-		):
+		if XRServer.interface_added.connect(self._on_interface_added, CONNECT_DEFERRED) != OK:
 			printerr("interface_added could not be connected")
-		if (
-			XRServer.interface_removed.connect(self._on_interface_removed, CONNECT_DEFERRED)
-			!= OK
-		):
+		if XRServer.interface_removed.connect(self._on_interface_removed, CONNECT_DEFERRED) != OK:
 			printerr("interface_removed could not be connected")
 
-		if (
-			XRServer.tracker_added.connect(self._on_tracker_added, CONNECT_DEFERRED)
-			!= OK
-		):
+		if XRServer.tracker_added.connect(self._on_tracker_added, CONNECT_DEFERRED) != OK:
 			printerr("tracker_added could not be connected")
-		if (
-			XRServer.tracker_removed.connect(self._on_tracker_removed, CONNECT_DEFERRED)
-			!= OK
-		):
+		if XRServer.tracker_removed.connect(self._on_tracker_removed, CONNECT_DEFERRED) != OK:
 			printerr("tracker_removed could not be connected")
 		set_process(true)
 		set_process_input(true)

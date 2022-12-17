@@ -6,6 +6,5 @@ const EYE_EAR_GAP = 0.08
 const ARMSPAN_WRIST_SPAN_CONVERSION = 0.9
 
 const UNKNOWN_HAND = 0
-const LEFT_HAND=1
-const RIGHT_HAND=2
-
+const LEFT_HAND = 1
+const RIGHT_HAND = 2

@@ -1,28 +1,27 @@
-extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd" # vr_action.gd
+extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd"  # vr_action.gd
 
-@export var enabled = true :
+@export var enabled = true:
 	set = set_enabled,
 	get = get_enabled
 
-
 const AXIS_MAXIMUM = 0.5
 
-@export var can_teleport_color : Color = Color(0.0, 1.0, 0.0, 1.0)
-@export var cant_teleport_color : Color = Color(1.0, 0.0, 0.0, 1.0)
-@export var no_collision_color : Color = Color(45.0 / 255.0, 80.0 / 255.0, 220.0 / 255.0, 1.0)
-@export var player_height = 1.63 :
+@export var can_teleport_color: Color = Color(0.0, 1.0, 0.0, 1.0)
+@export var cant_teleport_color: Color = Color(1.0, 0.0, 0.0, 1.0)
+@export var no_collision_color: Color = Color(45.0 / 255.0, 80.0 / 255.0, 220.0 / 255.0, 1.0)
+@export var player_height = 1.63:
 	set = set_player_height,
 	get = get_player_height
 
-@export var player_radius = 0.4 :
+@export var player_radius = 0.4:
 	set = set_player_radius,
 	get = get_player_radius
 
 @export var strength = 2.5
-@export var collision_mask : int = 1
-@export var margin : float = 0.001
+@export var collision_mask: int = 1
+@export var margin: float = 0.001
 
-@export var camera : NodePath = NodePath()
+@export var camera: NodePath = NodePath()
 
 @onready var ws = XRServer.world_scale
 var origin_node = null
@@ -44,10 +43,13 @@ var locomotion: Node3D = null
 #############
 var can_teleport_funcref
 
-func set_can_teleport_funcref(p_instance: Object, p_function : String) -> void:
+
+func set_can_teleport_funcref(p_instance: Object, p_function: String) -> void:
 	can_teleport_funcref = Callable(p_instance, p_function)
-	
+
+
 signal teleported(p_transform)
+
 
 func set_enabled(new_value):
 	enabled = new_value
@@ -106,29 +108,28 @@ func _ready():
 	if camera:
 		camera_node = get_node(camera)
 	else:
-		camera_node = origin_node.get_node('ARVRCamera')
+		camera_node = origin_node.get_node("ARVRCamera")
 
 	collision_shape = CapsuleShape3D.new()
 
 	set_player_height(player_height)
 	set_player_radius(player_radius)
-	
+
 	locomotion = VRManager.xr_origin.get_component_by_name("LocomotionComponent")
 
 
 func _process(_delta):
 	var controller = find_parent_controller()
 
-	if ! origin_node:
+	if !origin_node:
 		return
 
-	if ! camera_node:
+	if !camera_node:
 		return
 
 	var can_teleport: bool = false
 	if can_teleport_funcref.is_valid():
 		can_teleport = can_teleport_funcref.call()
-	
 
 	var new_ws = XRServer.world_scale
 	if ws != new_ws:
@@ -137,7 +138,7 @@ func _process(_delta):
 		$Target.mesh.size = Vector2(ws, ws)
 		$Target/Player_figure.scale = Vector3(ws, ws, ws)
 
-	if ! enabled or ! can_teleport:
+	if !enabled or !can_teleport:
 		is_teleporting = false
 		$Teleport.visible = false
 		$Target.visible = false
@@ -145,19 +146,23 @@ func _process(_delta):
 		set_physics_process(false)
 		return
 
-	if ! locomotion:
+	if !locomotion:
 		return
 
-	var teleport_pressed: bool = controller.is_pressed("/locomotion/teleport") or controller.is_pressed("secondary_click")
-	
+	var teleport_pressed: bool = (
+		controller.is_pressed("/locomotion/teleport") or controller.is_pressed("secondary_click")
+	)
+
 	if (
 		controller
 		and locomotion.movement_controller == controller
-		and VRManager.vr_user_preferences.movement_type ==\
-		VRManager.vr_user_preferences.movement_type_enum.MOVEMENT_TYPE_TELEPORT
+		and (
+			VRManager.vr_user_preferences.movement_type
+			== VRManager.vr_user_preferences.movement_type_enum.MOVEMENT_TYPE_TELEPORT
+		)
 		and teleport_pressed
 	):
-		if ! is_teleporting:
+		if !is_teleporting:
 			is_teleporting = true
 			$Teleport.visible = true
 			$Target.visible = true
@@ -189,7 +194,7 @@ func _process(_delta):
 			var t = global_target.z / strength
 			var t2 = t * t
 
-			global_target = teleport_global_transform*(global_target)
+			global_target = teleport_global_transform * (global_target)
 
 			global_target += down * t2
 
@@ -206,7 +211,7 @@ func _process(_delta):
 					is_on_floor = false
 				else:
 					var up = Vector3(0.0, 1.0, 0.0)
-					var end_pos = target_global_origin - (up * 0.1)		
+					var end_pos = target_global_origin - (up * 0.1)
 					var parameters: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
 					parameters.from = target_global_origin
 					parameters.to = end_pos
@@ -245,7 +250,12 @@ func _process(_delta):
 			#teleport_rotation += (p_delta * controller.get_joystick_axis(0) * -4.0)
 
 			var target_basis = Basis()
-			target_basis.z = Vector3(teleport_global_transform.basis.z.x, 0.0, teleport_global_transform.basis.z.z).normalized()
+			target_basis.z = (
+				Vector3(
+					teleport_global_transform.basis.z.x, 0.0, teleport_global_transform.basis.z.z
+				)
+				. normalized()
+			)
 			target_basis.y = normal
 			target_basis.x = target_basis.y.cross(target_basis.z)
 			target_basis.z = target_basis.x.cross(target_basis.y)
@@ -275,8 +285,12 @@ func _process(_delta):
 			user_feet_transform.origin.y = 0  # the feet are on the ground, but have the same X,Z as the camera
 
 			user_feet_transform.basis.y = Vector3(0.0, 1.0, 0.0)
-			user_feet_transform.basis.x = user_feet_transform.basis.y.cross(cam_transform.basis.z).normalized()
-			user_feet_transform.basis.z = user_feet_transform.basis.x.cross(user_feet_transform.basis.y).normalized()
+			user_feet_transform.basis.x = (
+				user_feet_transform . basis . y . cross(cam_transform.basis.z) . normalized()
+			)
+			user_feet_transform.basis.z = (
+				user_feet_transform . basis . x . cross(user_feet_transform.basis.y) . normalized()
+			)
 
 			teleported.emit(new_transform * user_feet_transform.inverse())
 

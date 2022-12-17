@@ -1,7 +1,8 @@
-extends "res://addons/sar1_vr_manager/components/vr_component.gd" # vr_component.gd
+extends "res://addons/sar1_vr_manager/components/vr_component.gd"  # vr_component.gd
 
-var movement_controller : XRController3D = null
-var turning_controller : XRController3D = null
+var movement_controller: XRController3D = null
+var turning_controller: XRController3D = null
+
 
 func _get_movement_controller() -> XRController3D:
 	if hand_controllers.size() >= 2 and left_hand_controller:
@@ -56,15 +57,15 @@ func _refresh_controllers() -> void:
 			turning_controller.action_pressed.disconnect(self.turning_action_pressed)
 		if turning_controller.action_released.is_connected(self.turning_action_released):
 			turning_controller.action_released.disconnect(self.turning_action_released)
-	
+
 	if Input.is_action_pressed("snap_left"):
 		Input.action_release("snap_left")
 	if Input.is_action_pressed("snap_right"):
 		Input.action_release("snap_right")
-	
+
 	movement_controller = _get_movement_controller()
 	turning_controller = _get_turning_controller()
-	
+
 	if movement_controller and is_instance_valid(movement_controller):
 		if movement_controller.action_pressed.connect(self.movement_action_pressed) != OK:
 			printerr("Could not connect 'action_pressed'!")
@@ -79,31 +80,41 @@ func _refresh_controllers() -> void:
 
 func get_controller_movement_vector() -> Vector2:
 	var movement_vector: Vector2 = Vector2()
-	
-	if hand_controllers.size() >= 2 and left_hand_controller and right_hand_controller and is_instance_valid(left_hand_controller) and is_instance_valid(right_hand_controller):
+
+	if (
+		hand_controllers.size() >= 2
+		and left_hand_controller
+		and right_hand_controller
+		and is_instance_valid(left_hand_controller)
+		and is_instance_valid(right_hand_controller)
+	):
 		movement_controller = left_hand_controller
 		movement_vector = movement_controller.get_axis("primary")
-		if ! VRManager.vr_user_preferences.strafe_movement:
+		if !VRManager.vr_user_preferences.strafe_movement:
 			movement_vector.x = 0.0
 		if VRManager.vr_user_preferences.movement_on_rotation_controller:
 			turning_controller = right_hand_controller
 			movement_vector.y += turning_controller.get_axis("primary").y
 	elif hand_controllers.size() == 1:
 		movement_vector = Vector2(0.0, hand_controllers[0].get_axis("primary").y)
-		
+
 	# Test the deadzone
 	if abs(movement_vector.x) < VRManager.vr_user_preferences.movement_deadzone:
 		movement_vector.x = 0.0
 	if abs(movement_vector.y) < VRManager.vr_user_preferences.movement_deadzone:
 		movement_vector.y = 0.0
-		
+
 	return movement_vector.limit_length(1.0)
 
 
 func get_controller_turning_vector() -> Vector2:
 	var turning_vector: Vector2 = Vector2()
 
-	if hand_controllers.size() >= 2 and is_instance_valid(left_hand_controller) and is_instance_valid(right_hand_controller):
+	if (
+		hand_controllers.size() >= 2
+		and is_instance_valid(left_hand_controller)
+		and is_instance_valid(right_hand_controller)
+	):
 		turning_controller = right_hand_controller
 
 		turning_vector = Vector2(turning_controller.get_axis("primary").x, 0.0)
@@ -122,20 +133,24 @@ func get_controller_turning_vector() -> Vector2:
 func get_controller_direction() -> Basis:
 	if hand_controllers.size() == 2:
 		if (
-			VRManager.vr_user_preferences.preferred_hand_oriented_movement_hand ==\
-			VRManager.vr_user_preferences.hand_enum.LEFT_HAND
+			(
+				VRManager.vr_user_preferences.preferred_hand_oriented_movement_hand
+				== VRManager.vr_user_preferences.hand_enum.LEFT_HAND
+			)
 			and left_hand_controller
 		):
 			return left_hand_controller.transform.basis
 		if (
-			VRManager.vr_user_preferences.preferred_hand_oriented_movement_hand ==\
-			VRManager.vr_user_preferences.hand_enum.RIGHT_HAND
+			(
+				VRManager.vr_user_preferences.preferred_hand_oriented_movement_hand
+				== VRManager.vr_user_preferences.hand_enum.RIGHT_HAND
+			)
 			and right_hand_controller
 		):
 			return right_hand_controller.transform.basis
 	elif hand_controllers.size() == 1:
 		return hand_controllers[0].transform.basis
-		
+
 	return Basis()
 
 
@@ -143,7 +158,7 @@ func _process(_delta):
 	if VRManager != null && VRManager.xr_active:
 		var movement_vector: Vector2 = get_controller_movement_vector()
 		var turning_vector: Vector2 = get_controller_turning_vector()
-		
+
 		# Movement
 		if movement_vector.y > 0.0:
 			Input.action_press("move_forwards", abs(movement_vector.y))
@@ -154,7 +169,7 @@ func _process(_delta):
 		else:
 			Input.action_press("move_forwards", 0.0)
 			Input.action_press("move_backwards", 0.0)
-			
+
 		if movement_vector.x > 0.0:
 			Input.action_press("move_right", abs(movement_vector.x))
 			Input.action_press("move_left", 0.0)
@@ -164,7 +179,7 @@ func _process(_delta):
 		else:
 			Input.action_press("move_right", 0.0)
 			Input.action_press("move_left", 0.0)
-			
+
 		# Looking
 		if turning_vector.y > 0.0:
 			Input.action_press("look_up", abs(turning_vector.y))
@@ -175,7 +190,7 @@ func _process(_delta):
 		else:
 			Input.action_press("look_up", 0.0)
 			Input.action_press("look_down", 0.0)
-			
+
 		if turning_vector.x > 0.0:
 			Input.action_press("look_right", abs(turning_vector.x))
 			Input.action_press("look_left", 0.0)
@@ -186,15 +201,17 @@ func _process(_delta):
 			Input.action_press("look_right", 0.0)
 			Input.action_press("look_left", 0.0)
 
+
 func post_add_setup() -> void:
 	super.post_add_setup()
-	
+
+
 func _enter_tree():
 	set_name("LocomotionComponent")
+
 
 func _ready():
 	if trackers_changed.connect(self._refresh_controllers) != OK:
 		printerr("Could not connect 'trackers_changed'!")
-		
+
 	_refresh_controllers()
-	
