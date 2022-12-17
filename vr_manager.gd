@@ -46,14 +46,11 @@ const movement_type_names = [
 ]
 
 const vr_platform_const = preload("res://addons/sar1_vr_manager/platforms/vr_platform.gd")
+var vr_platform = null
 
 const vr_constants_const = preload("res://addons/sar1_vr_manager/vr_constants.gd")
 const vr_render_cache_const = preload("res://addons/sar1_vr_manager/vr_render_cache.gd")
 const vr_render_tree_const = preload("res://addons/sar1_vr_manager/vr_render_tree.gd")
-
-var vr_platform: RefCounted = null  # vr_platform_const = null
-
-var vr_platform_openxr: RefCounted = null  # : vr_platform_const = null
 
 var render_cache = vr_render_cache_const.new()
 
@@ -230,8 +227,6 @@ func _on_tracker_removed(p_tracker_name: StringName, p_type: int) -> void:
 
 func create_vr_platform_for_interface(p_interface_name: String) -> void:
 	match p_interface_name:
-		"OpenXR":
-			vr_platform = vr_platform_openxr
 		_:
 			vr_platform = vr_platform_const.new()
 
@@ -240,8 +235,8 @@ func create_vr_platform_for_interface(p_interface_name: String) -> void:
 
 
 func create_vr_platforms() -> void:
-	var vr_platform_const = vr_platform_const.new()
-	vr_platform_const.pre_setup()
+	vr_platform = vr_platform_const.new()
+	vr_platform.pre_setup()
 
 
 func platform_add_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
