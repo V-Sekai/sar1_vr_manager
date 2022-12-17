@@ -102,7 +102,7 @@ func set_settings_values_and_save() -> void:
 	set_settings_values()
 	if save_settings_callback.is_valid():
 		save_settings_callback.call()
-	
+
 func set_settings_value(p_key: String, p_value) -> void:
 	if set_settings_value_callback.is_valid():
 		set_settings_value_callback.call(USER_PREFERENCES_SECTION_NAME, p_key, p_value)

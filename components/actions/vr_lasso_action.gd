@@ -79,7 +79,7 @@ func _update_lasso(_delta: float) -> void:
 				primary_power = 1
 				secondary_power = 0
 				primary_snap = snap_point.get_global_transform().origin
-			else:
+			elif tracker.laser_origin:
 				var snap_arr:Array = snapping_singleton.snapping_points.calc_top_two_snapping_power(tracker.laser_origin.global_transform, current_snap, snap_increase, lasso_analog_value.x, lasso)
 				if(snap_arr.size() > 0 && snap_arr[0] && snap_arr[0].get_origin() && snap_arr[0].get_snap_score() > min_snap):
 					snap_point = snap_arr[0].get_origin()

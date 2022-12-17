@@ -19,6 +19,7 @@ static func xform_plane(p_transform: Transform3D, p_plane: Plane) -> Plane:
 
 	return Plane(normal, d);
 
+
 static func get_endpoints_for_camera(p_camera: Camera3D) -> PackedVector2Array:
 	var planes: Array = p_camera.get_frustum()
 	
@@ -35,7 +36,6 @@ static func get_endpoints_for_camera(p_camera: Camera3D) -> PackedVector2Array:
 	var far_endpoint: Vector3 =  (far_plane.intersect_3(right_plane, top_plane))
 	
 	return PackedVector2Array([Vector2(near_endpoint.x, near_endpoint.y), Vector2(far_endpoint.x, far_endpoint.y)])
-	
 
 
 func update_plane(p_lerp: float) -> void:
@@ -57,13 +57,14 @@ func update_plane(p_lerp: float) -> void:
 				Basis.from_euler(Vector3(PI * 0.5, 0.0, 0.0)).scaled(Vector3(lerped_size.x, lerped_size.y, 1.0)),
 				Vector3(0.0, 0.0, -lerp_position)
 			))
-		
+
+
 func set_distance(p_distance: float) -> void:
 	distance = p_distance
 	update_plane(distance)
 
+
 func _ready() -> void:
 	var unshaded: StandardMaterial3D = StandardMaterial3D.new()
-	unshaded.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	
+	unshaded.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED	
 	update_plane(distance)

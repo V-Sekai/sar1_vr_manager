@@ -1,16 +1,11 @@
 extends XRController3D
 
 const vr_constants_const = preload("res://addons/sar1_vr_manager/vr_constants.gd")
-
 const vr_render_tree_const = preload("vr_render_tree.gd")
-
 var component_action: Array = []
-
 var laser_origin: Node3D
 var model_origin: Node3D
-
 var world_scale: float = 1.0
-
 var get_is_action_pressed_funcref: Callable = Callable()
 var get_analog_funcref: Callable = Callable()
 
@@ -20,14 +15,12 @@ signal action_released(p_action)
 func is_pressed(p_action: String) -> bool:
 	if get_is_action_pressed_funcref.is_valid():
 		return get_is_action_pressed_funcref.call(p_action)
-
 	return false
 
 
 func get_axis(p_action: StringName) -> Vector2:
 	if get_analog_funcref.is_valid():
 		return get_analog_funcref.call(p_action)
-
 	return Vector2()
 
 
@@ -40,10 +33,6 @@ func get_hand_id_for_tracker() -> int:
 			return vr_constants_const.RIGHT_HAND
 		_:
 			return vr_constants_const.UNKNOWN_HAND
-
-
-func apply_world_scale():
-	pass
 
 
 func _on_action_pressed(p_action: String) -> void:
@@ -70,30 +59,24 @@ func _on_action_released(p_action: String) -> void:
 
 func add_component_action(p_component_action: Node) -> void:
 	assert(p_component_action)
-	
 	if component_action.has(p_component_action):
 		printerr("Attempted to add duplicate module tracker!")
 		return
-		
 	component_action.push_back(p_component_action)
-	
 	add_child(p_component_action, true)
 
 
 func remove_component_action(p_component_action: Node) -> void:
-	assert(p_component_action)
-	
+	assert(p_component_action)	
 	var index: int = component_action.find(p_component_action)
 	if index != -1:
 		component_action.remove_at(index)
 	else:
-		printerr("Attempted to remove invalid module tracker!")
-		
+		printerr("Attempted to remove invalid module tracker!")		
 	p_component_action.queue_free()
 	remove_child(p_component_action)
 
 
 func _process(_delta: float) -> void:
-	apply_world_scale()
 	if ! get_is_active():
 		visible = false
