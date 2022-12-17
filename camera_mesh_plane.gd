@@ -27,10 +27,10 @@ static func get_endpoints_for_camera(p_camera: Camera3D) -> PackedVector2Array:
 	
 	var near_plane: Plane = xform_plane(camera_gt_inv, planes[0])
 	var far_plane: Plane = xform_plane(camera_gt_inv, planes[1])
-	#var left_plane: Plane = xform_plane(camera_gt_inv, planes[2])
+	# The is a placeholder for the plane index 2.
 	var top_plane: Plane = xform_plane(camera_gt_inv, planes[3])
 	var right_plane: Plane = xform_plane(camera_gt_inv, planes[4])
-	#var bottom_plane: Plane = xform_plane(camera_gt_inv, planes[5])
+	# The is a placeholder for the plane index 5.
 
 	var near_endpoint: Vector3 = (near_plane.intersect_3(right_plane, top_plane))
 	var far_endpoint: Vector3 =  (far_plane.intersect_3(right_plane, top_plane))
