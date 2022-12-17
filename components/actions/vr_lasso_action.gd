@@ -23,7 +23,7 @@ var flick_origin_spatial: Node3D = null
 # var initialized_laser_transform:bool = false
 
 var print_mod = 0
-@export var rumble_duration: int = 0.100  #milisseconds
+@export var rumble_duration: int = 0.100
 @export var rumble_strength: float = 1.0
 
 
