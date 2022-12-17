@@ -62,7 +62,6 @@ func get_snapping_enabled() -> bool:
 
 
 func _init():
-	# FIXME: We do not want to hard depend on lasso
 	if type_exists("LassoPoint"):
 		lasso_point = ClassDB.instantiate("LassoPoint")
 

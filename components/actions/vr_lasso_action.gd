@@ -20,7 +20,6 @@ var redirection_lock: bool = false
 var redirection_ready: bool = true
 var interact_ready: bool = false
 var flick_origin_spatial: Node3D = null
-# var initialized_laser_transform:bool = false
 
 var print_mod = 0
 @export var rumble_duration: int = 0.100
@@ -42,14 +41,9 @@ func _on_action_released(p_action: String) -> void:
 
 
 func _update_lasso(_delta: float) -> void:
-	# Saracen: don't run this function if not in XR mode
-	if !VRManager.xr_active:
-		return
-
-	# var start_time = Time.get_ticks_usec()
-	var lasso_analog_value: Vector2 = get_axis("primary")  # /menu/lasso_analog")
+	var lasso_analog_value: Vector2 = get_axis("primary")
 	var grip_strength = get_value("grip")
-	var lasso: bool = grip_strength > 0.5  # is_pressed("/menu/lasso")
+	var lasso: bool = grip_strength > 0.5
 	if grip_strength < 0.05:
 		lasso_analog_value = Vector2(0, 0)
 	redirection_lock = redirection_lock && (lasso_analog_value.length_squared() > 0)
@@ -59,8 +53,7 @@ func _update_lasso(_delta: float) -> void:
 	var primary_power: float = 0.0
 	var secondary_power: float = 0.0
 	if lasso_analog_value.x > 0:
-		var lasso_redirect_value: Vector2 = get_axis("secondary")  # /menu/lasso_redirect")
-		# LogManager.printl(str(lasso_redirect_value))
+		var lasso_redirect_value: Vector2 = get_axis("secondary")
 		var snapping_singleton = get_node("/root/SnappingSingleton")
 #		var points: Array = snapping_singleton.snapping_points
 		var snap_point = null
@@ -108,8 +101,6 @@ func _update_lasso(_delta: float) -> void:
 				current_snap.stop_snap_interact()
 			current_snap = snap_point
 			if current_snap != null:
-				#HERE IS THE SNAP
-				#do haptics here
 				tracker.trigger_haptic_pulse("haptic", 85.0, rumble_strength, rumble_duration, 0.0)
 				current_snap.call_snap_hover()
 	else:

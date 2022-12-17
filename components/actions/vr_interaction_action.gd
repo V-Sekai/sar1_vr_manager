@@ -37,7 +37,6 @@ func get_hand_object() -> Node3D:
 	if pickup_controller:
 		var id: int = vr_interaction_action_const.get_hand_object_id_for_tracker_controller(pickup_controller, tracker)
 		return pickup_controller.get_hand_entity_reference(id)
-
 	return null
 
 
@@ -70,7 +69,6 @@ func try_to_dropping_object() -> void:
 
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
-
 	match p_action:
 		"/hands/grip", "grip_clicK":
 			try_to_picking_up_object()
@@ -78,7 +76,6 @@ func _on_action_pressed(p_action: String) -> void:
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
-
 	match p_action:
 		"/hands/grip", "grip_click":
 			try_to_dropping_object()
