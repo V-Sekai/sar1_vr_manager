@@ -3,9 +3,6 @@ extends "res://addons/sar1_vr_manager/components/vr_component.gd"  # vr_componen
 # This will be added to the root of VR_origin. It is responsible for assigning
 # the lasso action to the controllers
 
-# const vr_lasso_action_const = preload("actions/vr_lasso_action.tscn")
-# const snapping_point = preload("lasso_snapping/snapping_point.gd")
-
 var vr_lasso_action_const = load("res://addons/sar1_vr_manager/components/actions/vr_lasso_action.tscn")
 
 var left_lasso_action: Node3D = null

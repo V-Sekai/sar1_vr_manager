@@ -32,16 +32,12 @@ static func create_pose(p_pose: XRController3D, p_name: String, p_action: String
 
 
 func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
-	if p_origin:
-		var _hand: int = p_controller.get_tracker_hand()
-
-		var model_origin: Node3D = create_pose(XRController3D.new(), "ModelOrigin", &"aim_pose", p_controller.tracker, p_origin)
-		var laser_origin: Node3D = create_pose(XRController3D.new(), "LaserOrigin", &"aim_pose", p_controller.tracker, p_origin)
-
-		p_controller.model_origin = model_origin
-		p_controller.laser_origin = laser_origin
-	else:
+	if not p_origin:
 		printerr("VRPlatform: Origin does not exist!")
+	var model_origin: Node3D = create_pose(XRController3D.new(), "ModelOrigin", &"aim_pose", p_controller.tracker, p_origin)
+	var laser_origin: Node3D = create_pose(XRController3D.new(), "LaserOrigin", &"aim_pose", p_controller.tracker, p_origin)
+	p_controller.model_origin = model_origin
+	p_controller.laser_origin = laser_origin
 
 
 func destroy_poses_for_controller(p_controller: XRController3D) -> void:

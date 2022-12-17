@@ -25,7 +25,7 @@ var snap_interacting = false:
 
 var flick_target: Node3D = null
 
-var lasso_point: RefCounted = null  # LassoPoint = LassoPoint.new()
+var lasso_point: RefCounted = null
 
 
 func set_power(p_power: float) -> void:
@@ -61,9 +61,6 @@ func get_snapping_enabled() -> bool:
 	return false
 
 
-# var physics_script = preload("res://addons/vsk_entities/extensions/prop_simulation_logic.gd")
-
-
 func _init():
 	# FIXME: We do not want to hard depend on lasso
 	if type_exists("LassoPoint"):
@@ -71,7 +68,6 @@ func _init():
 
 
 func _ready() -> void:
-	#register self with all lassos
 	register_snapping_point()
 
 
@@ -123,12 +119,12 @@ func calc_flick_velocity() -> Vector3:
 	if flick_target != null:
 		var flick_pos = flick_target.global_transform.origin
 		var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-		var time = 1  #make it there in one second
+		var time = 1  # Make it there in one second.
 		var vertical_diff = flick_pos.y - global_transform.origin.y
 		var horizontal_vector = Vector3(flick_pos.x, 0, flick_pos.z) - Vector3(global_transform.origin.x, 0, global_transform.origin.z)
 		var additional_air_time = 0
 		var vertical_velocity = 0.0
-		if gravity <= 0:  #if the world makes no sense
+		if gravity <= 0:  # If the world makes no sense.
 			return Vector3(horizontal_vector.x, vertical_diff, horizontal_vector.z).normalized() * flick_power
 		if vertical_diff > 0:
 			additional_air_time = (pow(horizontal_vector.length() / (horizontal_vector.length() + vertical_diff), 4) * flick_power)
@@ -147,7 +143,6 @@ func calc_flick_velocity() -> Vector3:
 
 
 func _integrate_forces(state: PhysicsDirectBodyState3D):
-	#._integrate_forces(state)
 	if flick_parent_to_hand_on_snap_interact && snap_interacting:
 		if flick_target != null && (flick_target.global_transform.origin.distance_to(global_transform.origin) > size + 0.001):
 			state.linear_velocity = calc_flick_velocity()
