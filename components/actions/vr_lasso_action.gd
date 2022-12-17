@@ -10,7 +10,7 @@ extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd"  # vr_act
 @export var secondary_circle: NodePath
 @export var min_snap = 0.5
 @export var snap_increase = 2
-# This node will be a child of a controller, add any input or display functionality here.
+
 var current_snap: Node3D = null
 var straight_mesh: MeshInstance3D = null
 var snapped_mesh: MeshInstance3D = null
@@ -173,10 +173,6 @@ func _update_lasso(_delta: float) -> void:
 		else:
 			straight_mesh.visible = false
 			snapped_mesh.visible = false
-
-	# print_mod += 1
-	# if(print_mod % 30 == 0 && lasso_analog_value.x > 0):
-	# 	LogManager.printl("lasso frame microseconds: " + str(Time.get_ticks_usec() - start_time))
 	return
 
 
@@ -184,35 +180,9 @@ func _process(p_delta: float) -> void:
 	_update_lasso(p_delta)
 
 
-# Saracen
-func _update_visibility() -> void:
-	if VRManager.xr_active:
-		if straight_mesh:
-			straight_mesh.show()
-		if snapped_mesh:
-			snapped_mesh.show()
-		set_process(true)
-	else:
-		if straight_mesh:
-			straight_mesh.hide()
-		if snapped_mesh:
-			snapped_mesh.hide()
-		set_process(false)
-
-
-# Saracen
-func _xr_mode_changed() -> void:
-	_update_visibility()
-
-
 func _ready() -> void:
 	super._ready()
-	# Saracen: disable visibility when not in XR mode
 	assert(VRManager.xr_mode_changed.connect(self._xr_mode_changed) == OK)
-
-	#Align with the laser_origin we were given
-	if not tracker.laser_origin:
-		return
 
 	straight_mesh = get_node(straight_laser) as MeshInstance3D
 	snapped_mesh = get_node(snapped_laser) as MeshInstance3D
@@ -242,10 +212,6 @@ func _ready() -> void:
 		secondary_mesh.material_override.set_shader_parameter("mix_color", snap_circle_color)
 		secondary_mesh.material_override = secondary_mesh.material_override.duplicate(true)
 		secondary_mesh.visible = false
-
-	# Saracen: hide meshes if not in XR mode
-	_update_visibility()
-
 	return
 
 
