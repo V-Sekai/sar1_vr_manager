@@ -23,7 +23,7 @@ var flick_origin_spatial: Node3D = null
 # var initialized_laser_transform:bool = false
 
 var print_mod = 0
-@export var rumble_duration: int = 100  #milisseconds
+@export var rumble_duration: int = 0.100  #milisseconds
 @export var rumble_strength: float = 1.0
 
 
@@ -130,7 +130,7 @@ func _update_lasso(_delta: float) -> void:
 			if current_snap != null:
 				#HERE IS THE SNAP
 				#do haptics here
-				tracker.trigger_haptic_pulse("rumble", 85.0, rumble_strength, rumble_duration, 0.0)
+				tracker.trigger_haptic_pulse("haptic", 85.0, rumble_strength, rumble_duration, 0.0)
 				current_snap.call_snap_hover()
 	else:
 		if current_snap != null:
