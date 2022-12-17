@@ -21,13 +21,7 @@ func create_render_tree() -> Node3D:
 	return vr_render_tree_class.new()
 
 
-static func create_pose(
-	p_pose: XRController3D,
-	p_name: String,
-	p_action: StringName,
-	p_tracker: StringName,
-	p_origin: XROrigin3D
-) -> Node3D:
+static func create_pose(p_pose: XRController3D, p_name: String, p_action: StringName, p_tracker: StringName, p_origin: XROrigin3D) -> Node3D:
 	p_pose.set_name("%s_%s" % [p_tracker, p_name])
 	p_pose.pose = p_action
 	p_pose.tracker = p_tracker
@@ -41,12 +35,8 @@ func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigi
 	if p_origin:
 		var _hand: int = p_controller.get_tracker_hand()
 
-		var model_origin: Node3D = create_pose(
-			XRController3D.new(), "ModelOrigin", &"aim_pose", p_controller.tracker, p_origin
-		)
-		var laser_origin: Node3D = create_pose(
-			XRController3D.new(), "LaserOrigin", &"aim_pose", p_controller.tracker, p_origin
-		)
+		var model_origin: Node3D = create_pose(XRController3D.new(), "ModelOrigin", &"aim_pose", p_controller.tracker, p_origin)
+		var laser_origin: Node3D = create_pose(XRController3D.new(), "LaserOrigin", &"aim_pose", p_controller.tracker, p_origin)
 
 		p_controller.model_origin = model_origin
 		p_controller.laser_origin = laser_origin
@@ -71,34 +61,13 @@ func add_controller(p_controller: XRController3D, p_origin: XROrigin3D):
 			if controller_actions:
 				controller_actions.get_tracker_hand(hand)
 				p_controller.add_child(controller_actions, true)
-				if (
-					controller_actions.has_signal("on_action_pressed")
-					and controller_actions.has_signal("on_action_released")
-				):
-					if (
-						(
-							controller_actions
-							. connect(
-								"on_action_pressed", Callable(p_controller, "_on_action_pressed")
-							)
-						)
-						!= OK
-					):
+				if controller_actions.has_signal("on_action_pressed") and controller_actions.has_signal("on_action_released"):
+					if (controller_actions.connect("on_action_pressed", Callable(p_controller, "_on_action_pressed"))) != OK:
 						printerr("Could not connect signal 'on_action_pressed' !")
-					if (
-						(
-							controller_actions
-							. connect(
-								"on_action_released", Callable(p_controller, "_on_action_released")
-							)
-						)
-						!= OK
-					):
+					if (controller_actions.connect("on_action_released", Callable(p_controller, "_on_action_released"))) != OK:
 						printerr("Could not connect signal 'on_action_released' !")
 
-					p_controller.get_is_action_pressed_funcref = Callable(
-						controller_actions, "is_action_pressed"
-					)
+					p_controller.get_is_action_pressed_funcref = Callable(controller_actions, "is_action_pressed")
 					p_controller.get_analog_funcref = controller_actions.get_axis
 
 

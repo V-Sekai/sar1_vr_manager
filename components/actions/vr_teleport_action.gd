@@ -149,17 +149,12 @@ func _process(_delta):
 	if !locomotion:
 		return
 
-	var teleport_pressed: bool = (
-		controller.is_pressed("/locomotion/teleport") or controller.is_pressed("secondary_click")
-	)
+	var teleport_pressed: bool = controller.is_pressed("/locomotion/teleport") or controller.is_pressed("secondary_click")
 
 	if (
 		controller
 		and locomotion.movement_controller == controller
-		and (
-			VRManager.vr_user_preferences.movement_type
-			== VRManager.vr_user_preferences.movement_type_enum.MOVEMENT_TYPE_TELEPORT
-		)
+		and (VRManager.vr_user_preferences.movement_type == VRManager.vr_user_preferences.movement_type_enum.MOVEMENT_TYPE_TELEPORT)
 		and teleport_pressed
 	):
 		if !is_teleporting:
@@ -176,9 +171,7 @@ func _process(_delta):
 		query.margin = margin
 		query.shape_rid = collision_shape.get_rid()
 
-		var shape_transform = Transform3D(
-			Basis(Vector3(1.0, 0.0, 0.0), PI * 0.5), Vector3(0.0, player_height / 2.0, 0.0)
-		)
+		var shape_transform = Transform3D(Basis(Vector3(1.0, 0.0, 0.0), PI * 0.5), Vector3(0.0, player_height / 2.0, 0.0))
 
 		var teleport_global_transform = $Teleport.global_transform
 		var target_global_origin = teleport_global_transform.origin
@@ -250,12 +243,7 @@ func _process(_delta):
 			#teleport_rotation += (p_delta * controller.get_joystick_axis(0) * -4.0)
 
 			var target_basis = Basis()
-			target_basis.z = (
-				Vector3(
-					teleport_global_transform.basis.z.x, 0.0, teleport_global_transform.basis.z.z
-				)
-				. normalized()
-			)
+			target_basis.z = (Vector3(teleport_global_transform.basis.z.x, 0.0, teleport_global_transform.basis.z.z).normalized())
 			target_basis.y = normal
 			target_basis.x = target_basis.y.cross(target_basis.z)
 			target_basis.z = target_basis.x.cross(target_basis.y)
@@ -285,12 +273,8 @@ func _process(_delta):
 			user_feet_transform.origin.y = 0  # the feet are on the ground, but have the same X,Z as the camera
 
 			user_feet_transform.basis.y = Vector3(0.0, 1.0, 0.0)
-			user_feet_transform.basis.x = (
-				user_feet_transform . basis . y . cross(cam_transform.basis.z) . normalized()
-			)
-			user_feet_transform.basis.z = (
-				user_feet_transform . basis . x . cross(user_feet_transform.basis.y) . normalized()
-			)
+			user_feet_transform.basis.x = (user_feet_transform.basis.y.cross(cam_transform.basis.z).normalized())
+			user_feet_transform.basis.z = (user_feet_transform.basis.x.cross(user_feet_transform.basis.y).normalized())
 
 			teleported.emit(new_transform * user_feet_transform.inverse())
 

@@ -71,11 +71,7 @@ func _update_lasso(_delta: float) -> void:
 			redirection_lock = true
 			var viewpoint: Transform3D = XRServer.get_hmd_transform()
 			viewpoint.origin = flick_origin_spatial.global_transform * (viewpoint.origin)
-			snap_point = (
-				snapping_singleton
-				. snapping_points
-				. calc_top_redirecting_power(current_snap, viewpoint, lasso_redirect_value)
-			)
+			snap_point = (snapping_singleton.snapping_points.calc_top_redirecting_power(current_snap, viewpoint, lasso_redirect_value))
 			if !snap_point:
 				snap_point = current_snap
 		else:
@@ -89,20 +85,9 @@ func _update_lasso(_delta: float) -> void:
 				var snap_arr: Array = (
 					snapping_singleton
 					. snapping_points
-					. calc_top_two_snapping_power(
-						tracker.laser_origin.global_transform,
-						current_snap,
-						snap_increase,
-						lasso_analog_value.x,
-						lasso
-					)
+					. calc_top_two_snapping_power(tracker.laser_origin.global_transform, current_snap, snap_increase, lasso_analog_value.x, lasso)
 				)
-				if (
-					snap_arr.size() > 0
-					&& snap_arr[0]
-					&& snap_arr[0].get_origin()
-					&& snap_arr[0].get_snap_score() > min_snap
-				):
+				if snap_arr.size() > 0 && snap_arr[0] && snap_arr[0].get_origin() && snap_arr[0].get_snap_score() > min_snap:
 					snap_point = snap_arr[0].get_origin()
 					primary_power = snap_arr[0].get_snap_score()
 					primary_snap = snap_point.get_global_transform().origin
@@ -111,12 +96,7 @@ func _update_lasso(_delta: float) -> void:
 					if snap_point:
 						primary_power = 1.0
 						primary_snap = snap_point.get_global_transform().origin
-				if (
-					snap_arr.size() > 1
-					&& snap_arr[1]
-					&& snap_arr[1].get_origin()
-					&& snap_arr[1].get_snap_score() > min_snap
-				):
+				if snap_arr.size() > 1 && snap_arr[1] && snap_arr[1].get_origin() && snap_arr[1].get_snap_score() > min_snap:
 					secondary_power = snap_arr[1].get_snap_score()
 					secondary_snap = snap_arr[1].get_origin().get_global_transform().origin
 
@@ -150,51 +130,27 @@ func _update_lasso(_delta: float) -> void:
 			var primary_alpha = 1.0
 			var secondary_alpha = 0.0
 			if primary_power > min_snap && secondary_power > min_snap:
-				primary_alpha = (
-					(primary_power - min_snap) / (primary_power + secondary_power - 2 * min_snap)
-				)
+				primary_alpha = ((primary_power - min_snap) / (primary_power + secondary_power - 2 * min_snap))
 				secondary_alpha = 1.0 - primary_alpha
 			elif primary_power > min_snap:
 				secondary_alpha = (secondary_power / primary_power)
 			else:
-				primary_alpha = lerpf(
-					snap_circle_min_alpha, 0.5, primary_power / (min_snap + 0.001)
-				)
-				secondary_alpha = lerpf(
-					snap_circle_min_alpha, 0.5, secondary_power / (min_snap + 0.001)
-				)
+				primary_alpha = lerpf(snap_circle_min_alpha, 0.5, primary_power / (min_snap + 0.001))
+				secondary_alpha = lerpf(snap_circle_min_alpha, 0.5, secondary_power / (min_snap + 0.001))
 
-			var primary_color = Color(
-				snap_circle_color.r,
-				snap_circle_color.g,
-				snap_circle_color.b,
-				lerpf(snap_circle_min_alpha, 1.0, primary_alpha)
-			)
-			var secondary_color = Color(
-				snap_circle_color.r,
-				snap_circle_color.g,
-				snap_circle_color.b,
-				lerpf(snap_circle_min_alpha, 1.0, secondary_alpha)
-			)
+			var primary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerpf(snap_circle_min_alpha, 1.0, primary_alpha))
+			var secondary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerpf(snap_circle_min_alpha, 1.0, secondary_alpha))
 			if primary_mesh != null:
 				primary_mesh.visible = primary_power > 0
 				if primary_power > 0:
 					if primary_mesh.material_override != null:
-						(
-							primary_mesh
-							. material_override
-							. set_shader_parameter("mix_color", primary_color)
-						)
+						primary_mesh.material_override.set_shader_parameter("mix_color", primary_color)
 					primary_mesh.global_transform.origin = primary_snap
 			if secondary_mesh != null:
 				secondary_mesh.visible = secondary_power > 0
 				if secondary_power > 0:
 					if secondary_mesh.material_override != null:
-						(
-							secondary_mesh
-							. material_override
-							. set_shader_parameter("mix_color", secondary_color)
-						)
+						secondary_mesh.material_override.set_shader_parameter("mix_color", secondary_color)
 					secondary_mesh.global_transform.origin = secondary_snap
 
 			if lasso:
@@ -204,11 +160,7 @@ func _update_lasso(_delta: float) -> void:
 
 			if lasso_analog_value.x <= 0:
 				if snapped_mesh.visible:
-					(
-						snapped_mesh
-						. material_override
-						. set_shader_parameter("mix_color", unsnapped_color)
-					)
+					snapped_mesh.material_override.set_shader_parameter("mix_color", unsnapped_color)
 				straight_mesh.visible = false
 				snapped_mesh.visible = false
 			else:
@@ -216,36 +168,16 @@ func _update_lasso(_delta: float) -> void:
 				snapped_mesh.visible = true
 				if current_snap != null:
 					if new_snap:
-						(
-							snapped_mesh
-							. material_override
-							. set_shader_parameter("mix_color", snapped_color)
-						)
-					var target_local = (
-						(current_snap.global_transform.origin) * (straight_mesh.global_transform)
-					)
-					var straight_length = (
-						target_local.length_squared() / (abs(target_local.z) + 0.001)
-					)  #when there's very little snapping, this will equal .length() when there is a lot it'll be longer
-					(
-						straight_mesh
-						. material_override
-						. set_shader_parameter("target", Vector3(0.0, 0.0, -straight_length))
-					)
+						snapped_mesh.material_override.set_shader_parameter("mix_color", snapped_color)
+					var target_local = (current_snap.global_transform.origin) * (straight_mesh.global_transform)
+					var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001)  #when there's very little snapping, this will equal .length() when there is a lot it'll be longer
+					straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, -straight_length))
 					snapped_mesh.material_override.set_shader_parameter("target", target_local)
 				else:
 					if new_snap:
-						(
-							snapped_mesh
-							. material_override
-							. set_shader_parameter("mix_color", unsnapped_color)
-						)
+						snapped_mesh.material_override.set_shader_parameter("mix_color", unsnapped_color)
 					var into_infinity = Vector3(0.0, 0.0, -10)
-					(
-						straight_mesh
-						. material_override
-						. set_shader_parameter("target", Vector3(0.0, 0.0, 0.0))
-					)
+					straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, 0.0))
 					snapped_mesh.material_override.set_shader_parameter("target", into_infinity)
 		else:
 			straight_mesh.visible = false

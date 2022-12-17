@@ -1,8 +1,6 @@
 extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd"  # vr_action.gd
 
-const vr_interaction_action_const = preload(
-	"res://addons/sar1_vr_manager/components/actions/vr_interaction_action.gd"
-)
+const vr_interaction_action_const = preload("res://addons/sar1_vr_manager/components/actions/vr_interaction_action.gd")
 const math_funcs_const = preload("res://addons/math_util/math_funcs.gd")
 
 var objects_within_range: Array = []
@@ -16,9 +14,7 @@ var velocity: Vector3 = Vector3(0.0, 0.0, 0.0)
 var _VSKNetworkManager: Node
 
 
-static func get_hand_object_id_for_tracker_controller(
-	p_player_pickup_controller: Node, p_tracker_controller: XRController3D
-):
+static func get_hand_object_id_for_tracker_controller(p_player_pickup_controller: Node, p_tracker_controller: XRController3D):
 	if p_player_pickup_controller:
 		match p_tracker_controller.get_tracker_hand():
 			XRPositionalTracker.TRACKER_HAND_LEFT:
@@ -31,12 +27,7 @@ static func get_hand_object_id_for_tracker_controller(
 
 func get_pickup_controller() -> Node:
 	if _VSKNetworkManager and _VSKNetworkManager.local_player_instance:
-		return (
-			_VSKNetworkManager
-			. local_player_instance
-			. simulation_logic_node
-			. get_player_pickup_controller()
-		)
+		return _VSKNetworkManager.local_player_instance.simulation_logic_node.get_player_pickup_controller()
 	else:
 		return null
 
@@ -44,10 +35,7 @@ func get_pickup_controller() -> Node:
 func get_hand_object() -> Node3D:
 	var pickup_controller: Node = get_pickup_controller()
 	if pickup_controller:
-		var id: int = (
-			vr_interaction_action_const
-			. get_hand_object_id_for_tracker_controller(pickup_controller, tracker)
-		)
+		var id: int = vr_interaction_action_const.get_hand_object_id_for_tracker_controller(pickup_controller, tracker)
 		return pickup_controller.get_hand_entity_reference(id)
 
 	return null

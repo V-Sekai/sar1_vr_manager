@@ -6,9 +6,7 @@ extends "res://addons/sar1_vr_manager/components/vr_component.gd"  # vr_componen
 # const vr_lasso_action_const = preload("actions/vr_lasso_action.tscn")
 # const snapping_point = preload("lasso_snapping/snapping_point.gd")
 
-var vr_lasso_action_const = load(
-	"res://addons/sar1_vr_manager/components/actions/vr_lasso_action.tscn"
-)
+var vr_lasso_action_const = load("res://addons/sar1_vr_manager/components/actions/vr_lasso_action.tscn")
 
 var left_lasso_action: Node3D = null
 var right_lasso_action: Node3D = null
@@ -18,10 +16,7 @@ func tracker_added(p_tracker: XRController3D) -> void:  # vr_controller_tracker_
 	super.tracker_added(p_tracker)
 
 	var tracker_hand: int = p_tracker.get_tracker_hand()
-	if (
-		tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT
-		or tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT
-	):
+	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
 		var vr_lasso_action: Node3D = vr_lasso_action_const.instantiate()
 		vr_lasso_action.flick_origin_spatial = self
 		p_tracker.add_component_action(vr_lasso_action)

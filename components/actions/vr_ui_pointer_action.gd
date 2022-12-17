@@ -36,10 +36,7 @@ func _on_action_pressed(p_action: String) -> void:
 			requested_as_ui_selector.emit(tracker.get_tracker_hand())
 			if not valid_ray_result.is_empty() and is_active_selector:
 				if valid_ray_result["collider"].has_method("on_pointer_pressed"):
-					(
-						valid_ray_result["collider"]
-						. on_pointer_pressed(valid_ray_result["position"], is_doubleclick)
-					)
+					valid_ray_result["collider"].on_pointer_pressed(valid_ray_result["position"], is_doubleclick)
 
 			last_click_time = Time.get_ticks_msec()
 
@@ -106,10 +103,8 @@ func _exit_tree() -> void:
 func cast_validation_ray(p_length: float) -> Dictionary:
 	if not is_inside_tree():
 		return {}
-	
-	var dss: PhysicsDirectSpaceState3D = (
-		PhysicsServer3D . space_get_direct_state(get_world_3d().get_space())
-	)
+
+	var dss: PhysicsDirectSpaceState3D = PhysicsServer3D.space_get_direct_state(get_world_3d().get_space())
 	if !dss:
 		return {}
 
@@ -117,10 +112,7 @@ func cast_validation_ray(p_length: float) -> Dictionary:
 		return {}
 
 	var start: Vector3 = laser_node.global_transform.origin
-	var end: Vector3 = (
-		laser_node.global_transform.origin
-		+ laser_node.global_transform.basis * (Vector3(0.0, 0.0, -p_length))
-	)
+	var end: Vector3 = laser_node.global_transform.origin + laser_node.global_transform.basis * (Vector3(0.0, 0.0, -p_length))
 	var parameters: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
 	parameters.from = start
 	parameters.to = end
@@ -137,9 +129,7 @@ func cast_validation_ray(p_length: float) -> Dictionary:
 				laser_node.start = start
 				laser_node.end = ray_result["position"]
 
-				laser_hit_node.global_transform = Transform3D(
-					global_transform.basis, ray_result["position"]
-				)
+				laser_hit_node.global_transform = Transform3D(global_transform.basis, ray_result["position"])
 
 				return ray_result
 
@@ -151,10 +141,7 @@ func update_ray() -> void:
 		valid_ray_result = cast_validation_ray(maxiumum_ray_length)
 		if !valid_ray_result.is_empty() and is_active_selector:
 			if valid_ray_result["collider"].has_method("on_pointer_moved"):
-				(
-					valid_ray_result["collider"]
-					. on_pointer_moved(valid_ray_result["position"], valid_ray_result["normal"])
-				)
+				valid_ray_result["collider"].on_pointer_moved(valid_ray_result["position"], valid_ray_result["normal"])
 			laser_node.show()
 			laser_hit_node.show()
 			return

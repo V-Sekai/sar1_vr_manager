@@ -11,10 +11,7 @@ func tracker_added(p_tracker: XRController3D) -> void:  # vr_controller_tracker_
 	super.tracker_added(p_tracker)
 
 	var tracker_hand: int = p_tracker.get_tracker_hand()
-	if (
-		tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT
-		or tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT
-	):
+	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
 		var vr_render_tree_action: Node3D = vr_render_tree_action_const.new()
 
 		# instance our render model object
@@ -23,10 +20,7 @@ func tracker_added(p_tracker: XRController3D) -> void:  # vr_controller_tracker_
 		vr_render_tree_action.visible = false
 
 		var controller_name: String = str(p_tracker.tracker)
-		if (
-			spatial_render_tree
-			and !spatial_render_tree.load_render_tree(VRManager, controller_name)
-		):
+		if spatial_render_tree and !spatial_render_tree.load_render_tree(VRManager, controller_name):
 			printerr("Could not load render tree")
 
 		vr_render_tree_action.visible = true
