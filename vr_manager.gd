@@ -45,7 +45,6 @@ const movement_type_names = [
 	"TR_VR_MANAGER_MOVEMENT_TELEPORTATION", "TR_VR_MANAGER_MOVEMENT_LOCOMOTION"
 ]
 
-# Platforms
 const vr_platform_const = preload("res://addons/sar1_vr_manager/platforms/vr_platform.gd")
 
 const vr_constants_const = preload("res://addons/sar1_vr_manager/vr_constants.gd")
@@ -77,7 +76,7 @@ signal world_origin_scale_changed(p_scale)
 signal tracker_added(tracker_name, type)
 signal tracker_removed(tracker_name, type)
 
-# Called for changes to height and armspan
+# Called when height and armspan are changed.
 signal proportions_changed
 
 signal request_vr_calibration
@@ -267,9 +266,9 @@ func setup_vr_interface() -> void:
 	for interface_name in interface_names:
 		xr_interface = XRServer.find_interface(interface_name)
 		if xr_interface:
-			print("Attempting to initialise %s..." % interface_name)
+			print("Attempting to initialize %s..." % interface_name)
 			if xr_interface.initialize():
-				print("%s Initalised!" % interface_name)
+				print("%s Initalized!" % interface_name)
 				create_vr_platform_for_interface(interface_name)
 
 				if vr_user_preferences.vr_mode_enabled:
@@ -279,9 +278,9 @@ func setup_vr_interface() -> void:
 
 				break
 			else:
-				print("Could not initalise interface %s..." % interface_name)
+				print("Could not initalize interface %s..." % interface_name)
 
-	print("Could not initalise any VR interface...")
+	print("Could not initalize any VR interface...")
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 	xr_active = false
 

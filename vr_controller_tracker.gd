@@ -25,7 +25,7 @@ func get_axis(p_action: StringName) -> Vector2:
 	return Vector2()
 
 
-# Get the enum value from the vr_constants file based on the internal hand ID of the tracker
+# Get the enumeration value from the vr_constants file based on the internal hand ID of the tracker.
 func get_hand_id_for_tracker() -> int:
 	match get_tracker_hand():
 		XRPositionalTracker.TrackerHand.TRACKER_HAND_LEFT:
@@ -61,7 +61,7 @@ func _on_action_released(p_action: String) -> void:
 func add_component_action(p_component_action: Node) -> void:
 	assert(p_component_action)
 	if component_action.has(p_component_action):
-		printerr("Attempted to add duplicate module tracker!")
+		printerr("Attempted to add a duplicate module tracker!")
 		return
 	component_action.push_back(p_component_action)
 	add_child(p_component_action, true)
@@ -73,7 +73,7 @@ func remove_component_action(p_component_action: Node) -> void:
 	if index != -1:
 		component_action.remove_at(index)
 	else:
-		printerr("Attempted to remove invalid module tracker!")
+		printerr("Attempted to remove an invalid module tracker!")
 	p_component_action.queue_free()
 	remove_child(p_component_action)
 
