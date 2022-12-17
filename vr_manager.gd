@@ -45,7 +45,6 @@ const movement_type_names = (
 
 # Platforms
 const vr_platform_const = preload("res://addons/sar1_vr_manager/platforms/vr_platform.gd")
-const vr_platform_openxr_const = preload("res://addons/sar1_vr_manager/platforms/vr_platform_openxr.gd")
 
 const vr_constants_const = preload("res://addons/sar1_vr_manager/vr_constants.gd")
 const vr_render_cache_const = preload("res://addons/sar1_vr_manager/vr_render_cache.gd")
@@ -230,10 +229,9 @@ func create_vr_platform_for_interface(p_interface_name: String) -> void:
 
 
 func create_vr_platforms() -> void:
-	if vr_platform_openxr_const:
-		vr_platform_openxr = vr_platform_openxr_const.new()
-		if vr_platform_openxr:
-			vr_platform_openxr.pre_setup()
+	var vr_platform_const = vr_platform_const.new()
+	vr_platform_const.pre_setup()
+
 
 func platform_add_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	if not vr_platform:

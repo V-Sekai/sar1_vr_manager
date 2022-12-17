@@ -3,7 +3,7 @@ extends "res://addons/sar1_vr_manager/vr_render_tree.gd"
 var tree: Node3D = null
 
 
-func setup_openvr_dummy_attachment(p_name: StringName) -> Node3D:
+func setup_dummy_attachment(p_name: StringName) -> Node3D:
 	var spatial: Node3D = create_attachment_point(p_name)
 	spatial.translate(Vector3(0.0, -0.01, 0.05))
 	spatial.rotate_x(deg_to_rad(-45))
@@ -36,9 +36,9 @@ func load_render_tree(p_vrmanager: Node, p_name: String) -> bool:
 		mesh_instance.set_mesh(render_mesh)
 
 	# Create dummy attachments
-	tree.add_child(setup_openvr_dummy_attachment("base"))
-	tree.add_child(setup_openvr_dummy_attachment("handgrip"))
-	tree.add_child(setup_openvr_dummy_attachment("tip"))
+	tree.add_child(setup_dummy_attachment("base"))
+	tree.add_child(setup_dummy_attachment("handgrip"))
+	tree.add_child(setup_dummy_attachment("tip"))
 
 	result = true
 	if tree:
