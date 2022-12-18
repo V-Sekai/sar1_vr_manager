@@ -1,7 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://cqyb4m66nqgy6"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cqyb4m66nqgy6"]
 
 [ext_resource type="Shader" path="res://addons/sar1_vr_manager/materials/laser.gdshader" id="2"]
-[ext_resource type="Texture2D" uid="uid://daup3qe0kfi6p" path="res://addons/sar1_vr_manager/images/teleport_arrow.png" id="2_1lxhx"]
 
 [resource]
 render_priority = 126
@@ -12,4 +11,3 @@ shader_parameter/max_stretch = 10.0
 shader_parameter/uv_multiplier = 4.0
 shader_parameter/speed = 0.0
 shader_parameter/mix_color = Color(1, 1, 1, 0.0980392)
-shader_parameter/arrow_texture = ExtResource("2_1lxhx")
