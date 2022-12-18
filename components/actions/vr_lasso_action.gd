@@ -25,21 +25,24 @@ var print_mod = 0
 @export var rumble_duration: int = 0.100
 @export var rumble_strength: float = 1.0
 
+var lasso: bool = false
 
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
+	match p_action:
+		"trigger_click":
+			lasso = true
 
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
+	match p_action:
+		"trigger_click":
+			lasso = false
 
 
 func _update_lasso(_delta: float) -> void:
 	var lasso_analog_value: Vector2 = get_axis("primary")
-	var grip_strength = get_value("grip")
-	var lasso: bool = grip_strength > 0.5
-	if grip_strength < 0.05:
-		lasso_analog_value = Vector2(0, 0)
 	redirection_lock = redirection_lock && (lasso_analog_value.length_squared() > 0)
 	var new_snap = false
 	var primary_snap: Vector3

@@ -14,10 +14,6 @@ func get_axis(p_action: String) -> Vector2:
 	return tracker.get_axis(p_action)
 
 
-func get_value(p_action: String) -> float:
-	return tracker.get_value(p_action)
-
-
 func _on_action_pressed(_action: String) -> void:
 	pass
 
