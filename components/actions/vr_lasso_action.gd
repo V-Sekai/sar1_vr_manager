@@ -182,7 +182,6 @@ func _process(p_delta: float) -> void:
 
 func _ready() -> void:
 	super._ready()
-	assert(VRManager.xr_mode_changed.connect(self._xr_mode_changed) == OK)
 
 	straight_mesh = get_node(straight_laser) as MeshInstance3D
 	snapped_mesh = get_node(snapped_laser) as MeshInstance3D
