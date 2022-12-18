@@ -197,10 +197,7 @@ func _xr_mode_changed() -> void:
 
 func _ready() -> void:
 	super._ready()
-	# Align with the laser_origin we were given.
-	if not tracker.laser_origin:
-		return
-
+	
 	straight_mesh = get_node(straight_laser) as MeshInstance3D
 	snapped_mesh = get_node(snapped_laser) as MeshInstance3D
 
