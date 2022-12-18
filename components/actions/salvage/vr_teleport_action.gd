@@ -1,4 +1,4 @@
-extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd"  # vr_action.gd
+extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd"
 
 @export var enabled = true:
 	set = set_enabled,
@@ -55,8 +55,6 @@ func set_enabled(new_value):
 	enabled = new_value
 	if enabled:
 		set_physics_process(true)
-	else:
-		pass
 
 
 func get_enabled():

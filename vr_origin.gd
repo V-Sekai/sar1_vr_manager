@@ -10,13 +10,7 @@ var hand_controllers: Array = []
 var left_hand_controller: XRController3D = null
 var right_hand_controller: XRController3D = null
 
-#############
-# Component #
-#############
-
 const vr_component_locomotion_const = preload("components/vr_component_locomotion.gd")
-const vr_component_interaction_const = preload("components/vr_component_interaction.gd")
-const vr_component_teleport_const = preload("components/vr_component_teleport.gd")
 const vr_component_render_tree_const = preload("components/vr_component_render_tree.gd")
 const vr_component_advanced_movement_const = preload("components/vr_component_advanced_movement.gd")
 const vr_component_lasso_const = preload("components/vr_component_lasso.gd")
@@ -146,8 +140,6 @@ func create_and_add_component(p_component_script: Script) -> void:
 
 func create_components() -> void:
 	create_and_add_component(vr_component_locomotion_const)
-	create_and_add_component(vr_component_interaction_const)
-	create_and_add_component(vr_component_teleport_const)
 	create_and_add_component(vr_component_render_tree_const)
 	create_and_add_component(vr_component_advanced_movement_const)
 	create_and_add_component(vr_component_lasso_const)

@@ -1,6 +1,6 @@
 extends "res://addons/sar1_vr_manager/components/vr_component.gd"
 
-const vr_pickup_action_const = preload("res://addons/sar1_vr_manager/components/actions/vr_interaction_action.gd")
+const vr_pickup_action_const = preload("res://addons/sar1_vr_manager/components/actions/salvage/vr_interaction_action.gd")
 
 var assign_left_pickup_callable: Callable = Callable(self, "_assign_right_pickup")
 var assign_right_pickup_callable: Callable = Callable(self, "_assign_left_pickup")

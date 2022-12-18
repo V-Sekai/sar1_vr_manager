@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://cc8yutt33q5vc"]
+[gd_scene load_steps=5 format=3 uid="uid://d1vy4fd527xaj"]
 
-[ext_resource type="Script" path="res://addons/sar1_vr_manager/components/actions/vr_teleport_action.gd" id="1"]
+[ext_resource type="Script" path="res://addons/sar1_vr_manager/components/actions/salvage/vr_teleport_action.gd" id="1_i8ryf"]
 
 [sub_resource type="PlaneMesh" id="1"]
 size = Vector2(0.05, 1)
@@ -14,7 +14,7 @@ radius = 0.3
 height = 1.63
 
 [node name="Function_Teleport" type="Node3D"]
-script = ExtResource("1")
+script = ExtResource("1_i8ryf")
 
 [node name="Teleport" type="MeshInstance3D" parent="."]
 mesh = SubResource("1")
