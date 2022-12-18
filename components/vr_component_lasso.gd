@@ -44,19 +44,14 @@ func tracker_added(p_tracker: XRController3D) -> void:
 	super.tracker_added(p_tracker)
 
 	var tracker_hand: int = p_tracker.get_tracker_hand()
-	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
+	# TODO: fire 2022-12-18 restore picking the other hand. 
+	if tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
 		var vr_lasso_action: Node3D = vr_lasso_action_const.instantiate()
 		vr_lasso_action.flick_origin_spatial = self
 		p_tracker.add_component_action(vr_lasso_action)
 		var vr_ui_pointer_action: Node3D = vr_ui_pointer_action_const.new()
 		vr_ui_pointer_action.requested_as_ui_selector.connect(self._requested_as_ui_selector)
-		match tracker_hand:
-			XRPositionalTracker.TRACKER_HAND_LEFT:
-				left_lasso_action = vr_lasso_action
-				left_ui_pointer_action = vr_ui_pointer_action
-			XRPositionalTracker.TRACKER_HAND_RIGHT:
-				right_lasso_action = vr_lasso_action
-				right_ui_pointer_action = vr_ui_pointer_action
+
 
 func tracker_removed(p_tracker: XRController3D) -> void:
 	super.tracker_removed(p_tracker)
