@@ -14,15 +14,6 @@ var left_ui_pointer_action: Node3D = null
 var right_ui_pointer_action: Node3D = null
 
 
-func select_primary_hand() -> void:
-	for child in get_children():
-		if child is vr_controller_tracker_const:
-			_on_requested_as_ui_selector(child)
-			# Make the right-hand the default selector.
-			if child.controller_id == XRPositionalTracker.TRACKER_HAND_RIGHT:
-				break
-
-
 func _on_requested_as_ui_selector(p_node: Node) -> void:
 	for child in get_children():
 		if child is vr_controller_tracker_const:
@@ -71,7 +62,6 @@ func tracker_removed(p_tracker: XRController3D) -> void:
 
 func post_add_setup() -> void:
 	super.post_add_setup()
-	select_primary_hand()
 
 
 func _enter_tree() -> void:
