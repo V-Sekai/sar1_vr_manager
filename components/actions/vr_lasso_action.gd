@@ -25,26 +25,13 @@ var print_mod = 0
 @export var rumble_duration: int = 0.100
 @export var rumble_strength: float = 1.0
 
-func _on_pick_up():
-	print("lasso _on_pick_up %s" % current_snap)
-
-
-func _on_drop():
-	print("lasso _on_drop %s" % current_snap)
-
 
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
-	match p_action:
-		"/menu/lasso", "primary_click", "trigger_click", "grip_click":
-			_on_pick_up()
 
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
-	match p_action:
-		"/menu/lasso", "primary_click", "trigger_click", "grip_click":
-			_on_drop()
 
 
 func _update_lasso(_delta: float) -> void:

@@ -60,13 +60,11 @@ func get_nearest_valid_object() -> Node3D:
 
 
 func try_to_pick_up_object() -> void:
-	print("try_to_pick_up_object")
-	return
+	pass
 
 
 func try_to_drop_object() -> void:
-	print("try_to_drop_object")
-	return
+	pass
 
 
 func _on_action_pressed(p_action: String) -> void:
