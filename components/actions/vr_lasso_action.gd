@@ -161,7 +161,8 @@ func _update_lasso(_delta: float) -> void:
 					if new_snap:
 						snapped_mesh.material_override.set_shader_parameter("mix_color", snapped_color)
 					var target_local = (current_snap.global_transform.origin) * (straight_mesh.global_transform)
-					var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001)  #when there's very little snapping, this will equal .length() when there is a lot it'll be longer
+					var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001)  
+					# When there's very little snapping, this will equal .length() when there is a lot it'll be longer.
 					straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, -straight_length))
 					snapped_mesh.material_override.set_shader_parameter("target", target_local)
 				else:
