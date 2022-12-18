@@ -146,6 +146,7 @@ func create_and_add_component(p_component_script: Script) -> void:
 
 func create_components() -> void:
 	create_and_add_component(vr_component_locomotion_const)
+	create_and_add_component(vr_component_interaction_const)
 	create_and_add_component(vr_component_teleport_const)
 	create_and_add_component(vr_component_render_tree_const)
 	create_and_add_component(vr_component_advanced_movement_const)

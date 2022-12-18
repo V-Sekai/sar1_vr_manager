@@ -29,14 +29,14 @@ var print_mod = 0
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
-		"/menu/lasso", "trigger_click":
+		"/menu/lasso", "primary_click":
 			pass
 
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 	match p_action:
-		"/menu/lasso", "trigger_click":
+		"/menu/lasso", "primary_click":
 			pass
 
 
@@ -55,10 +55,9 @@ func _update_lasso(_delta: float) -> void:
 	if lasso_analog_value.x > 0:
 		var lasso_redirect_value: Vector2 = get_axis("secondary")
 		var snapping_singleton = get_node("/root/SnappingSingleton")
-#		var points: Array = snapping_singleton.snapping_points
 		var snap_point = null
 		var redirecting: bool = redirection_ready && lasso_redirect_value.length_squared() > 0.0
-		#you have to reset your joystick to the center to be able to redirect the lasso again
+		# You have to reset your joystick to the center to be able to redirect the lasso again.
 		redirection_ready = lasso_redirect_value.length_squared() <= 0.0
 		if redirecting && current_snap != null:
 			redirection_lock = true
@@ -109,72 +108,70 @@ func _update_lasso(_delta: float) -> void:
 		current_snap = null
 		redirection_ready = false
 		interact_ready = false
-
 	if current_snap != null:
 		if lasso && interact_ready:
 			current_snap.call_snap_interact(self)
 		else:
 			current_snap.stop_snap_interact()
+	if straight_mesh == null or snapped_mesh == null:
+		straight_mesh.visible = false
+		snapped_mesh.visible = false
+		return
+	if straight_mesh.material_override == null or snapped_mesh.material_override == null:
+		return
+	var primary_alpha = 1.0
+	var secondary_alpha = 0.0
+	if primary_power > min_snap && secondary_power > min_snap:
+		primary_alpha = ((primary_power - min_snap) / (primary_power + secondary_power - 2 * min_snap))
+		secondary_alpha = 1.0 - primary_alpha
+	elif primary_power > min_snap:
+		secondary_alpha = (secondary_power / primary_power)
+	else:
+		primary_alpha = lerpf(snap_circle_min_alpha, 0.5, primary_power / (min_snap + 0.001))
+		secondary_alpha = lerpf(snap_circle_min_alpha, 0.5, secondary_power / (min_snap + 0.001))
 
-	if straight_mesh != null && snapped_mesh != null:
-		if straight_mesh.material_override != null && snapped_mesh.material_override != null:
-			var primary_alpha = 1.0
-			var secondary_alpha = 0.0
-			if primary_power > min_snap && secondary_power > min_snap:
-				primary_alpha = ((primary_power - min_snap) / (primary_power + secondary_power - 2 * min_snap))
-				secondary_alpha = 1.0 - primary_alpha
-			elif primary_power > min_snap:
-				secondary_alpha = (secondary_power / primary_power)
-			else:
-				primary_alpha = lerpf(snap_circle_min_alpha, 0.5, primary_power / (min_snap + 0.001))
-				secondary_alpha = lerpf(snap_circle_min_alpha, 0.5, secondary_power / (min_snap + 0.001))
+	var primary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerpf(snap_circle_min_alpha, 1.0, primary_alpha))
+	var secondary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerpf(snap_circle_min_alpha, 1.0, secondary_alpha))
+	if primary_mesh != null:
+		primary_mesh.visible = primary_power > 0
+		if primary_power > 0:
+			if primary_mesh.material_override != null:
+				primary_mesh.material_override.set_shader_parameter("mix_color", primary_color)
+			primary_mesh.global_transform.origin = primary_snap
+	if secondary_mesh != null:
+		secondary_mesh.visible = secondary_power > 0
+		if secondary_power > 0:
+			if secondary_mesh.material_override != null:
+				secondary_mesh.material_override.set_shader_parameter("mix_color", secondary_color)
+			secondary_mesh.global_transform.origin = secondary_snap
 
-			var primary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerpf(snap_circle_min_alpha, 1.0, primary_alpha))
-			var secondary_color = Color(snap_circle_color.r, snap_circle_color.g, snap_circle_color.b, lerpf(snap_circle_min_alpha, 1.0, secondary_alpha))
-			if primary_mesh != null:
-				primary_mesh.visible = primary_power > 0
-				if primary_power > 0:
-					if primary_mesh.material_override != null:
-						primary_mesh.material_override.set_shader_parameter("mix_color", primary_color)
-					primary_mesh.global_transform.origin = primary_snap
-			if secondary_mesh != null:
-				secondary_mesh.visible = secondary_power > 0
-				if secondary_power > 0:
-					if secondary_mesh.material_override != null:
-						secondary_mesh.material_override.set_shader_parameter("mix_color", secondary_color)
-					secondary_mesh.global_transform.origin = secondary_snap
+	if lasso:
+		snapped_mesh.material_override.set_shader_parameter("speed", -10.0)
+	else:
+		snapped_mesh.material_override.set_shader_parameter("speed", 0.0)
 
-			if lasso:
-				snapped_mesh.material_override.set_shader_parameter("speed", -10.0)
-			else:
-				snapped_mesh.material_override.set_shader_parameter("speed", 0.0)
-
-			if lasso_analog_value.x <= 0:
-				if snapped_mesh.visible:
-					snapped_mesh.material_override.set_shader_parameter("mix_color", unsnapped_color)
-				straight_mesh.visible = false
-				snapped_mesh.visible = false
-			else:
-				straight_mesh.visible = true
-				snapped_mesh.visible = true
-				if current_snap != null:
-					if new_snap:
-						snapped_mesh.material_override.set_shader_parameter("mix_color", snapped_color)
-					var target_local = (current_snap.global_transform.origin) * (straight_mesh.global_transform)
-					var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001)  
-					# When there's very little snapping, this will equal .length() when there is a lot it'll be longer.
-					straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, -straight_length))
-					snapped_mesh.material_override.set_shader_parameter("target", target_local)
-				else:
-					if new_snap:
-						snapped_mesh.material_override.set_shader_parameter("mix_color", unsnapped_color)
-					var into_infinity = Vector3(0.0, 0.0, -10)
-					straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, 0.0))
-					snapped_mesh.material_override.set_shader_parameter("target", into_infinity)
+	if lasso_analog_value.x <= 0:
+		if snapped_mesh.visible:
+			snapped_mesh.material_override.set_shader_parameter("mix_color", unsnapped_color)
+		straight_mesh.visible = false
+		snapped_mesh.visible = false
+	else:
+		straight_mesh.visible = true
+		snapped_mesh.visible = true
+		if current_snap != null:
+			if new_snap:
+				snapped_mesh.material_override.set_shader_parameter("mix_color", snapped_color)
+			var target_local = (current_snap.global_transform.origin) * (straight_mesh.global_transform)
+			var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001)  
+			# When there's very little snapping, this will equal .length() when there is a lot it'll be longer.
+			straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, -straight_length))
+			snapped_mesh.material_override.set_shader_parameter("target", target_local)
 		else:
-			straight_mesh.visible = false
-			snapped_mesh.visible = false
-	return
+			if new_snap:
+				snapped_mesh.material_override.set_shader_parameter("mix_color", unsnapped_color)
+			var into_infinity = Vector3(0.0, 0.0, -10)
+			straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, 0.0))
+			snapped_mesh.material_override.set_shader_parameter("target", into_infinity)
 
 
 func _process(p_delta: float) -> void:
@@ -212,7 +209,6 @@ func _ready() -> void:
 		secondary_mesh.material_override.set_shader_parameter("mix_color", snap_circle_color)
 		secondary_mesh.material_override = secondary_mesh.material_override.duplicate(true)
 		secondary_mesh.visible = false
-	return
 
 
 func _exit_tree() -> void:

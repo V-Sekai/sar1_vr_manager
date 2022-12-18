@@ -5,8 +5,8 @@ const math_funcs_const = preload("res://addons/math_util/math_funcs.gd")
 
 var objects_within_range: Array = []
 
-var assign_pickup_funcref: Callable = Callable()
-var can_pickup_funcref: Callable = Callable()
+var assign_pickup_callable: Callable = Callable()
+var can_pickup_callable: Callable = Callable()
 
 var last_position: Vector3 = Vector3(0.0, 0.0, 0.0)
 var velocity: Vector3 = Vector3(0.0, 0.0, 0.0)
@@ -59,26 +59,34 @@ func get_nearest_valid_object() -> Node3D:
 	return null
 
 
-func try_to_picking_up_object() -> void:
+func try_to_pick_up_object() -> void:
+	print("try_to_pick_up_object")
 	return
 
 
-func try_to_dropping_object() -> void:
+func try_to_drop_object() -> void:
+	print("try_to_drop_object")
 	return
 
 
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
+	print("interaction %s" % p_action)
 	match p_action:
-		"/hands/grip", "grip_clicK":
-			try_to_picking_up_object()
+		"/hands/grip", "grip_click":
+			try_to_pick_up_object()
+		"/hands/trigger", "trigger_click":
+			try_to_pick_up_object()
 
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
+	print("interaction %s" % p_action)
 	match p_action:
 		"/hands/grip", "grip_click":
-			try_to_dropping_object()
+			try_to_drop_object()
+		"/hands/trigger", "trigger_click":
+			try_to_pick_up_object()
 
 
 func calculate_velocity(p_delta: float) -> void:

@@ -1,48 +1,48 @@
-extends "res://addons/sar1_vr_manager/components/vr_component.gd"  # vr_component.gd
+extends "res://addons/sar1_vr_manager/components/vr_component.gd"
 
-const vr_pickup_action_const = preload("actions/vr_interaction_action.gd")
+const vr_pickup_action_const = preload("res://addons/sar1_vr_manager/components/actions/vr_interaction_action.gd")
 
-var assign_left_pickup_funcref: Callable = Callable()
-var assign_right_pickup_funcref: Callable = Callable()
-
-var can_pickup_funcref: Callable = Callable()
+var assign_left_pickup_callable: Callable = Callable(self, "_assign_right_pickup")
+var assign_right_pickup_callable: Callable = Callable(self, "_assign_left_pickup")
+var can_pickup_callable: Callable = Callable(self, "_can_pickup")
 
 
 func _can_pickup(p_body: PhysicsBody3D) -> bool:
-	if can_pickup_funcref.is_valid():
-		return can_pickup_funcref.call(p_body)
+	if can_pickup_callable.is_valid():
+		return can_pickup_callable.call(p_body)
 	else:
 		return false
 
 
 func _assign_left_pickup(p_body: PhysicsBody3D) -> bool:
-	if assign_left_pickup_funcref.is_valid():
-		return assign_left_pickup_funcref.call(p_body)
+	if assign_left_pickup_callable.is_valid():
+		return assign_left_pickup_callable.call(p_body)
 	else:
 		return false
 
 
 func _assign_right_pickup(p_body: PhysicsBody3D) -> bool:
-	if assign_right_pickup_funcref.is_valid():
-		return assign_right_pickup_funcref.call(p_body)
+	if assign_right_pickup_callable.is_valid():
+		return assign_right_pickup_callable.call(p_body)
 	else:
 		return false
 
 
-func tracker_added(p_tracker: XRController3D) -> void:  # vr_controller_tracker_const
+func tracker_added(p_tracker: XRController3D) -> void:
 	super.tracker_added(p_tracker)
 	var tracker_hand: int = p_tracker.get_tracker_hand()
-	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT:
-		var action: Node3D = vr_pickup_action_const.instantiate()
-		action.can_pickup_funcref = self._can_pickup
-		if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT:
-			action.assign_pickup(self, "_assign_left_pickup")
-		else:
-			action.assign_pickup(self, "_assign_right_pickup")
-		p_tracker.add_component_action(action)
+	if not (tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT or tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT):
+		return
+	var action: Node3D = vr_pickup_action_const.new()
+	action.can_pickup_callable = can_pickup_callable
+	if tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT:
+		action.assign_pickup_callable = assign_left_pickup_callable
+	else:
+		action.assign_pickup_callable = assign_right_pickup_callable
+	p_tracker.add_component_action(action)
 
 
-func tracker_removed(p_tracker: XRController3D) -> void:  # vr_controller_tracker_const
+func tracker_removed(p_tracker: XRController3D) -> void:
 	super.tracker_removed(p_tracker)
 
 
