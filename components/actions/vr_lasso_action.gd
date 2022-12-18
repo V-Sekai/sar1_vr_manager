@@ -27,6 +27,7 @@ var print_mod = 0
 
 var lasso: bool = false
 
+
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
@@ -159,7 +160,7 @@ func _update_lasso(_delta: float) -> void:
 			if new_snap:
 				snapped_mesh.material_override.set_shader_parameter("mix_color", snapped_color)
 			var target_local = (current_snap.global_transform.origin) * (straight_mesh.global_transform)
-			var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001)  
+			var straight_length = target_local.length_squared() / (abs(target_local.z) + 0.001)
 			# When there's very little snapping, this will equal .length() when there is a lot it'll be longer.
 			straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, -straight_length))
 			snapped_mesh.material_override.set_shader_parameter("target", target_local)
@@ -170,12 +171,35 @@ func _update_lasso(_delta: float) -> void:
 			straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, 0.0))
 			snapped_mesh.material_override.set_shader_parameter("target", into_infinity)
 
+
 func _process(p_delta: float) -> void:
 	_update_lasso(p_delta)
 
 
+func _update_visibility() -> void:
+	if VRManager.xr_active:
+		if straight_mesh:
+			straight_mesh.show()
+		if snapped_mesh:
+			snapped_mesh.show()
+		set_process(true)
+	else:
+		if straight_mesh:
+			straight_mesh.hide()
+		if snapped_mesh:
+			snapped_mesh.hide()
+		set_process(false)
+
+
+func _xr_mode_changed() -> void:
+	_update_visibility()
+
+
 func _ready() -> void:
 	super._ready()
+	# Align with the laser_origin we were given.
+	if not tracker.laser_origin:
+		return
 
 	straight_mesh = get_node(straight_laser) as MeshInstance3D
 	snapped_mesh = get_node(snapped_laser) as MeshInstance3D
@@ -205,6 +229,7 @@ func _ready() -> void:
 		secondary_mesh.material_override.set_shader_parameter("mix_color", snap_circle_color)
 		secondary_mesh.material_override = secondary_mesh.material_override.duplicate(true)
 		secondary_mesh.visible = false
+	_update_visibility()
 
 
 func _exit_tree() -> void:
