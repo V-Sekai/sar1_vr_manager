@@ -32,17 +32,16 @@ func find_parent_controller() -> Node:
 		if node == null:
 			break
 		node = node.get_parent()
-
 	return node
 
 
 func _ready() -> void:
 	tracker = find_parent_controller()
-	if tracker:
-		print("vr_action.gd TRACKER " + str(tracker.get_path()))
-		if tracker.button_pressed.connect(self._on_action_pressed) != OK:
-			printerr("action_pressed not connected!")
-		if tracker.button_released.connect(self._on_action_released) != OK:
-			printerr("action_released not connected!")
-	else:
-		print("vr_action.gd TRACKER IS NULL")
+	if not tracker:
+		print("vr_action TRACKER IS NULL")
+		return
+	print("vr_action TRACKER " + str(tracker.get_path()))
+	if tracker.button_pressed.connect(self._on_action_pressed) != OK:
+		printerr("action_pressed not connected!")
+	if tracker.button_released.connect(self._on_action_released) != OK:
+		printerr("action_released not connected!")

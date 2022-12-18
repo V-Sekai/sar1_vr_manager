@@ -23,7 +23,7 @@ const HAND_POSE_COUNT = 9
 var current_hand_pose: int = HAND_POSE_DEFAULT
 
 
-# Designed around Oculus controls
+# Designed around the Oculus controls.
 func update_virtual_hand_pose() -> void:
 	var new_hand_pose: int = HAND_POSE_DEFAULT
 

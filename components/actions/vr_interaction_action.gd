@@ -73,9 +73,7 @@ func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	print("interaction %s" % p_action)
 	match p_action:
-		"/hands/grip", "grip_click":
-			try_to_pick_up_object()
-		"/hands/trigger", "trigger_click":
+		"/hands/grip", "grip_click", "/hands/trigger", "trigger_click":
 			try_to_pick_up_object()
 
 
@@ -83,9 +81,7 @@ func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 	print("interaction %s" % p_action)
 	match p_action:
-		"/hands/grip", "grip_click":
-			try_to_drop_object()
-		"/hands/trigger", "trigger_click":
+		"/hands/grip", "grip_click", "/hands/trigger", "trigger_click":
 			try_to_pick_up_object()
 
 

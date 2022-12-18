@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://etm2olf6841v"]
+[gd_scene load_steps=3 format=3 uid="uid://calgoigvf6ua5"]
 
 [ext_resource type="Script" path="res://addons/sar1_vr_manager/components/actions/vr_interaction_action.gd" id="1"]
 

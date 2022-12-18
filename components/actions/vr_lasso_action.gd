@@ -25,19 +25,26 @@ var print_mod = 0
 @export var rumble_duration: int = 0.100
 @export var rumble_strength: float = 1.0
 
+func _on_pick_up():
+	print("lasso _on_pick_up %s" % current_snap)
+
+
+func _on_drop():
+	print("lasso _on_drop %s" % current_snap)
+
 
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
-		"/menu/lasso", "primary_click":
-			pass
+		"/menu/lasso", "primary_click", "trigger_click", "grip_click":
+			_on_pick_up()
 
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 	match p_action:
-		"/menu/lasso", "primary_click":
-			pass
+		"/menu/lasso", "primary_click", "trigger_click", "grip_click":
+			_on_drop()
 
 
 func _update_lasso(_delta: float) -> void:
@@ -172,7 +179,6 @@ func _update_lasso(_delta: float) -> void:
 			var into_infinity = Vector3(0.0, 0.0, -10)
 			straight_mesh.material_override.set_shader_parameter("target", Vector3(0.0, 0.0, 0.0))
 			snapped_mesh.material_override.set_shader_parameter("target", into_infinity)
-
 
 func _process(p_delta: float) -> void:
 	_update_lasso(p_delta)
