@@ -22,7 +22,7 @@ var interact_ready: bool = false
 var flick_origin_spatial: Node3D = null
 
 var print_mod = 0
-@export var rumble_duration: int = 0.100
+@export var rumble_duration: float = 0.100
 @export var rumble_strength: float = 1.0
 
 var lasso: bool = false
