@@ -70,7 +70,7 @@ func add_controller(p_controller: XRController3D, p_origin: XROrigin3D):
 				p_controller.get_analog_funcref = controller_actions.get_axis
 
 
-func remove_controller(p_controller: XRController3D, p_origin: XROrigin3D):
+func remove_controller(p_controller: XRController3D, _p_origin: XROrigin3D):
 	destroy_poses_for_controller(p_controller)
 
 
