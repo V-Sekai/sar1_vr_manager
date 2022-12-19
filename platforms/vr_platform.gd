@@ -81,8 +81,5 @@ func pre_setup() -> void:
 func setup() -> void:
 	print("Setting up VR platform...")
 
-	#for action_set in action_sets:
-	#	openvr_config.toggle_action_set_active(action_set, true)
-
 	if ResourceLoader.exists(controller_actions_scene_path):
 		controller_actions_scene = ResourceLoader.load(controller_actions_scene_path)
