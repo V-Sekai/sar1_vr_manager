@@ -207,9 +207,6 @@ func _ready() -> void:
 	tracker.laser_origin.add_child(straight_mesh, true)
 	tracker.laser_origin.add_child(snapped_mesh, true)
 
-	straight_mesh.transform = Transform3D()
-	snapped_mesh.transform = Transform3D()
-
 	primary_mesh = get_node(primary_circle) as MeshInstance3D
 	secondary_mesh = get_node(secondary_circle) as MeshInstance3D
 	if straight_mesh != null && straight_mesh.material_override != null:
