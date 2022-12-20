@@ -43,7 +43,7 @@ func _on_action_released(p_action: String) -> void:
 
 
 func _update_lasso(_delta: float) -> void:
-	var lasso_analog_value: Vector2 = get_axis("secondary")
+	var lasso_analog_value: Vector2 = get_axis("trigger")
 	redirection_lock = redirection_lock && (lasso_analog_value.length_squared() > 0)
 	var new_snap = false
 	var primary_snap: Vector3
