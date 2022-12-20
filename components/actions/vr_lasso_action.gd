@@ -10,6 +10,8 @@ extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd"  # vr_act
 @export var secondary_circle: NodePath
 @export var min_snap = 0.5
 @export var snap_increase = 2
+@export var lasso_axis: String = "secondary"
+@export var lasso_action: String = "trigger_click"
 
 var current_snap: Node3D = null
 var straight_mesh: MeshInstance3D = null
@@ -31,19 +33,19 @@ var lasso: bool = false
 func _on_action_pressed(p_action: String) -> void:
 	super._on_action_pressed(p_action)
 	match p_action:
-		"trigger_click":
+		lasso_action:
 			lasso = true
 
 
 func _on_action_released(p_action: String) -> void:
 	super._on_action_released(p_action)
 	match p_action:
-		"trigger_click":
+		lasso_action:
 			lasso = false
 
 
 func _update_lasso(_delta: float) -> void:
-	var lasso_analog_value: Vector2 = get_axis("primary")
+	var lasso_analog_value: Vector2 = get_axis(lasso_axis)
 	redirection_lock = redirection_lock && (lasso_analog_value.length_squared() > 0)
 	var new_snap = false
 	var primary_snap: Vector3
@@ -51,7 +53,7 @@ func _update_lasso(_delta: float) -> void:
 	var primary_power: float = 0.0
 	var secondary_power: float = 0.0
 	if lasso_analog_value.x > 0:
-		var lasso_redirect_value: Vector2 = get_axis("secondary")
+		var lasso_redirect_value: Vector2 = get_axis(lasso_axis)
 		var snapping_singleton = get_node("/root/SnappingSingleton")
 		var snap_point = null
 		var redirecting: bool = redirection_ready && lasso_redirect_value.length_squared() > 0.0
