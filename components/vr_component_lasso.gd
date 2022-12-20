@@ -32,7 +32,6 @@ func tracker_added(p_tracker: XRController3D) -> void:
 	var tracker_hand: int = p_tracker.get_tracker_hand()
 	if tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT or tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT:
 		var vr_lasso_action: Node3D = vr_lasso_action_const.instantiate()
-		vr_lasso_action.flick_origin_spatial = self
 		p_tracker.add_component_action(vr_lasso_action)
 	# TODO: fire 2022-12-18 restore ui picking.
 
