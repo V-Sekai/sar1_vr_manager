@@ -51,7 +51,7 @@ func _update_lasso(_delta: float) -> void:
 	var primary_power: float = 0.0
 	var secondary_power: float = 0.0
 	if lasso_analog_value.x > 0:
-		var lasso_redirect_value: Vector2 = get_axis("primary")
+		var lasso_redirect_value: Vector2 = get_axis("secondary")
 		var snapping_singleton = get_node("/root/SnappingSingleton")
 		var snap_point = null
 		var redirecting: bool = redirection_ready && lasso_redirect_value.length_squared() > 0.0
