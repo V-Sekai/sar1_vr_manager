@@ -11,6 +11,7 @@ size = Vector2(0.05, 1)
 subdivide_depth = 40
 
 [sub_resource type="ShaderMaterial" id="2"]
+resource_local_to_scene = true
 render_priority = 127
 shader = ExtResource("4")
 shader_parameter/width = null
