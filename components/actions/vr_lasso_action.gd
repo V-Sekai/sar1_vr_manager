@@ -197,25 +197,13 @@ func _xr_mode_changed() -> void:
 
 func _ready() -> void:
 	super._ready()
-	
+
 	straight_mesh = get_node(straight_laser) as MeshInstance3D
 	snapped_mesh = get_node(snapped_laser) as MeshInstance3D
 
-	straight_mesh.get_parent().remove_child(straight_mesh)
-	snapped_mesh.get_parent().remove_child(snapped_mesh)
-
-	tracker.laser_origin.add_child(straight_mesh, true)
-	tracker.laser_origin.add_child(snapped_mesh, true)
-
 	primary_mesh = get_node(primary_circle) as MeshInstance3D
 	secondary_mesh = get_node(secondary_circle) as MeshInstance3D
-	
-	primary_mesh.get_parent().remove_child(primary_mesh)
-	secondary_mesh.get_parent().remove_child(secondary_mesh)
 
-	tracker.laser_origin.add_child(primary_mesh, true)
-	tracker.laser_origin.add_child(secondary_mesh, true)
-	
 	if straight_mesh != null && straight_mesh.material_override != null:
 		straight_mesh.material_override.set_shader_parameter("mix_color", straight_color)
 		straight_mesh.material_override = straight_mesh.material_override.duplicate(true)
@@ -231,12 +219,3 @@ func _ready() -> void:
 		secondary_mesh.material_override = secondary_mesh.material_override.duplicate(true)
 		secondary_mesh.visible = false
 	_update_visibility()
-
-
-func _exit_tree() -> void:
-	if not tracker:
-		return
-	if not tracker.laser_origin:
-		return
-	tracker.laser_origin.remove_child(straight_mesh)
-	tracker.laser_origin.remove_child(snapped_mesh)

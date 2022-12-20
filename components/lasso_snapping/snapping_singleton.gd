@@ -49,6 +49,7 @@ static func calc_redirection_dist(point: Vector3, source: Vector3, center: Vecto
 	var y_component: float = (a2 * c1) / (a2 - a1)
 	return Vector2(x_component, y_component).length_squared()  # This is length squared because it's slightly more performant and we don't care about the actual value
 
+
 static func vector_projection(v: Vector3, normal: Vector3) -> Vector3:
 	if v.length_squared() == 0 || normal.length_squared() == 0:
 		return Vector3()
