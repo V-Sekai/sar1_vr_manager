@@ -21,12 +21,10 @@ func create_render_tree() -> Node3D:
 	return vr_render_tree_class.new()
 
 
-static func create_pose(p_controller: XRController3D, p_name: String, p_pose: StringName, p_tracker: StringName, p_origin: XROrigin3D) -> Node3D:
+static func create_pose(p_controller: XRController3D, p_name: String, p_pose: StringName, p_tracker: StringName) -> Node3D:
 	p_controller.set_name("%s_%s" % [p_tracker, p_name])
 	p_controller.set_tracker(p_tracker) # Set the tracker before the pose name.
 	p_controller.set_pose_name(p_pose)
-
-	p_origin.add_child(p_controller, true)
 
 	return p_controller
 
@@ -34,9 +32,12 @@ static func create_pose(p_controller: XRController3D, p_name: String, p_pose: St
 func create_poses_for_controller(p_controller: XRController3D, p_origin: XROrigin3D) -> void:
 	if not p_origin:
 		printerr("VRPlatform: Origin does not exist!")
-	var model_origin: Node3D = create_pose(XRController3D.new(), "ModelOrigin", "grip", p_controller.tracker, p_origin)
-	var laser_origin: Node3D = create_pose(XRController3D.new(), "LaserOrigin", "aim", p_controller.tracker, p_origin)
-	p_controller.model_origin = model_origin
+	var model_controller: XRController3D = XRController3D.new()
+	var model_origin: XRController3D = create_pose(model_controller, "ModelOrigin", "grip", p_controller.tracker)
+	p_origin.add_child(model_origin, true)
+	var laser_controller: XRController3D = XRController3D.new()
+	var laser_origin: XRController3D = create_pose(laser_controller, "LaserOrigin", "aim", p_controller.tracker)
+	p_origin.add_child(laser_origin, true)
 	p_controller.laser_origin = laser_origin
 
 
