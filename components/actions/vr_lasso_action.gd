@@ -10,8 +10,8 @@ extends "res://addons/sar1_vr_manager/components/actions/vr_action.gd"  # vr_act
 @export var secondary_circle: NodePath
 @export var min_snap = 0.5
 @export var snap_increase = 2
-@export var lasso_axis: String = "secondary"
-@export var lasso_action: String = "trigger_click"
+const lasso_axis: String = "secondary"
+const lasso_action: String = "trigger_click"
 
 var current_snap: Node3D = null
 var straight_mesh: MeshInstance3D = null

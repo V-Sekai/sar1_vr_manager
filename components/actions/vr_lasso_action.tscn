@@ -22,19 +22,10 @@ shader_parameter/main_texture = ExtResource("5_wun48")
 
 [node name="snap_pointer" type="Node3D"]
 script = ExtResource("1")
-straight_color = null
-unsnapped_color = null
-snapped_color = null
-snap_circle_color = null
-snap_circle_min_alpha = null
 straight_laser = NodePath("straight_laser")
 snapped_laser = NodePath("snap_laser")
 primary_circle = NodePath("primary_snap_circle")
 secondary_circle = NodePath("secondary_snap_circle")
-min_snap = null
-snap_increase = null
-rumble_duration = null
-rumble_strength = null
 
 [node name="straight_laser" type="MeshInstance3D" parent="."]
 material_override = ExtResource("2")
