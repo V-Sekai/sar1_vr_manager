@@ -26,24 +26,14 @@ func _requested_as_ui_selector(p_hand: int) -> void:
 				_on_requested_as_ui_selector(right_ui_pointer_action)
 
 
-static func create_pose(p_controller: XRController3D, p_name: String, p_pose: StringName, p_tracker: StringName) -> Node3D:
-	p_controller.set_name("%s_%s" % [p_tracker, p_name])
-	p_controller.set_tracker(p_tracker)  # Set the tracker before the pose name.
-	p_controller.set_pose_name(p_pose)
+func tracker_added(p_tracker: XRController3D) -> void:
+	super.tracker_added(p_tracker)
 
-	return p_controller
-
-
-func tracker_added(p_controller: XRController3D) -> void:
-	super.tracker_added(p_controller)
-
-	var tracker_hand: int = p_controller.get_tracker_hand()
+	var tracker_hand: int = p_tracker.get_tracker_hand()
 	if tracker_hand == XRPositionalTracker.TRACKER_HAND_RIGHT or tracker_hand == XRPositionalTracker.TRACKER_HAND_LEFT:
 		var vr_lasso_action: Node3D = vr_lasso_action_const.instantiate()
-		p_controller = create_pose(p_controller, "LaserOrigin", "aim", p_controller.tracker)
-		p_controller.laser_origin = p_controller
 		vr_lasso_action.flick_origin_spatial = self
-		p_controller.add_component_action(vr_lasso_action)
+		p_tracker.add_component_action(vr_lasso_action)
 	# TODO: fire 2022-12-18 restore ui picking.
 
 

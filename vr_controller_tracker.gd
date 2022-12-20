@@ -76,3 +76,8 @@ func remove_component_action(p_component_action: Node) -> void:
 		printerr("Attempted to remove an invalid module tracker!")
 	p_component_action.queue_free()
 	remove_child(p_component_action)
+
+
+func _process(_delta: float) -> void:
+	if !get_is_active():
+		visible = false
