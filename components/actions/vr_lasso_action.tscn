@@ -20,6 +20,7 @@ shader_parameter/mix_color = Color(0.972549, 0.976471, 0.92549, 1)
 shader_parameter/main_texture = ExtResource("5_wun48")
 
 [sub_resource type="QuadMesh" id="3"]
+resource_local_to_scene = true
 
 [node name="snap_pointer" type="Node3D"]
 script = ExtResource("1")
