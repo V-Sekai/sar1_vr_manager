@@ -36,6 +36,12 @@ var step_size = 0.5
 
 var locomotion: Node3D = null
 
+@onready var teleport_node: MeshInstance3D = $Teleport
+@onready var teleport_material: ShaderMaterial = teleport_node.get_active_material(0)
+
+@onready var target_node: MeshInstance3D = $Target
+@onready var target_material: BaseMaterial3D = target_node.get_active_material(0)
+
 @onready var capsule = get_node("Target/Player_figure/Capsule")
 
 #############
@@ -147,7 +153,8 @@ func _process(_delta):
 	if !locomotion:
 		return
 
-	var teleport_pressed: bool = controller.is_pressed("/locomotion/teleport") or controller.is_pressed("secondary_click")
+	# "teleport" is not implemented yet.
+	var teleport_pressed: bool = controller.is_button_pressed("teleport") or controller.is_button_pressed("secondary_click")
 
 	if (
 		controller
@@ -224,9 +231,9 @@ func _process(_delta):
 				hit_something = true
 				break
 
-		$Teleport.get_surface_material(0).set_shader_parameter("scale_t", 1.0 / strength)
-		$Teleport.get_surface_material(0).set_shader_parameter("ws", ws)
-		$Teleport.get_surface_material(0).set_shader_parameter("length", cast_length)
+		teleport_material.set_shader_parameter("scale_t", 1.0 / strength)
+		teleport_material.set_shader_parameter("ws", ws)
+		teleport_material.set_shader_parameter("length", cast_length)
 		if hit_something:
 			var color = can_teleport_color
 			var normal = Vector3(0.0, 1.0, 0.0)
@@ -251,13 +258,13 @@ func _process(_delta):
 			last_target_transform.origin = target_global_origin + Vector3(0.0, 0.02, 0.0)
 			$Target.global_transform = last_target_transform
 
-			$Teleport.get_surface_material(0).set_shader_parameter("mix_color", color)
-			$Target.get_surface_material(0).albedo_color = color
+			teleport_material.set_shader_parameter("mix_color", color)
+			target_material.albedo_color = color
 			$Target.visible = can_teleport
 		else:
 			can_teleport = false
 			$Target.visible = false
-			$Teleport.get_surface_material(0).set_shader_parameter("mix_color", no_collision_color)
+			teleport_material.set_shader_parameter("mix_color", no_collision_color)
 	elif is_teleporting:
 		if can_teleport:
 			var new_transform = last_target_transform

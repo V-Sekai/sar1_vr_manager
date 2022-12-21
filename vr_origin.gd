@@ -15,6 +15,7 @@ const vr_component_render_tree_const = preload("components/vr_component_render_t
 const vr_component_advanced_movement_const = preload("components/vr_component_advanced_movement.gd")
 const vr_component_lasso_const = preload("components/vr_component_lasso.gd")
 const vr_component_hand_pose_const = preload("components/vr_component_hand_pose.gd")
+const vr_component_teleport_const = preload("components/vr_component_teleport.gd")
 
 var components: Array = []
 
@@ -144,6 +145,7 @@ func create_components() -> void:
 	create_and_add_component(vr_component_advanced_movement_const)
 	create_and_add_component(vr_component_lasso_const)
 	create_and_add_component(vr_component_hand_pose_const)
+	create_and_add_component(vr_component_teleport_const)
 
 func destroy_components() -> void:
 	for component in components:

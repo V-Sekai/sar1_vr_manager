@@ -13,17 +13,17 @@ signal action_pressed(p_action)
 signal action_released(p_action)
 
 
-func is_pressed(p_action: String) -> bool:
-	if get_is_action_pressed_funcref.is_valid():
-		return get_is_action_pressed_funcref.call(p_action)
-	return false
-
-
-func get_axis(p_action: StringName) -> Vector2:
-	if get_analog_funcref.is_valid():
-		return get_analog_funcref.call(p_action)
-	return Vector2()
-
+#func is_button_pressed(p_action: StringName) -> bool:
+#	if get_is_action_pressed_funcref.is_valid():
+#		return get_is_action_pressed_funcref.call(p_action)
+#	return false
+#
+#
+#func get_axis(p_action: StringName) -> Vector2:
+#	if get_analog_funcref.is_valid():
+#		return get_analog_funcref.call(p_action)
+#	return Vector2()
+#
 
 # Get the enumeration value from the vr_constants file based on the internal hand ID of the tracker.
 func get_hand_id_for_tracker() -> int:

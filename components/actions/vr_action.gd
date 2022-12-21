@@ -6,8 +6,8 @@ const vr_tracker_script = preload("res://addons/sar1_vr_manager/vr_controller_tr
 var tracker: XRController3D = null
 
 
-func is_pressed(p_action: String) -> bool:
-	return tracker.is_pressed(p_action)
+func is_button_pressed(p_action: String) -> bool:
+	return tracker.is_button_pressed(p_action)
 
 
 func get_axis(p_action: String) -> Vector2:
