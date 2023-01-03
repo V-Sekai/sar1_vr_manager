@@ -302,8 +302,8 @@ func apply_project_settings() -> void:
 
 
 func get_project_settings() -> void:
-	interface_names = ProjectSettings.get_setting("vr/config/interfaces")
-	process_priority = ProjectSettings.get_setting("vr/config/process_priority")
+	interface_names = ["OpenXR"] # ProjectSettings.get_setting("vr/config/interfaces")
+	process_priority = 0 # ProjectSettings.get_setting("vr/config/process_priority")
 
 
 func _input(p_event: InputEvent) -> void:
