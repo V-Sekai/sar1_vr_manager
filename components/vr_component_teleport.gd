@@ -1,7 +1,5 @@
 extends "res://addons/sar1_vr_manager/components/vr_component.gd"  # vr_component.gd
 
-# const vr_teleport_action_const = preload("actions/vr_teleport_action.tscn")
-
 var vr_teleport_action_const = load("res://addons/sar1_vr_manager/components/actions/vr_teleport_action.tscn")
 
 var can_teleport_funcref: Callable = Callable()
