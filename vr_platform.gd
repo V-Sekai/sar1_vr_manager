@@ -1,7 +1,7 @@
 @tool
 extends RefCounted
 
-const vr_render_tree_class = preload("./vr_render_tree.gd")
+const vr_render_tree_class = preload("vr_render_tree.gd")
 
 var trackers: Array = []
 

@@ -24,7 +24,7 @@ const vr_control_type_names = ["TR_VR_MANAGER_CONTROL_TYPE_CLASSIC", "TR_VR_MANA
 const preferred_hand_oriented_movement_hand_names = ["TR_VR_MANAGER_PREFERRED_HAND_ORIENTED_MOVEMENT_LEFT", "TR_VR_MANAGER_PREFERRED_HAND_ORIENTED_MOVEMENT_RIGHT"]
 const movement_type_names = ["TR_VR_MANAGER_MOVEMENT_TELEPORTATION", "TR_VR_MANAGER_MOVEMENT_LOCOMOTION"]
 
-const vr_platform_const = preload("res://addons/sar1_vr_manager/platforms/vr_platform.gd")
+const vr_platform_const = preload("res://addons/sar1_vr_manager/vr_platform.gd")
 var vr_platform = null
 
 const vr_constants_const = preload("res://addons/sar1_vr_manager/vr_constants.gd")
