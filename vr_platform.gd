@@ -68,7 +68,7 @@ func add_controller(p_controller: XRController3D, p_origin: XROrigin3D):
 					printerr("Could not connect signal 'on_action_released' !")
 
 				p_controller.get_is_action_pressed_funcref = Callable(controller_actions, "is_action_pressed")
-				p_controller.get_analog_funcref = controller_actions.get_axis
+				p_controller.get_analog_funcref = controller_actions.get_vector2
 
 
 func remove_controller(p_controller: XRController3D, _p_origin: XROrigin3D):
