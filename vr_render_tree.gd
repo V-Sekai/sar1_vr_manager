@@ -2,6 +2,7 @@ extends Node3D
 
 var tree: Node3D = null
 
+
 func create_attachment_point(p_name: String) -> Node3D:
 	var attachment: Node3D = Node3D.new()
 	attachment.set_name(p_name)
@@ -9,6 +10,7 @@ func create_attachment_point(p_name: String) -> Node3D:
 	attachment_attach.set_name("attach")
 	attachment.add_child(attachment_attach, true)
 	return attachment
+
 
 func setup_dummy_attachment(p_name: StringName) -> Node3D:
 	var spatial: Node3D = create_attachment_point(p_name)

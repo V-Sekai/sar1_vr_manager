@@ -22,16 +22,18 @@ var components: Array = []
 signal tracker_added(p_positional_tracker: XRPositionalTracker)
 signal tracker_removed(p_positional_tracker: XRPositionalTracker)
 
+
 func clear_controllers() -> void:
 	for tracker_name in active_controllers.keys():
 		remove_tracker(tracker_name)
-		
+
 	assert(active_controllers.is_empty())
 	assert(unknown_controller_count == 0)
-	
+
 	assert(hand_controllers.is_empty())
 	assert(left_hand_controller == null)
 	assert(right_hand_controller == null)
+
 
 func add_tracker(p_tracker_name: StringName) -> void:
 	print("IN add_tracker " + str(p_tracker_name))
@@ -69,8 +71,19 @@ func add_tracker(p_tracker_name: StringName) -> void:
 		for component in components:
 			component.tracker_added(controller)
 
-		if ! active_controllers.has(p_tracker_name):
-			print("Adding tracker " + str(p_tracker_name) + " at " + str(self.get_path()) + " name " + str(controller.tracker) + " and " + str(controller.name))
+		if !active_controllers.has(p_tracker_name):
+			print(
+				(
+					"Adding tracker "
+					+ str(p_tracker_name)
+					+ " at "
+					+ str(self.get_path())
+					+ " name "
+					+ str(controller.tracker)
+					+ " and "
+					+ str(controller.name)
+				)
+			)
 			active_controllers[p_tracker_name] = controller
 			add_child(controller, true)
 			tracker_added.emit(controller)
@@ -81,7 +94,7 @@ func add_tracker(p_tracker_name: StringName) -> void:
 
 func remove_tracker(p_tracker_name: StringName) -> void:
 	if active_controllers.has(p_tracker_name):
-		var controller: XRController3D = active_controllers[p_tracker_name] # vr_controller_tracker_const
+		var controller: XRController3D = active_controllers[p_tracker_name]  # vr_controller_tracker_const
 		if active_controllers.erase(p_tracker_name):
 			# Attempt to clear it from any hands it is assigned to
 			if left_hand_controller == controller or right_hand_controller == controller:
@@ -113,11 +126,14 @@ func remove_tracker(p_tracker_name: StringName) -> void:
 
 func _on_tracker_added(p_tracker_name: StringName, p_type: int) -> void:
 	print(
-		"Adding controller for tracker {tracker_name} type {tracker_type_name} id {id} to VR Player".format(
-			{
-				"tracker_name": p_tracker_name,
-				"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type),
-			}
+		(
+			"Adding controller for tracker {tracker_name} type {tracker_type_name} id {id} to VR Player"
+			. format(
+				{
+					"tracker_name": p_tracker_name,
+					"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type),
+				}
+			)
 		)
 	)
 	add_tracker(p_tracker_name)
@@ -125,19 +141,24 @@ func _on_tracker_added(p_tracker_name: StringName, p_type: int) -> void:
 
 func _on_tracker_removed(p_tracker_name: StringName, p_type: int) -> void:
 	print(
-		"Removing hand for tracker {tracker_name} type {tracker_type_name} id {id} to VR Player".format(
-			{
-				"tracker_name": p_tracker_name,
-				"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type),
-			}
+		(
+			"Removing hand for tracker {tracker_name} type {tracker_type_name} id {id} to VR Player"
+			. format(
+				{
+					"tracker_name": p_tracker_name,
+					"tracker_type_name": vr_manager_const.get_tracker_type_name(p_type),
+				}
+			)
 		)
 	)
 	remove_tracker(p_tracker_name)
+
 
 func create_and_add_component(p_component_script: Script) -> void:
 	var vr_component: Node3D = p_component_script.new()
 	components.push_back(vr_component)
 	add_child(vr_component, true)
+
 
 func create_components() -> void:
 	create_and_add_component(vr_component_locomotion_const)
@@ -147,23 +168,27 @@ func create_components() -> void:
 	create_and_add_component(vr_component_hand_pose_const)
 	create_and_add_component(vr_component_teleport_const)
 
+
 func destroy_components() -> void:
 	for component in components:
 		component.queue_free()
-		
+
 	components = []
-	
+
+
 func get_component_by_name(p_name: String) -> Node:
 	for component in components:
 		if p_name == component.name:
 			return component
-			
+
 	return null
-	
+
+
 func setup_components() -> void:
 	for component in components:
 		component.post_add_setup()
-		
+
+
 func _ready() -> void:
 	set_process_internal(false)
 	clear_controllers()
@@ -174,13 +199,14 @@ func _ready() -> void:
 	if VRManager.tracker_removed.connect(self._on_tracker_removed) != OK:
 		printerr("tracker_removed could not be connected")
 
+
 func _exit_tree() -> void:
 	if VRManager.xr_origin == self:
 		VRManager.xr_origin = null
-		
+
 	destroy_components()
 	clear_controllers()
-	
+
 	if VRManager.tracker_added.is_connected(self._on_tracker_added):
 		VRManager.tracker_added.disconnect(self._on_tracker_added)
 	else:
@@ -189,10 +215,11 @@ func _exit_tree() -> void:
 		VRManager.tracker_removed.disconnect(self._on_tracker_removed)
 	else:
 		printerr("tracker_removed could not be disconnected")
-		
+
+
 func _enter_tree() -> void:
 	# Self-assign
 	VRManager.assign_xr_origin(self)
-	
+
 	create_components()
 	setup_components()
