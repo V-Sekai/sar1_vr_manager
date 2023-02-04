@@ -256,7 +256,6 @@ func setup_vr_interface() -> void:
 				print("Could not initalize interface %s..." % interface_name)
 
 	print("Could not initalize any VR interface...")
-	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 	xr_active = false
 
 
@@ -273,7 +272,6 @@ func toggle_vr() -> void:
 		xr_active = enabled
 	else:
 		xr_active = false
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 	xr_mode_changed.emit()
 
 
