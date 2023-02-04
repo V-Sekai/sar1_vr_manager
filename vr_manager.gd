@@ -248,7 +248,6 @@ func setup_vr_interface() -> void:
 				create_vr_platform_for_interface(interface_name)
 
 				if vr_user_preferences.vr_mode_enabled:
-					DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 					xr_active = true
 					return
 
@@ -272,10 +271,6 @@ func toggle_vr() -> void:
 	initialise_vr_interface()
 	if xr_interface:
 		xr_active = enabled
-		if enabled:
-			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
-		else:
-			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	else:
 		xr_active = false
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
