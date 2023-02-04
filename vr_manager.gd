@@ -358,28 +358,29 @@ func _ready() -> void:
 	# Sets up the VR state
 	create_vr_platforms()
 
-	if !Engine.is_editor_hint():
-		print("CONNECTING TO XRSERVER")
-		InputManager.assign_input_map_validation_callback(self, "is_joypad_id_input_map_valid")
-		for initial_iface in XRServer.get_interfaces():  # [{"id":1,"name":"some_name"}] for some reason
-			self._on_interface_added.call_deferred(StringName(initial_iface["name"]))
-		var initial_trackers = XRServer.get_trackers(XRServer.TRACKER_ANY)
-
-		for xrpt in initial_trackers.values():
-			var postracker: XRPositionalTracker = xrpt
-			self._on_tracker_added.call_deferred(postracker.name, postracker.type)
-
-		if XRServer.interface_added.connect(self._on_interface_added, CONNECT_DEFERRED) != OK:
-			printerr("interface_added could not be connected")
-		if XRServer.interface_removed.connect(self._on_interface_removed, CONNECT_DEFERRED) != OK:
-			printerr("interface_removed could not be connected")
-
-		if XRServer.tracker_added.connect(self._on_tracker_added, CONNECT_DEFERRED) != OK:
-			printerr("tracker_added could not be connected")
-		if XRServer.tracker_removed.connect(self._on_tracker_removed, CONNECT_DEFERRED) != OK:
-			printerr("tracker_removed could not be connected")
-		set_process(true)
-		set_process_input(true)
-	else:
+	if Engine.is_editor_hint():
 		set_process(false)
 		set_process_input(false)
+		return
+
+	print("CONNECTING TO XRSERVER")
+	InputManager.assign_input_map_validation_callback(self, "is_joypad_id_input_map_valid")
+	for initial_iface in XRServer.get_interfaces():  # [{"id":1,"name":"some_name"}] for some reason
+		self._on_interface_added.call_deferred(StringName(initial_iface["name"]))
+	var initial_trackers = XRServer.get_trackers(XRServer.TRACKER_ANY)
+
+	for xrpt in initial_trackers.values():
+		var postracker: XRPositionalTracker = xrpt
+		self._on_tracker_added.call_deferred(postracker.name, postracker.type)
+
+	if XRServer.interface_added.connect(self._on_interface_added, CONNECT_DEFERRED) != OK:
+		printerr("interface_added could not be connected")
+	if XRServer.interface_removed.connect(self._on_interface_removed, CONNECT_DEFERRED) != OK:
+		printerr("interface_removed could not be connected")
+
+	if XRServer.tracker_added.connect(self._on_tracker_added, CONNECT_DEFERRED) != OK:
+		printerr("tracker_added could not be connected")
+	if XRServer.tracker_removed.connect(self._on_tracker_removed, CONNECT_DEFERRED) != OK:
+		printerr("tracker_removed could not be connected")
+	set_process(true)
+	set_process_input(true)
