@@ -14,8 +14,8 @@ subdivide_depth = 40
 resource_local_to_scene = true
 render_priority = 127
 shader = ExtResource("4")
-shader_parameter/width = null
-shader_parameter/height = null
+shader_parameter/width = 0.1
+shader_parameter/height = 0.1
 shader_parameter/mix_color = Color(0.972549, 0.976471, 0.92549, 1)
 shader_parameter/main_texture = ExtResource("5_wun48")
 
